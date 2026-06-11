@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import { useAppStore } from '@/store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,10 +31,12 @@ import {
   Tags,
   Upload,
   X,
+  ZoomIn,
 } from 'lucide-react'
 import type { AppSettings, Template } from '@/types'
 import { CARD_PRESETS, type CardPreset } from '@/lib/cardPresets'
 import { LANGUAGE_OPTIONS, translate } from '@/lib/i18n'
+import { UI_SCALE_OPTIONS, uiScaleStyle } from '@/lib/uiScale'
 
 const CARD_PRESET_NAMES: Record<AppSettings['cardPreset'], string> = {
   lagoon: 'presetLagoon',
@@ -224,7 +226,10 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
   const resetAppearance = () => applyPreset(CARD_PRESETS[settings.theme].lagoon)
 
   return (
-    <div className={`${embedded ? 'h-full' : 'h-screen'} ${settings.theme === 'dark' ? 'dark' : ''} flex flex-col overflow-hidden bg-background text-foreground`}>
+    <div
+      className={`${embedded ? 'h-full' : 'h-screen'} ${settings.theme === 'dark' ? 'dark' : ''} flex flex-col overflow-hidden bg-background text-foreground`}
+      style={uiScaleStyle(settings.uiScale)}
+    >
       <header className={`z-30 flex shrink-0 flex-wrap items-center justify-between gap-4 border-b bg-background px-4 py-2 shadow-sm ${embedded ? 'pr-16' : ''}`}>
         <h1 className="flex shrink-0 items-center gap-3 text-sm font-semibold">
           <BrandLogo title={t('appName')} />
@@ -241,6 +246,13 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
             options={LANGUAGE_OPTIONS}
           />
           <SettingSwitch icon={<Moon className="h-3.5 w-3.5" />} label={t('darkTheme')} checked={settings.theme === 'dark'} onCheckedChange={(checked) => updateSettings({ theme: checked ? 'dark' : 'light' })} />
+          <SettingSelect
+            icon={<ZoomIn className="h-3.5 w-3.5" />}
+            label={t('interfaceScale')}
+            value={settings.uiScale}
+            onChange={(value) => updateSettings({ uiScale: value as AppSettings['uiScale'] })}
+            options={UI_SCALE_OPTIONS}
+          />
           <SettingSelect
             icon={<AtSign className="h-3.5 w-3.5" />}
             label={t('trigger')}
@@ -370,8 +382,8 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
       </main>
 
       {editorOpen && (
-        <div className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm">
-          <div className="max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))] overflow-y-auto rounded-lg border bg-background p-5 text-foreground shadow-2xl">
+        <div className="fixed inset-0 z-[2147483630] flex animate-in fade-in items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm duration-150">
+          <div className="max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))] animate-in zoom-in-95 overflow-y-auto rounded-lg border bg-background p-5 text-foreground shadow-2xl duration-150">
             <div className="mb-4 flex items-center justify-between gap-3 border-b pb-3">
               <div>
                 <div className="text-sm font-semibold">{editingTemplate ? t('editNote') : t('newNote')}</div>
@@ -394,7 +406,6 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
         </div>
       )}
 
-      <ToastContainer />
       <TemplatePreviewModal
         template={previewTemplate}
         variables={settings.showVariablesTab ? variables : null}
@@ -403,6 +414,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
         onInserted={onAfterInsert}
         onClose={() => setPreviewTemplate(null)}
       />
+      <ToastContainer />
     </div>
   )
 

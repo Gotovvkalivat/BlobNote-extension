@@ -1,11 +1,13 @@
-﻿import React from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { FloatingPanel } from './FloatingPanel'
 import { AtMenu } from './AtMenu'
 import { SmartSearch } from './SmartSearch'
 import { BaseModal } from './BaseModal'
 import { insertTemplate, installEditableTracker, isHostEnabled, readRuntimeSnapshot } from '@/lib/templateRuntime'
-import type { Template } from '@/types'
+import type { AppSettings, Template } from '@/types'
+import { uiScaleStyle } from '@/lib/uiScale'
+import { ToastContainer } from '@/components/ui/toast'
 
 const SHADOW_THEME_STYLE = `
   :host {
@@ -118,6 +120,7 @@ function ContentApp() {
   const [showBase, setShowBase] = React.useState(false)
   const [enabledForHost, setEnabledForHost] = React.useState(true)
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
+  const [uiScale, setUiScale] = React.useState<AppSettings['uiScale']>('100')
 
   React.useEffect(() => {
     const uninstallTracker = installEditableTracker()
@@ -126,12 +129,13 @@ function ContentApp() {
       const snapshot = await readRuntimeSnapshot()
       setEnabledForHost(isHostEnabled(snapshot))
       setTheme(snapshot.theme)
+      setUiScale(snapshot.uiScale)
     }
 
     void loadActivation()
 
     const handleStorage = (changes: Record<string, chrome.storage.StorageChange>, area: string) => {
-      if (area === 'sync' && (changes.activationMode || changes.enabledHosts || changes.theme)) void loadActivation()
+      if (area === 'sync' && (changes.activationMode || changes.enabledHosts || changes.theme || changes.uiScale)) void loadActivation()
     }
 
     const handleKeydown = (event: KeyboardEvent) => {
@@ -188,11 +192,12 @@ function ContentApp() {
 
   return (
     <React.StrictMode>
-      <div className={theme === 'dark' ? 'dark' : ''}>
+      <div className={theme === 'dark' ? 'dark' : ''} style={uiScaleStyle(uiScale)}>
         {enabledForHost && <FloatingPanel onOpenBase={() => setShowBase(true)} />}
         {enabledForHost && <AtMenu />}
         {enabledForHost && <SmartSearch open={showSmartSearch} onOpenChange={setShowSmartSearch} />}
         <BaseModal open={showBase} onOpenChange={setShowBase} />
+        <ToastContainer />
       </div>
     </React.StrictMode>
   )

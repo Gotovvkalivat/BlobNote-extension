@@ -10138,7 +10138,7 @@
   // src/components/ui/button.tsx
   var import_jsx_runtime = __toESM(require_jsx_runtime());
   var buttonVariants = cva(
-    "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:scale-100",
     {
       variants: {
         variant: {
@@ -10413,6 +10413,22 @@
     ["path", { d: "M13 18h8", key: "oe0vm4" }]
   ]);
 
+  // node_modules/lucide-react/dist/esm/icons/maximize-2.js
+  var Maximize2 = createLucideIcon("Maximize2", [
+    ["polyline", { points: "15 3 21 3 21 9", key: "mznyad" }],
+    ["polyline", { points: "9 21 3 21 3 15", key: "1avn1i" }],
+    ["line", { x1: "21", x2: "14", y1: "3", y2: "10", key: "ota7mn" }],
+    ["line", { x1: "3", x2: "10", y1: "21", y2: "14", key: "1atl0r" }]
+  ]);
+
+  // node_modules/lucide-react/dist/esm/icons/minimize-2.js
+  var Minimize2 = createLucideIcon("Minimize2", [
+    ["polyline", { points: "4 14 10 14 10 20", key: "11kfnr" }],
+    ["polyline", { points: "20 10 14 10 14 4", key: "rlmsce" }],
+    ["line", { x1: "14", x2: "21", y1: "10", y2: "3", key: "o5lafz" }],
+    ["line", { x1: "3", x2: "10", y1: "21", y2: "14", key: "1atl0r" }]
+  ]);
+
   // node_modules/lucide-react/dist/esm/icons/moon.js
   var Moon = createLucideIcon("Moon", [
     ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
@@ -10547,6 +10563,14 @@
     ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
   ]);
 
+  // node_modules/lucide-react/dist/esm/icons/zoom-in.js
+  var ZoomIn = createLucideIcon("ZoomIn", [
+    ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
+    ["line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65", key: "13gj7c" }],
+    ["line", { x1: "11", x2: "11", y1: "8", y2: "14", key: "1vmskp" }],
+    ["line", { x1: "8", x2: "14", y1: "11", y2: "11", key: "durymu" }]
+  ]);
+
   // src/lib/i18n.ts
   var LANGUAGE_OPTIONS = [
     { value: "ru", label: "RU" },
@@ -10570,6 +10594,7 @@
     behavior: "\u041F\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u0435",
     dataManagement: "\u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u0434\u0430\u043D\u043D\u044B\u043C\u0438",
     language: "\u042F\u0437\u044B\u043A",
+    interfaceScale: "\u041C\u0430\u0441\u0448\u0442\u0430\u0431 \u0438\u043D\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430",
     trigger: "\u0421\u0438\u043C\u0432\u043E\u043B \u043F\u043E\u0438\u0441\u043A\u0430",
     openBaseCurrent: "\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u0431\u0430\u0437\u0443 \u043D\u0430 \u0442\u0435\u043A\u0443\u0449\u0435\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435",
     openBaseTab: "\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u043E\u0442\u0434\u0435\u043B\u044C\u043D\u043E\u0439 \u0432\u043A\u043B\u0430\u0434\u043A\u043E\u0439",
@@ -10650,6 +10675,10 @@
     clear: "\u041E\u0447\u0438\u0441\u0442\u0438\u0442\u044C",
     noFavorites: "\u041D\u0435\u0442 \u0438\u0437\u0431\u0440\u0430\u043D\u043D\u044B\u0445 \u0437\u0430\u043C\u0435\u0442\u043E\u043A",
     clipboardHistory: "\u0411\u0443\u0444\u0435\u0440 \u043E\u0431\u043C\u0435\u043D\u0430",
+    clearClipboardHistory: "\u041E\u0447\u0438\u0441\u0442\u0438\u0442\u044C \u0431\u0443\u0444\u0435\u0440",
+    hidePanel: "\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C \u043F\u0430\u043D\u0435\u043B\u044C",
+    showPanel: "\u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u043F\u0430\u043D\u0435\u043B\u044C",
+    clipboardCleared: "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0431\u0443\u0444\u0435\u0440\u0430 \u043E\u0447\u0438\u0449\u0435\u043D\u0430",
     clipboardEmpty: "\u0411\u0443\u0444\u0435\u0440 \u043F\u043E\u043A\u0430 \u043F\u0443\u0441\u0442",
     smartSearchTitle: "\u0423\u043C\u043D\u044B\u0439 \u043F\u043E\u0438\u0441\u043A \u0437\u0430\u043C\u0435\u0442\u043E\u043A",
     smartSearchPlaceholder: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u0435, \u0442\u0435\u0433 \u0438\u043B\u0438 \u0442\u0435\u043A\u0441\u0442...",
@@ -10705,6 +10734,7 @@
     behavior: "Behavior",
     dataManagement: "Data",
     language: "Language",
+    interfaceScale: "Interface scale",
     trigger: "Search trigger",
     openBaseCurrent: "Open base on this page",
     openBaseTab: "Open in a separate tab",
@@ -10785,6 +10815,10 @@
     clear: "Clear",
     noFavorites: "No favorite notes",
     clipboardHistory: "Clipboard",
+    clearClipboardHistory: "Clear clipboard",
+    hidePanel: "Collapse panel",
+    showPanel: "Show panel",
+    clipboardCleared: "Clipboard history cleared",
     clipboardEmpty: "Clipboard is empty",
     smartSearchTitle: "Smart note search",
     smartSearchPlaceholder: "Type a title, tag, or text...",
@@ -10835,6 +10869,71 @@
     return value === "ru" || value === "en";
   }
 
+  // src/components/ui/toast.tsx
+  var React4 = __toESM(require_react());
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime());
+  function Toast({ toast }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+      "div",
+      {
+        className: cn(
+          "pointer-events-auto flex items-center gap-2 rounded-lg border px-4 py-3 shadow-2xl animate-in fade-in slide-in-from-right-3 zoom-in-95 transition-all duration-200",
+          toast.type === "success" && "bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-100",
+          toast.type === "error" && "bg-red-50 border-red-200 text-red-800 dark:bg-red-950 dark:border-red-800 dark:text-red-100",
+          toast.type === "info" && "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-950 dark:border-blue-800 dark:text-blue-100"
+        ),
+        children: [
+          toast.type === "success" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(CircleCheck, { className: "h-4 w-4" }),
+          toast.type === "error" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Circle, { className: "h-4 w-4" }),
+          toast.type === "info" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Info, { className: "h-4 w-4" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-sm font-medium", children: toast.message })
+        ]
+      }
+    );
+  }
+  function ToastContainer() {
+    const [toasts, setToasts] = React4.useState([]);
+    React4.useEffect(() => {
+      const handleToast = (e) => {
+        setToasts((prev) => [...prev, e.detail]);
+        setTimeout(() => {
+          setToasts((prev) => prev.filter((t) => t.id !== e.detail.id));
+        }, 4e3);
+      };
+      window.addEventListener("opspost-toast", handleToast);
+      return () => window.removeEventListener("opspost-toast", handleToast);
+    }, []);
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "pointer-events-none fixed bottom-4 right-4 z-[2147483647] flex flex-col gap-2", children: toasts.map((toast) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Toast, { toast, onRemove: () => setToasts((prev) => prev.filter((t) => t.id !== toast.id)) }, toast.id)) });
+  }
+  function showToast(message, type = "info") {
+    const toast = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      message,
+      type
+    };
+    window.dispatchEvent(new CustomEvent("opspost-toast", { detail: toast }));
+  }
+
+  // src/lib/uiScale.ts
+  var UI_SCALE_OPTIONS = [
+    { value: "70", label: "70%" },
+    { value: "80", label: "80%" },
+    { value: "90", label: "90%" },
+    { value: "100", label: "100%" },
+    { value: "110", label: "110%" },
+    { value: "120", label: "120%" },
+    { value: "130", label: "130%" }
+  ];
+  function normalizeUiScale(value) {
+    return value === "70" || value === "80" || value === "90" || value === "110" || value === "120" || value === "130" ? value : "100";
+  }
+  function uiScaleZoom(value) {
+    return Number(value) / 100;
+  }
+  function uiScaleStyle(value) {
+    return { zoom: uiScaleZoom(value) };
+  }
+
   // src/lib/templateRuntime.ts
   var lastEditableElement = null;
   var cachedVariables = [];
@@ -10846,6 +10945,7 @@
     customBindings: {},
     theme: "light",
     uiLanguage: "ru",
+    uiScale: "100",
     atMenuEnabled: true,
     floatingPanelEnabled: true,
     clipboardPanelEnabled: false,
@@ -10866,6 +10966,7 @@
         variables: cachedVariablesEnabled ? cachedVariables : [],
         theme: "light",
         uiLanguage: "ru",
+        uiScale: "100",
         atMenuEnabled: true,
         floatingPanelEnabled: true,
         clipboardPanelEnabled: false,
@@ -10888,6 +10989,7 @@
           variables: variablesEnabled ? variables : [],
           theme: data.theme === "dark" ? "dark" : "light",
           uiLanguage: isLanguage(data.uiLanguage) ? data.uiLanguage : "ru",
+          uiScale: normalizeUiScale(data.uiScale),
           atMenuEnabled: data.atMenuEnabled ?? true,
           floatingPanelEnabled: data.floatingPanelEnabled ?? true,
           clipboardPanelEnabled: data.clipboardPanelEnabled ?? false,
@@ -11076,7 +11178,7 @@
   }
 
   // src/content/FloatingPanel.tsx
-  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
   function FloatingPanel({ onOpenBase }) {
     const [visible, setVisible] = import_react3.default.useState(false);
     const [favorites, setFavorites] = import_react3.default.useState([]);
@@ -11085,7 +11187,9 @@
     const [enabled, setEnabled] = import_react3.default.useState(true);
     const [clipboardEnabled, setClipboardEnabled] = import_react3.default.useState(false);
     const [language, setLanguage] = import_react3.default.useState("ru");
+    const [collapsed, setCollapsed] = import_react3.default.useState(false);
     const panelRef = import_react3.default.useRef(null);
+    const targetRef = import_react3.default.useRef(null);
     const t = import_react3.default.useCallback((key) => translate(language, key), [language]);
     import_react3.default.useEffect(() => {
       let mounted = true;
@@ -11119,7 +11223,12 @@
         const target2 = getActiveEditableElement();
         if (!target2 || !document.contains(target2)) {
           setVisible(false);
+          setCollapsed(false);
           return;
+        }
+        if (targetRef.current !== target2) {
+          targetRef.current = target2;
+          setCollapsed(false);
         }
         const panelHovered = Boolean(panelRef.current?.matches(":hover"));
         const editableFocused = isEditableElement(document.activeElement);
@@ -11178,7 +11287,29 @@
     }, [clipboardEnabled, enabled]);
     if (!enabled || !visible) return null;
     const target = getActiveEditableElement();
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+    if (collapsed) {
+      return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+        "button",
+        {
+          type: "button",
+          style: {
+            position: "fixed",
+            top: position.top,
+            left: position.left,
+            zIndex: 2147483640
+          },
+          className: "inline-flex h-8 items-center gap-1 rounded-lg border border-border bg-popover px-2 text-[10px] font-semibold text-popover-foreground shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95",
+          title: t("showPanel"),
+          onMouseDown: (event) => event.preventDefault(),
+          onClick: () => setCollapsed(false),
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Maximize2, { className: "h-3 w-3" }),
+            "BlobNote"
+          ]
+        }
+      );
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
       "div",
       {
         ref: panelRef,
@@ -11190,12 +11321,12 @@
           maxWidth: "calc(100vw - 16px)",
           zIndex: 2147483640
         },
-        className: "overflow-hidden rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-2xl",
+        className: "animate-in fade-in zoom-in-95 slide-in-from-top-1 overflow-hidden rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-2xl duration-150",
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: t("quickReplies") }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex gap-1", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: t("quickReplies") }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex gap-1", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
                 Button,
                 {
                   size: "sm",
@@ -11209,12 +11340,24 @@
                     }
                   },
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Eraser, { className: "mr-1 h-3 w-3" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Eraser, { className: "mr-1 h-3 w-3" }),
                     t("clear")
                   ]
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                Button,
+                {
+                  size: "icon",
+                  variant: "ghost",
+                  className: "h-6 w-6",
+                  title: t("hidePanel"),
+                  onMouseDown: (event) => event.preventDefault(),
+                  onClick: () => setCollapsed(true),
+                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Minimize2, { className: "h-3 w-3" })
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
                 Button,
                 {
                   size: "sm",
@@ -11223,15 +11366,15 @@
                   onMouseDown: (event) => event.preventDefault(),
                   onClick: onOpenBase,
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Database, { className: "mr-1 h-3 w-3" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Database, { className: "mr-1 h-3 w-3" }),
                     t("base")
                   ]
                 }
               )
             ] })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex max-h-[96px] flex-wrap gap-1 overflow-y-auto overflow-x-hidden pr-1", children: favorites.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-[10px] italic text-muted-foreground", children: t("noFavorites") }) : favorites.map((template) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex gap-1", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex max-h-[96px] flex-wrap gap-1 overflow-y-auto overflow-x-hidden pr-1", children: favorites.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-[10px] italic text-muted-foreground", children: t("noFavorites") }) : favorites.map((template) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex gap-1", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
               Button,
               {
                 size: "sm",
@@ -11240,10 +11383,10 @@
                 onMouseDown: (event) => event.preventDefault(),
                 onClick: () => insertTemplate(template),
                 title: template.title,
-                children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "block min-w-0 truncate", children: template.title })
+                children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "block min-w-0 truncate", children: template.title })
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
               Button,
               {
                 size: "icon",
@@ -11252,16 +11395,31 @@
                 title: t("insertAndSend"),
                 onMouseDown: (event) => event.preventDefault(),
                 onClick: () => insertTemplate(template, { autoSend: true }),
-                children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Send, { className: "h-3 w-3" })
+                children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Send, { className: "h-3 w-3" })
               }
             )
           ] }, template.id)) }),
-          clipboardEnabled && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mt-2 border-t pt-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(ClipboardList, { className: "h-3 w-3" }),
-              t("clipboardHistory")
+          clipboardEnabled && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mt-2 border-t pt-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ClipboardList, { className: "h-3 w-3" }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "min-w-0 flex-1 truncate", children: t("clipboardHistory") }),
+              clipboardItems.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                Button,
+                {
+                  size: "icon",
+                  variant: "ghost",
+                  className: "h-5 w-5 text-muted-foreground hover:text-destructive",
+                  title: t("clearClipboardHistory"),
+                  onMouseDown: (event) => event.preventDefault(),
+                  onClick: () => {
+                    setClipboardItems([]);
+                    showToast(t("clipboardCleared"), "success");
+                  },
+                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Trash2, { className: "h-3 w-3" })
+                }
+              )
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex max-h-[112px] flex-col gap-1 overflow-y-auto overflow-x-hidden pr-1", children: clipboardItems.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-[10px] italic text-muted-foreground", children: t("clipboardEmpty") }) : clipboardItems.slice(0, 5).map((item) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex max-h-[112px] flex-col gap-1 overflow-y-auto overflow-x-hidden pr-1", children: clipboardItems.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-[10px] italic text-muted-foreground", children: t("clipboardEmpty") }) : clipboardItems.slice(0, 5).map((item) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
               Button,
               {
                 size: "sm",
@@ -11274,7 +11432,7 @@
                   if (!activeTarget) return;
                   insertTextIntoEditable(activeTarget, item);
                 },
-                children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "block min-w-0 truncate", children: item })
+                children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "block min-w-0 truncate", children: item })
               },
               item
             )) })
@@ -11286,7 +11444,7 @@
 
   // src/content/AtMenu.tsx
   var import_react4 = __toESM(require_react(), 1);
-  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
   function AtMenu() {
     const [active, setActive] = import_react4.default.useState(false);
     const [templates, setTemplates] = import_react4.default.useState([]);
@@ -11414,17 +11572,17 @@
       setActive(false);
     };
     if (!active || !enabled) return null;
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       "div",
       {
         "data-opspost-at-menu": true,
-        className: "fixed z-[2147483647] max-h-[250px] min-w-[220px] overflow-y-auto rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl",
+        className: "fixed z-[2147483640] max-h-[250px] min-w-[220px] animate-in fade-in zoom-in-95 overflow-y-auto rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl duration-150",
         style: {
           top: position.top,
           left: position.left,
           transform: position.placement === "above" ? "translateY(-100%)" : "none"
         },
-        children: filtered.map((template, index) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+        children: filtered.map((template, index) => /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
           "button",
           {
             type: "button",
@@ -11435,8 +11593,8 @@
             onMouseDown: (event) => event.preventDefault(),
             onClick: () => insertAtTemplate(template),
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "font-medium", children: template.title }),
-              template.tag && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-[10px] bg-muted px-1.5 py-0.5 rounded ml-2", children: template.tag })
+              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "font-medium", children: template.title }),
+              template.tag && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-[10px] bg-muted px-1.5 py-0.5 rounded ml-2", children: template.tag })
             ]
           },
           template.id
@@ -11449,11 +11607,11 @@
   var import_react5 = __toESM(require_react(), 1);
 
   // src/components/ui/input.tsx
-  var React6 = __toESM(require_react());
-  var import_jsx_runtime4 = __toESM(require_jsx_runtime());
-  var Input = React6.forwardRef(
+  var React7 = __toESM(require_react());
+  var import_jsx_runtime5 = __toESM(require_jsx_runtime());
+  var Input = React7.forwardRef(
     ({ className, type, ...props }, ref) => {
-      return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
         "input",
         {
           type,
@@ -11470,7 +11628,7 @@
   Input.displayName = "Input";
 
   // src/components/ui/badge.tsx
-  var import_jsx_runtime5 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime6 = __toESM(require_jsx_runtime());
   var badgeVariants = cva(
     "inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
     {
@@ -11488,11 +11646,11 @@
     }
   );
   function Badge({ className, variant, ...props }) {
-    return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: cn(badgeVariants({ variant }), className), ...props });
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: cn(badgeVariants({ variant }), className), ...props });
   }
 
   // src/content/SmartSearch.tsx
-  var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
   function SmartSearch({ open, onOpenChange }) {
     const [templates, setTemplates] = import_react5.default.useState([]);
     const [language, setLanguage] = import_react5.default.useState("ru");
@@ -11529,14 +11687,14 @@
       insertTemplate(template, { autoSend });
       onOpenChange(false);
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "fixed inset-0 z-[2147483646] bg-slate-950/35 backdrop-blur-sm flex items-start justify-center pt-[12vh] text-foreground", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "w-[min(720px,calc(100vw-32px))] overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "flex items-center gap-3 border-b px-4 py-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Search, { className: "h-4 w-4 text-muted-foreground" }),
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "font-semibold text-sm flex-1", children: t("smartSearchTitle") }),
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Button, { size: "icon", variant: "ghost", className: "h-7 w-7", onClick: () => onOpenChange(false), children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(X, { className: "h-4 w-4" }) })
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "fixed inset-0 z-[2147483646] bg-slate-950/35 backdrop-blur-sm flex items-start justify-center pt-[12vh] text-foreground", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "w-[min(720px,calc(100vw-32px))] overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-3 border-b px-4 py-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Search, { className: "h-4 w-4 text-muted-foreground" }),
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "font-semibold text-sm flex-1", children: t("smartSearchTitle") }),
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Button, { size: "icon", variant: "ghost", className: "h-7 w-7", onClick: () => onOpenChange(false), children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "h-4 w-4" }) })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "p-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "p-4", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
           Input,
           {
             ref: inputRef,
@@ -11561,7 +11719,7 @@
             }
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "mt-3 max-h-[380px] overflow-y-auto rounded-lg border", children: filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "py-10 text-center text-sm text-muted-foreground", children: t("nothingFound") }) : filtered.map((template, index) => /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mt-3 max-h-[380px] overflow-y-auto rounded-lg border", children: filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "py-10 text-center text-sm text-muted-foreground", children: t("nothingFound") }) : filtered.map((template, index) => /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
           "button",
           {
             type: "button",
@@ -11572,23 +11730,23 @@
             onMouseEnter: () => setSelectedIndex(index),
             onClick: () => void chooseTemplate(template),
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "flex items-center justify-between gap-3", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "text-sm font-medium truncate", children: template.title }),
-                template.tag && /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Badge, { variant: "secondary", className: "text-[10px] shrink-0", children: template.tag })
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between gap-3", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-sm font-medium truncate", children: template.title }),
+                template.tag && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Badge, { variant: "secondary", className: "text-[10px] shrink-0", children: template.tag })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "mt-1 text-xs text-muted-foreground line-clamp-2 whitespace-pre-wrap", children: template.text })
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mt-1 text-xs text-muted-foreground line-clamp-2 whitespace-pre-wrap", children: template.text })
             ]
           },
           template.id
         )) }),
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "mt-3 flex items-center gap-2 text-[11px] text-muted-foreground", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "\u2191" }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "\u2193" }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { children: t("navigation") }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "Enter" }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { children: t("insertVerb") }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "Ctrl+Enter" }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { children: t("insertAndSendVerb") })
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-3 flex items-center gap-2 text-[11px] text-muted-foreground", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "\u2191" }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "\u2193" }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: t("navigation") }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "Enter" }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: t("insertVerb") }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "Ctrl+Enter" }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: t("insertAndSendVerb") })
         ] })
       ] })
     ] }) });
@@ -11731,6 +11889,7 @@
   var defaultSettings = {
     theme: "light",
     uiLanguage: "ru",
+    uiScale: "100",
     atMenuEnabled: true,
     floatingPanelEnabled: true,
     clipboardPanelEnabled: false,
@@ -11843,6 +12002,7 @@
       settings: {
         theme,
         uiLanguage: isLanguage(snapshot.uiLanguage) ? snapshot.uiLanguage : defaultSettings.uiLanguage,
+        uiScale: normalizeUiScale(snapshot.uiScale),
         atMenuEnabled: snapshot.atMenuEnabled ?? defaultSettings.atMenuEnabled,
         floatingPanelEnabled: snapshot.floatingPanelEnabled ?? defaultSettings.floatingPanelEnabled,
         clipboardPanelEnabled: snapshot.clipboardPanelEnabled ?? defaultSettings.clipboardPanelEnabled,
@@ -11881,6 +12041,10 @@
       }
       if (changes.uiLanguage) {
         nextSettings.uiLanguage = isLanguage(changes.uiLanguage.newValue) ? changes.uiLanguage.newValue : defaultSettings.uiLanguage;
+        settingsChanged = true;
+      }
+      if (changes.uiScale) {
+        nextSettings.uiScale = normalizeUiScale(changes.uiScale.newValue);
         settingsChanged = true;
       }
       if (changes.atMenuEnabled) {
@@ -12096,12 +12260,14 @@
         ...settings,
         theme,
         uiLanguage: isLanguage(settings.uiLanguage) ? settings.uiLanguage : state.settings.uiLanguage,
+        uiScale: normalizeUiScale(settings.uiScale ?? state.settings.uiScale),
         searchTrigger: settings.searchTrigger === "@" ? "@" : settings.searchTrigger === "/" ? "/" : state.settings.searchTrigger,
         ...cardPresetFor(theme, cardPreset)
       };
       chromeSet({
         theme: nextSettings.theme,
         uiLanguage: nextSettings.uiLanguage,
+        uiScale: nextSettings.uiScale,
         atMenuEnabled: nextSettings.atMenuEnabled,
         floatingPanelEnabled: nextSettings.floatingPanelEnabled,
         clipboardPanelEnabled: nextSettings.clipboardPanelEnabled,
@@ -12150,10 +12316,10 @@
   hydrateStoreOnce();
 
   // src/components/ui/switch.tsx
-  var React15 = __toESM(require_react());
+  var React16 = __toESM(require_react());
 
   // node_modules/@radix-ui/react-switch/dist/index.mjs
-  var React14 = __toESM(require_react(), 1);
+  var React15 = __toESM(require_react(), 1);
 
   // node_modules/@radix-ui/primitive/dist/index.mjs
   var canUseDOM = !!(typeof window !== "undefined" && window.document && window.document.createElement);
@@ -12167,25 +12333,25 @@
   }
 
   // node_modules/@radix-ui/react-context/dist/index.mjs
-  var React8 = __toESM(require_react(), 1);
-  var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
+  var React9 = __toESM(require_react(), 1);
+  var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
   function createContextScope(scopeName, createContextScopeDeps = []) {
     let defaultContexts = [];
     function createContext3(rootComponentName, defaultContext) {
-      const BaseContext = React8.createContext(defaultContext);
+      const BaseContext = React9.createContext(defaultContext);
       BaseContext.displayName = rootComponentName + "Context";
       const index = defaultContexts.length;
       defaultContexts = [...defaultContexts, defaultContext];
       const Provider = (props) => {
         const { scope, children, ...context } = props;
         const Context = scope?.[scopeName]?.[index] || BaseContext;
-        const value = React8.useMemo(() => context, Object.values(context));
-        return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Context.Provider, { value, children });
+        const value = React9.useMemo(() => context, Object.values(context));
+        return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Context.Provider, { value, children });
       };
       Provider.displayName = rootComponentName + "Provider";
       function useContext22(consumerName, scope) {
         const Context = scope?.[scopeName]?.[index] || BaseContext;
-        const context = React8.useContext(Context);
+        const context = React9.useContext(Context);
         if (context) return context;
         if (defaultContext !== void 0) return defaultContext;
         throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
@@ -12194,11 +12360,11 @@
     }
     const createScope = () => {
       const scopeContexts = defaultContexts.map((defaultContext) => {
-        return React8.createContext(defaultContext);
+        return React9.createContext(defaultContext);
       });
       return function useScope(scope) {
         const contexts = scope?.[scopeName] || scopeContexts;
-        return React8.useMemo(
+        return React9.useMemo(
           () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
           [scope, contexts]
         );
@@ -12221,7 +12387,7 @@
           const currentScope = scopeProps[`__scope${scopeName}`];
           return { ...nextScopes2, ...currentScope };
         }, {});
-        return React8.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
+        return React9.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
       };
     };
     createScope.scopeName = baseScope.scopeName;
@@ -12229,16 +12395,16 @@
   }
 
   // node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
-  var React10 = __toESM(require_react(), 1);
+  var React11 = __toESM(require_react(), 1);
 
   // node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs
-  var React9 = __toESM(require_react(), 1);
-  var useLayoutEffect2 = globalThis?.document ? React9.useLayoutEffect : () => {
+  var React10 = __toESM(require_react(), 1);
+  var useLayoutEffect2 = globalThis?.document ? React10.useLayoutEffect : () => {
   };
 
   // node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
   var React22 = __toESM(require_react(), 1);
-  var useInsertionEffect = React10[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
+  var useInsertionEffect = React11[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
   function useControllableState({
     prop,
     defaultProp,
@@ -12253,8 +12419,8 @@
     const isControlled = prop !== void 0;
     const value = isControlled ? prop : uncontrolledProp;
     if (true) {
-      const isControlledRef = React10.useRef(prop !== void 0);
-      React10.useEffect(() => {
+      const isControlledRef = React11.useRef(prop !== void 0);
+      React11.useEffect(() => {
         const wasControlled = isControlledRef.current;
         if (wasControlled !== isControlled) {
           const from = wasControlled ? "controlled" : "uncontrolled";
@@ -12266,7 +12432,7 @@
         isControlledRef.current = isControlled;
       }, [isControlled, caller]);
     }
-    const setValue = React10.useCallback(
+    const setValue = React11.useCallback(
       (nextValue) => {
         if (isControlled) {
           const value2 = isFunction(nextValue) ? nextValue(prop) : nextValue;
@@ -12285,13 +12451,13 @@
     defaultProp,
     onChange
   }) {
-    const [value, setValue] = React10.useState(defaultProp);
-    const prevValueRef = React10.useRef(value);
-    const onChangeRef = React10.useRef(onChange);
+    const [value, setValue] = React11.useState(defaultProp);
+    const prevValueRef = React11.useRef(value);
+    const onChangeRef = React11.useRef(onChange);
     useInsertionEffect(() => {
       onChangeRef.current = onChange;
     }, [onChange]);
-    React10.useEffect(() => {
+    React11.useEffect(() => {
       if (prevValueRef.current !== value) {
         onChangeRef.current?.(value);
         prevValueRef.current = value;
@@ -12305,10 +12471,10 @@
   var SYNC_STATE = Symbol("RADIX:SYNC_STATE");
 
   // node_modules/@radix-ui/react-use-previous/dist/index.mjs
-  var React11 = __toESM(require_react(), 1);
+  var React12 = __toESM(require_react(), 1);
   function usePrevious(value) {
-    const ref = React11.useRef({ value, previous: value });
-    return React11.useMemo(() => {
+    const ref = React12.useRef({ value, previous: value });
+    return React12.useMemo(() => {
       if (ref.current.value !== value) {
         ref.current.previous = ref.current.value;
         ref.current.value = value;
@@ -12318,9 +12484,9 @@
   }
 
   // node_modules/@radix-ui/react-use-size/dist/index.mjs
-  var React12 = __toESM(require_react(), 1);
+  var React13 = __toESM(require_react(), 1);
   function useSize(element) {
-    const [size, setSize] = React12.useState(void 0);
+    const [size, setSize] = React13.useState(void 0);
     useLayoutEffect2(() => {
       if (element) {
         setSize({ width: element.offsetWidth, height: element.offsetHeight });
@@ -12355,9 +12521,9 @@
   }
 
   // node_modules/@radix-ui/react-primitive/dist/index.mjs
-  var React13 = __toESM(require_react(), 1);
+  var React14 = __toESM(require_react(), 1);
   var ReactDOM = __toESM(require_react_dom(), 1);
-  var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
   var NODES = [
     "a",
     "button",
@@ -12379,20 +12545,20 @@
   ];
   var Primitive = NODES.reduce((primitive, node) => {
     const Slot2 = createSlot(`Primitive.${node}`);
-    const Node2 = React13.forwardRef((props, forwardedRef) => {
+    const Node2 = React14.forwardRef((props, forwardedRef) => {
       const { asChild, ...primitiveProps } = props;
       const Comp = asChild ? Slot2 : node;
       if (typeof window !== "undefined") {
         window[Symbol.for("radix-ui")] = true;
       }
-      return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Comp, { ...primitiveProps, ref: forwardedRef });
+      return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Comp, { ...primitiveProps, ref: forwardedRef });
     });
     Node2.displayName = `Primitive.${node}`;
     return { ...primitive, [node]: Node2 };
   }, {});
 
   // node_modules/@radix-ui/react-switch/dist/index.mjs
-  var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
   var SWITCH_NAME = "Switch";
   var [createSwitchContext, createSwitchScope] = createContextScope(SWITCH_NAME);
   var [SwitchProviderImpl, useSwitchContext] = createSwitchContext(SWITCH_NAME);
@@ -12417,9 +12583,9 @@
       onChange: onCheckedChange,
       caller: SWITCH_NAME
     });
-    const [control, setControl] = React14.useState(null);
-    const [bubbleInput, setBubbleInput] = React14.useState(null);
-    const hasConsumerStoppedPropagationRef = React14.useRef(false);
+    const [control, setControl] = React15.useState(null);
+    const [bubbleInput, setBubbleInput] = React15.useState(null);
+    const hasConsumerStoppedPropagationRef = React15.useRef(false);
     const isFormControl = control ? !!form || !!control.closest("form") : (
       // We set this to true by default so that events bubble to forms without JS (SSR)
       true
@@ -12440,10 +12606,10 @@
       bubbleInput,
       setBubbleInput
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(SwitchProviderImpl, { scope: __scopeSwitch, ...context, children: isFunction2(internal_do_not_use_render) ? internal_do_not_use_render(context) : children });
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(SwitchProviderImpl, { scope: __scopeSwitch, ...context, children: isFunction2(internal_do_not_use_render) ? internal_do_not_use_render(context) : children });
   }
   var TRIGGER_NAME = "SwitchTrigger";
-  var SwitchTrigger = React14.forwardRef(
+  var SwitchTrigger = React15.forwardRef(
     ({ __scopeSwitch, onClick, ...switchProps }, forwardedRef) => {
       const {
         value,
@@ -12457,7 +12623,7 @@
         bubbleInput
       } = useSwitchContext(TRIGGER_NAME, __scopeSwitch);
       const composedRefs = useComposedRefs(forwardedRef, setControl);
-      return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
         Primitive.button,
         {
           type: "button",
@@ -12482,7 +12648,7 @@
     }
   );
   SwitchTrigger.displayName = TRIGGER_NAME;
-  var Switch = React14.forwardRef(
+  var Switch = React15.forwardRef(
     (props, forwardedRef) => {
       const {
         __scopeSwitch,
@@ -12496,7 +12662,7 @@
         form,
         ...switchProps
       } = props;
-      return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
         SwitchProvider,
         {
           __scopeSwitch,
@@ -12508,8 +12674,8 @@
           name,
           form,
           value,
-          internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(import_jsx_runtime9.Fragment, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+          internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(import_jsx_runtime10.Fragment, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
               SwitchTrigger,
               {
                 ...switchProps,
@@ -12517,7 +12683,7 @@
                 __scopeSwitch
               }
             ),
-            isFormControl && /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+            isFormControl && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
               SwitchBubbleInput,
               {
                 __scopeSwitch
@@ -12530,11 +12696,11 @@
   );
   Switch.displayName = SWITCH_NAME;
   var THUMB_NAME = "SwitchThumb";
-  var SwitchThumb = React14.forwardRef(
+  var SwitchThumb = React15.forwardRef(
     (props, forwardedRef) => {
       const { __scopeSwitch, ...thumbProps } = props;
       const context = useSwitchContext(THUMB_NAME, __scopeSwitch);
-      return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
         Primitive.span,
         {
           "data-state": getState(context.checked),
@@ -12547,7 +12713,7 @@
   );
   SwitchThumb.displayName = THUMB_NAME;
   var BUBBLE_INPUT_NAME = "SwitchBubbleInput";
-  var SwitchBubbleInput = React14.forwardRef(
+  var SwitchBubbleInput = React15.forwardRef(
     ({ __scopeSwitch, ...props }, forwardedRef) => {
       const {
         control,
@@ -12565,7 +12731,7 @@
       const composedRefs = useComposedRefs(forwardedRef, setBubbleInput);
       const prevChecked = usePrevious(checked);
       const controlSize = useSize(control);
-      React14.useEffect(() => {
+      React15.useEffect(() => {
         const input = bubbleInput;
         if (!input) return;
         const inputProto = window.HTMLInputElement.prototype;
@@ -12581,8 +12747,8 @@
           input.dispatchEvent(event);
         }
       }, [bubbleInput, prevChecked, checked, hasConsumerStoppedPropagationRef]);
-      const defaultCheckedRef = React14.useRef(checked);
-      return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+      const defaultCheckedRef = React15.useRef(checked);
+      return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
         Primitive.input,
         {
           type: "checkbox",
@@ -12621,8 +12787,8 @@
   }
 
   // src/components/ui/switch.tsx
-  var import_jsx_runtime10 = __toESM(require_jsx_runtime());
-  var Switch2 = React15.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+  var import_jsx_runtime11 = __toESM(require_jsx_runtime());
+  var Switch2 = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
     Switch,
     {
       className: cn(
@@ -12631,7 +12797,7 @@
       ),
       ...props,
       ref,
-      children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+      children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
         SwitchThumb,
         {
           className: cn(
@@ -12644,19 +12810,19 @@
   Switch2.displayName = Switch.displayName;
 
   // src/components/ui/tabs.tsx
-  var React26 = __toESM(require_react());
+  var React27 = __toESM(require_react());
 
   // node_modules/@radix-ui/react-tabs/dist/index.mjs
-  var React25 = __toESM(require_react(), 1);
+  var React26 = __toESM(require_react(), 1);
 
   // node_modules/@radix-ui/react-roving-focus/dist/index.mjs
-  var React20 = __toESM(require_react(), 1);
+  var React21 = __toESM(require_react(), 1);
 
   // node_modules/@radix-ui/react-collection/dist/index.mjs
-  var React16 = __toESM(require_react(), 1);
-  var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
-  var React23 = __toESM(require_react(), 1);
+  var React17 = __toESM(require_react(), 1);
   var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
+  var React23 = __toESM(require_react(), 1);
+  var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
   function createCollection(name) {
     const PROVIDER_NAME = name + "CollectionProvider";
     const [createCollectionContext, createCollectionScope2] = createContextScope(PROVIDER_NAME);
@@ -12666,42 +12832,42 @@
     );
     const CollectionProvider = (props) => {
       const { scope, children } = props;
-      const ref = React16.useRef(null);
-      const itemMap = React16.useRef(/* @__PURE__ */ new Map()).current;
-      return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
+      const ref = React17.useRef(null);
+      const itemMap = React17.useRef(/* @__PURE__ */ new Map()).current;
+      return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
     };
     CollectionProvider.displayName = PROVIDER_NAME;
     const COLLECTION_SLOT_NAME = name + "CollectionSlot";
     const CollectionSlotImpl = createSlot(COLLECTION_SLOT_NAME);
-    const CollectionSlot = React16.forwardRef(
+    const CollectionSlot = React17.forwardRef(
       (props, forwardedRef) => {
         const { scope, children } = props;
         const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
         const composedRefs = useComposedRefs(forwardedRef, context.collectionRef);
-        return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CollectionSlotImpl, { ref: composedRefs, children });
+        return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(CollectionSlotImpl, { ref: composedRefs, children });
       }
     );
     CollectionSlot.displayName = COLLECTION_SLOT_NAME;
     const ITEM_SLOT_NAME = name + "CollectionItemSlot";
     const ITEM_DATA_ATTR = "data-radix-collection-item";
     const CollectionItemSlotImpl = createSlot(ITEM_SLOT_NAME);
-    const CollectionItemSlot = React16.forwardRef(
+    const CollectionItemSlot = React17.forwardRef(
       (props, forwardedRef) => {
         const { scope, children, ...itemData } = props;
-        const ref = React16.useRef(null);
+        const ref = React17.useRef(null);
         const composedRefs = useComposedRefs(forwardedRef, ref);
         const context = useCollectionContext(ITEM_SLOT_NAME, scope);
-        React16.useEffect(() => {
+        React17.useEffect(() => {
           context.itemMap.set(ref, { ref, ...itemData });
           return () => void context.itemMap.delete(ref);
         });
-        return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(CollectionItemSlotImpl, { ...{ [ITEM_DATA_ATTR]: "" }, ref: composedRefs, children });
+        return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(CollectionItemSlotImpl, { ...{ [ITEM_DATA_ATTR]: "" }, ref: composedRefs, children });
       }
     );
     CollectionItemSlot.displayName = ITEM_SLOT_NAME;
     function useCollection2(scope) {
       const context = useCollectionContext(name + "CollectionConsumer", scope);
-      const getItems = React16.useCallback(() => {
+      const getItems = React17.useCallback(() => {
         const collectionNode = context.collectionRef.current;
         if (!collectionNode) return [];
         const orderedNodes = Array.from(collectionNode.querySelectorAll(`[${ITEM_DATA_ATTR}]`));
@@ -12721,11 +12887,11 @@
   }
 
   // node_modules/@radix-ui/react-id/dist/index.mjs
-  var React17 = __toESM(require_react(), 1);
-  var useReactId = React17[" useId ".trim().toString()] || (() => void 0);
+  var React18 = __toESM(require_react(), 1);
+  var useReactId = React18[" useId ".trim().toString()] || (() => void 0);
   var count = 0;
   function useId(deterministicId) {
-    const [id, setId] = React17.useState(useReactId());
+    const [id, setId] = React18.useState(useReactId());
     useLayoutEffect2(() => {
       if (!deterministicId) setId((reactId) => reactId ?? String(count++));
     }, [deterministicId]);
@@ -12733,26 +12899,26 @@
   }
 
   // node_modules/@radix-ui/react-use-callback-ref/dist/index.mjs
-  var React18 = __toESM(require_react(), 1);
+  var React19 = __toESM(require_react(), 1);
   function useCallbackRef(callback) {
-    const callbackRef = React18.useRef(callback);
-    React18.useEffect(() => {
+    const callbackRef = React19.useRef(callback);
+    React19.useEffect(() => {
       callbackRef.current = callback;
     });
-    return React18.useMemo(() => (...args) => callbackRef.current?.(...args), []);
+    return React19.useMemo(() => (...args) => callbackRef.current?.(...args), []);
   }
 
   // node_modules/@radix-ui/react-direction/dist/index.mjs
-  var React19 = __toESM(require_react(), 1);
-  var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
-  var DirectionContext = React19.createContext(void 0);
+  var React20 = __toESM(require_react(), 1);
+  var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
+  var DirectionContext = React20.createContext(void 0);
   function useDirection(localDir) {
-    const globalDir = React19.useContext(DirectionContext);
+    const globalDir = React20.useContext(DirectionContext);
     return localDir || globalDir || "ltr";
   }
 
   // node_modules/@radix-ui/react-roving-focus/dist/index.mjs
-  var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
   var ENTRY_FOCUS = "rovingFocusGroup.onEntryFocus";
   var EVENT_OPTIONS = { bubbles: false, cancelable: true };
   var GROUP_NAME = "RovingFocusGroup";
@@ -12762,13 +12928,13 @@
     [createCollectionScope]
   );
   var [RovingFocusProvider, useRovingFocusContext] = createRovingFocusGroupContext(GROUP_NAME);
-  var RovingFocusGroup = React20.forwardRef(
+  var RovingFocusGroup = React21.forwardRef(
     (props, forwardedRef) => {
-      return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Collection.Provider, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Collection.Slot, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(RovingFocusGroupImpl, { ...props, ref: forwardedRef }) }) });
+      return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Collection.Provider, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Collection.Slot, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(RovingFocusGroupImpl, { ...props, ref: forwardedRef }) }) });
     }
   );
   RovingFocusGroup.displayName = GROUP_NAME;
-  var RovingFocusGroupImpl = React20.forwardRef((props, forwardedRef) => {
+  var RovingFocusGroupImpl = React21.forwardRef((props, forwardedRef) => {
     const {
       __scopeRovingFocusGroup,
       orientation,
@@ -12781,7 +12947,7 @@
       preventScrollOnEntryFocus = false,
       ...groupProps
     } = props;
-    const ref = React20.useRef(null);
+    const ref = React21.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, ref);
     const direction = useDirection(dir);
     const [currentTabStopId, setCurrentTabStopId] = useControllableState({
@@ -12790,19 +12956,19 @@
       onChange: onCurrentTabStopIdChange,
       caller: GROUP_NAME
     });
-    const [isTabbingBackOut, setIsTabbingBackOut] = React20.useState(false);
+    const [isTabbingBackOut, setIsTabbingBackOut] = React21.useState(false);
     const handleEntryFocus = useCallbackRef(onEntryFocus);
     const getItems = useCollection(__scopeRovingFocusGroup);
-    const isClickFocusRef = React20.useRef(false);
-    const [focusableItemsCount, setFocusableItemsCount] = React20.useState(0);
-    React20.useEffect(() => {
+    const isClickFocusRef = React21.useRef(false);
+    const [focusableItemsCount, setFocusableItemsCount] = React21.useState(0);
+    React21.useEffect(() => {
       const node = ref.current;
       if (node) {
         node.addEventListener(ENTRY_FOCUS, handleEntryFocus);
         return () => node.removeEventListener(ENTRY_FOCUS, handleEntryFocus);
       }
     }, [handleEntryFocus]);
-    return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
       RovingFocusProvider,
       {
         scope: __scopeRovingFocusGroup,
@@ -12810,20 +12976,20 @@
         dir: direction,
         loop,
         currentTabStopId,
-        onItemFocus: React20.useCallback(
+        onItemFocus: React21.useCallback(
           (tabStopId) => setCurrentTabStopId(tabStopId),
           [setCurrentTabStopId]
         ),
-        onItemShiftTab: React20.useCallback(() => setIsTabbingBackOut(true), []),
-        onFocusableItemAdd: React20.useCallback(
+        onItemShiftTab: React21.useCallback(() => setIsTabbingBackOut(true), []),
+        onFocusableItemAdd: React21.useCallback(
           () => setFocusableItemsCount((prevCount) => prevCount + 1),
           []
         ),
-        onFocusableItemRemove: React20.useCallback(
+        onFocusableItemRemove: React21.useCallback(
           () => setFocusableItemsCount((prevCount) => prevCount - 1),
           []
         ),
-        children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+        children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
           Primitive.div,
           {
             tabIndex: isTabbingBackOut || focusableItemsCount === 0 ? -1 : 0,
@@ -12859,7 +13025,7 @@
     );
   });
   var ITEM_NAME = "RovingFocusGroupItem";
-  var RovingFocusGroupItem = React20.forwardRef(
+  var RovingFocusGroupItem = React21.forwardRef(
     (props, forwardedRef) => {
       const {
         __scopeRovingFocusGroup,
@@ -12875,20 +13041,20 @@
       const isCurrentTabStop = context.currentTabStopId === id;
       const getItems = useCollection(__scopeRovingFocusGroup);
       const { onFocusableItemAdd, onFocusableItemRemove, currentTabStopId } = context;
-      React20.useEffect(() => {
+      React21.useEffect(() => {
         if (focusable) {
           onFocusableItemAdd();
           return () => onFocusableItemRemove();
         }
       }, [focusable, onFocusableItemAdd, onFocusableItemRemove]);
-      return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
         Collection.ItemSlot,
         {
           scope: __scopeRovingFocusGroup,
           id,
           focusable,
           active,
-          children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+          children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
             Primitive.span,
             {
               tabIndex: isCurrentTabStop ? 0 : -1,
@@ -12965,9 +13131,9 @@
 
   // node_modules/@radix-ui/react-presence/dist/index.mjs
   var React24 = __toESM(require_react(), 1);
-  var React21 = __toESM(require_react(), 1);
+  var React25 = __toESM(require_react(), 1);
   function useStateMachine(initialState, machine) {
-    return React21.useReducer((state, event) => {
+    return React25.useReducer((state, event) => {
       const nextState = machine[state][event];
       return nextState ?? state;
     }, initialState);
@@ -13124,14 +13290,14 @@
   }
 
   // node_modules/@radix-ui/react-tabs/dist/index.mjs
-  var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime16 = __toESM(require_jsx_runtime(), 1);
   var TABS_NAME = "Tabs";
   var [createTabsContext, createTabsScope] = createContextScope(TABS_NAME, [
     createRovingFocusGroupScope
   ]);
   var useRovingFocusGroupScope = createRovingFocusGroupScope();
   var [TabsProvider, useTabsContext] = createTabsContext(TABS_NAME);
-  var Tabs = React25.forwardRef(
+  var Tabs = React26.forwardRef(
     (props, forwardedRef) => {
       const {
         __scopeTabs,
@@ -13150,7 +13316,7 @@
         defaultProp: defaultValue ?? "",
         caller: TABS_NAME
       });
-      return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
         TabsProvider,
         {
           scope: __scopeTabs,
@@ -13160,7 +13326,7 @@
           orientation,
           dir: direction,
           activationMode,
-          children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+          children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
             Primitive.div,
             {
               dir: direction,
@@ -13175,12 +13341,12 @@
   );
   Tabs.displayName = TABS_NAME;
   var TAB_LIST_NAME = "TabsList";
-  var TabsList = React25.forwardRef(
+  var TabsList = React26.forwardRef(
     (props, forwardedRef) => {
       const { __scopeTabs, loop = true, ...listProps } = props;
       const context = useTabsContext(TAB_LIST_NAME, __scopeTabs);
       const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeTabs);
-      return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
         Root,
         {
           asChild: true,
@@ -13188,7 +13354,7 @@
           orientation: context.orientation,
           dir: context.dir,
           loop,
-          children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+          children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
             Primitive.div,
             {
               role: "tablist",
@@ -13203,7 +13369,7 @@
   );
   TabsList.displayName = TAB_LIST_NAME;
   var TRIGGER_NAME2 = "TabsTrigger";
-  var TabsTrigger = React25.forwardRef(
+  var TabsTrigger = React26.forwardRef(
     (props, forwardedRef) => {
       const { __scopeTabs, value, disabled = false, ...triggerProps } = props;
       const context = useTabsContext(TRIGGER_NAME2, __scopeTabs);
@@ -13211,14 +13377,14 @@
       const triggerId = makeTriggerId(context.baseId, value);
       const contentId = makeContentId(context.baseId, value);
       const isSelected = value === context.value;
-      return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
         Item,
         {
           asChild: true,
           ...rovingFocusGroupScope,
           focusable: !disabled,
           active: isSelected,
-          children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+          children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
             Primitive.button,
             {
               type: "button",
@@ -13255,19 +13421,19 @@
   );
   TabsTrigger.displayName = TRIGGER_NAME2;
   var CONTENT_NAME = "TabsContent";
-  var TabsContent = React25.forwardRef(
+  var TabsContent = React26.forwardRef(
     (props, forwardedRef) => {
       const { __scopeTabs, value, forceMount, children, ...contentProps } = props;
       const context = useTabsContext(CONTENT_NAME, __scopeTabs);
       const triggerId = makeTriggerId(context.baseId, value);
       const contentId = makeContentId(context.baseId, value);
       const isSelected = value === context.value;
-      const isMountAnimationPreventedRef = React25.useRef(isSelected);
-      React25.useEffect(() => {
+      const isMountAnimationPreventedRef = React26.useRef(isSelected);
+      React26.useEffect(() => {
         const rAF = requestAnimationFrame(() => isMountAnimationPreventedRef.current = false);
         return () => cancelAnimationFrame(rAF);
       }, []);
-      return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Presence, { present: forceMount || isSelected, children: ({ present }) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Presence, { present: forceMount || isSelected, children: ({ present }) => /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
         Primitive.div,
         {
           "data-state": isSelected ? "active" : "inactive",
@@ -13301,9 +13467,9 @@
   var Content = TabsContent;
 
   // src/components/ui/tabs.tsx
-  var import_jsx_runtime16 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime17 = __toESM(require_jsx_runtime());
   var Tabs2 = Root2;
-  var TabsList2 = React26.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+  var TabsList2 = React27.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
     List,
     {
       ref,
@@ -13315,7 +13481,7 @@
     }
   ));
   TabsList2.displayName = List.displayName;
-  var TabsTrigger2 = React26.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+  var TabsTrigger2 = React27.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
     Trigger,
     {
       ref,
@@ -13327,7 +13493,7 @@
     }
   ));
   TabsTrigger2.displayName = Trigger.displayName;
-  var TabsContent2 = React26.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+  var TabsContent2 = React27.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
     Content,
     {
       ref,
@@ -13339,51 +13505,6 @@
     }
   ));
   TabsContent2.displayName = Content.displayName;
-
-  // src/components/ui/toast.tsx
-  var React27 = __toESM(require_react());
-  var import_jsx_runtime17 = __toESM(require_jsx_runtime());
-  function Toast({ toast }) {
-    return /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
-      "div",
-      {
-        className: cn(
-          "flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg border animate-in slide-in-from-right transition-all",
-          toast.type === "success" && "bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-100",
-          toast.type === "error" && "bg-red-50 border-red-200 text-red-800 dark:bg-red-950 dark:border-red-800 dark:text-red-100",
-          toast.type === "info" && "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-950 dark:border-blue-800 dark:text-blue-100"
-        ),
-        children: [
-          toast.type === "success" && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(CircleCheck, { className: "h-4 w-4" }),
-          toast.type === "error" && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Circle, { className: "h-4 w-4" }),
-          toast.type === "info" && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Info, { className: "h-4 w-4" }),
-          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "text-sm font-medium", children: toast.message })
-        ]
-      }
-    );
-  }
-  function ToastContainer() {
-    const [toasts, setToasts] = React27.useState([]);
-    React27.useEffect(() => {
-      const handleToast = (e) => {
-        setToasts((prev) => [...prev, e.detail]);
-        setTimeout(() => {
-          setToasts((prev) => prev.filter((t) => t.id !== e.detail.id));
-        }, 4e3);
-      };
-      window.addEventListener("opspost-toast", handleToast);
-      return () => window.removeEventListener("opspost-toast", handleToast);
-    }, []);
-    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "fixed bottom-4 right-4 z-[2147483647] flex flex-col gap-2", children: toasts.map((toast) => /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Toast, { toast, onRemove: () => setToasts((prev) => prev.filter((t) => t.id !== toast.id)) }, toast.id)) });
-  }
-  function showToast(message, type = "info") {
-    const toast = {
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      message,
-      type
-    };
-    window.dispatchEvent(new CustomEvent("opspost-toast", { detail: toast }));
-  }
 
   // src/components/base/TemplateCard.tsx
   var import_jsx_runtime18 = __toESM(require_jsx_runtime());
@@ -13767,7 +13888,7 @@
       onClose();
       onInserted?.(autoSend);
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "fixed inset-0 z-[2147483647] bg-slate-950/40 backdrop-blur-sm flex items-center justify-center p-4 text-foreground", children: /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "w-[min(760px,calc(100vw-32px))] max-h-[calc(100vh-48px)] bg-background border rounded-lg shadow-2xl overflow-hidden flex flex-col", children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "fixed inset-0 z-[2147483630] flex animate-in fade-in items-center justify-center bg-slate-950/40 p-4 text-foreground backdrop-blur-sm duration-150", children: /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "flex max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))] animate-in zoom-in-95 flex-col overflow-hidden rounded-lg border bg-background shadow-2xl duration-150", children: [
       /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "flex items-center gap-3 border-b px-4 py-3", children: [
         /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "flex-1 min-w-0", children: [
           /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "font-semibold text-sm truncate", children: template.title }),
@@ -14308,155 +14429,172 @@
       });
     };
     const resetAppearance = () => applyPreset(CARD_PRESETS[settings.theme].lagoon);
-    return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: `${embedded ? "h-full" : "h-screen"} ${settings.theme === "dark" ? "dark" : ""} flex flex-col overflow-hidden bg-background text-foreground`, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("header", { className: `z-30 flex shrink-0 flex-wrap items-center justify-between gap-4 border-b bg-background px-4 py-2 shadow-sm ${embedded ? "pr-16" : ""}`, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("h1", { className: "flex shrink-0 items-center gap-3 text-sm font-semibold", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(BrandLogo, { title: t("appName") }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "sr-only", children: t("appName") }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "hidden whitespace-nowrap text-muted-foreground sm:inline", children: t("baseSubtitle") })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center justify-end gap-2", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
-            SettingSelect,
-            {
-              icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Languages, { className: "h-3.5 w-3.5" }),
-              label: t("language"),
-              value: settings.uiLanguage,
-              onChange: (value) => updateSettings({ uiLanguage: value }),
-              options: LANGUAGE_OPTIONS
-            }
-          ),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Moon, { className: "h-3.5 w-3.5" }), label: t("darkTheme"), checked: settings.theme === "dark", onCheckedChange: (checked) => updateSettings({ theme: checked ? "dark" : "light" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
-            SettingSelect,
-            {
-              icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(AtSign, { className: "h-3.5 w-3.5" }),
-              label: t("trigger"),
-              value: settings.searchTrigger,
-              onChange: (value) => updateSettings({ searchTrigger: value }),
-              options: [{ value: "/", label: "/" }, { value: "@", label: "@" }]
-            }
-          ),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(AtSign, { className: "h-3.5 w-3.5" }), label: `${settings.searchTrigger}-${t("atSearch")}`, checked: settings.atMenuEnabled, onCheckedChange: (checked) => updateSettings({ atMenuEnabled: checked }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(PanelTopOpen, { className: "h-3.5 w-3.5" }), label: t("panel"), checked: settings.floatingPanelEnabled, onCheckedChange: (checked) => updateSettings({ floatingPanelEnabled: checked }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ClipboardList, { className: "h-3.5 w-3.5" }), label: t("clipboard"), checked: settings.clipboardPanelEnabled, onCheckedChange: (checked) => updateSettings({ clipboardPanelEnabled: checked }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(BookOpen, { className: "h-3.5 w-3.5" }), label: t("variables"), checked: settings.showVariablesTab, onCheckedChange: (checked) => updateSettings({ showVariablesTab: checked }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(FileText, { className: "h-3.5 w-3.5" }), label: t("tasks"), checked: settings.showTodoTab, onCheckedChange: (checked) => updateSettings({ showTodoTab: checked }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("select", { className: "h-8 rounded-md border bg-background px-2 text-xs", value: settings.gridCols, onChange: (event) => updateSettings({ gridCols: parseInt(event.target.value, 10) }), title: t("columnsCount"), children: [
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: 2, children: t("gridCols2") }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: 3, children: t("gridCols3") }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: 4, children: t("gridCols4") }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: 5, children: t("gridCols5") })
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("select", { className: "h-8 rounded-md border bg-background px-2 text-xs", value: settings.gridHeight, onChange: (event) => updateSettings({ gridHeight: event.target.value }), title: t("cardHeight"), children: [
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: "180px", children: "180px" }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: "240px", children: "240px" }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: "320px", children: "320px" }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: "max-content", children: t("auto") })
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "icon", variant: "outline", onClick: handleExport, title: t("export"), children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Download, { className: "h-3.5 w-3.5" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "icon", variant: "outline", onClick: () => fileInputRef.current?.click(), title: t("import"), children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Upload, { className: "h-3.5 w-3.5" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("input", { ref: fileInputRef, type: "file", accept: ".json", className: "hidden", onChange: (event) => {
-            const file = event.target.files?.[0];
-            if (file) handleImport(file);
-          } })
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("main", { className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Tabs2, { value: activeTab, onValueChange: (value) => updateSettings({ lastBaseTab: value }), className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "z-20 shrink-0 border-b bg-background px-5 py-3 shadow-sm", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsList2, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsTrigger2, { value: "templates", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(FileText, { className: "mr-1.5 h-3.5 w-3.5" }),
-              t("notesAndTemplates")
+    return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(
+      "div",
+      {
+        className: `${embedded ? "h-full" : "h-screen"} ${settings.theme === "dark" ? "dark" : ""} flex flex-col overflow-hidden bg-background text-foreground`,
+        style: uiScaleStyle(settings.uiScale),
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("header", { className: `z-30 flex shrink-0 flex-wrap items-center justify-between gap-4 border-b bg-background px-4 py-2 shadow-sm ${embedded ? "pr-16" : ""}`, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("h1", { className: "flex shrink-0 items-center gap-3 text-sm font-semibold", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(BrandLogo, { title: t("appName") }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "sr-only", children: t("appName") }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "hidden whitespace-nowrap text-muted-foreground sm:inline", children: t("baseSubtitle") })
             ] }),
-            settings.showVariablesTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsTrigger2, { value: "variables", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(BookOpen, { className: "mr-1.5 h-3.5 w-3.5" }),
-              t("variables")
-            ] }),
-            settings.showTodoTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsTrigger2, { value: "todo", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(LayoutGrid, { className: "mr-1.5 h-3.5 w-3.5" }),
-              t("tasks")
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center justify-end gap-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                SettingSelect,
+                {
+                  icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Languages, { className: "h-3.5 w-3.5" }),
+                  label: t("language"),
+                  value: settings.uiLanguage,
+                  onChange: (value) => updateSettings({ uiLanguage: value }),
+                  options: LANGUAGE_OPTIONS
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Moon, { className: "h-3.5 w-3.5" }), label: t("darkTheme"), checked: settings.theme === "dark", onCheckedChange: (checked) => updateSettings({ theme: checked ? "dark" : "light" }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                SettingSelect,
+                {
+                  icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ZoomIn, { className: "h-3.5 w-3.5" }),
+                  label: t("interfaceScale"),
+                  value: settings.uiScale,
+                  onChange: (value) => updateSettings({ uiScale: value }),
+                  options: UI_SCALE_OPTIONS
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                SettingSelect,
+                {
+                  icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(AtSign, { className: "h-3.5 w-3.5" }),
+                  label: t("trigger"),
+                  value: settings.searchTrigger,
+                  onChange: (value) => updateSettings({ searchTrigger: value }),
+                  options: [{ value: "/", label: "/" }, { value: "@", label: "@" }]
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(AtSign, { className: "h-3.5 w-3.5" }), label: `${settings.searchTrigger}-${t("atSearch")}`, checked: settings.atMenuEnabled, onCheckedChange: (checked) => updateSettings({ atMenuEnabled: checked }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(PanelTopOpen, { className: "h-3.5 w-3.5" }), label: t("panel"), checked: settings.floatingPanelEnabled, onCheckedChange: (checked) => updateSettings({ floatingPanelEnabled: checked }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ClipboardList, { className: "h-3.5 w-3.5" }), label: t("clipboard"), checked: settings.clipboardPanelEnabled, onCheckedChange: (checked) => updateSettings({ clipboardPanelEnabled: checked }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(BookOpen, { className: "h-3.5 w-3.5" }), label: t("variables"), checked: settings.showVariablesTab, onCheckedChange: (checked) => updateSettings({ showVariablesTab: checked }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingSwitch, { icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(FileText, { className: "h-3.5 w-3.5" }), label: t("tasks"), checked: settings.showTodoTab, onCheckedChange: (checked) => updateSettings({ showTodoTab: checked }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("select", { className: "h-8 rounded-md border bg-background px-2 text-xs", value: settings.gridCols, onChange: (event) => updateSettings({ gridCols: parseInt(event.target.value, 10) }), title: t("columnsCount"), children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: 2, children: t("gridCols2") }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: 3, children: t("gridCols3") }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: 4, children: t("gridCols4") }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: 5, children: t("gridCols5") })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("select", { className: "h-8 rounded-md border bg-background px-2 text-xs", value: settings.gridHeight, onChange: (event) => updateSettings({ gridHeight: event.target.value }), title: t("cardHeight"), children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: "180px", children: "180px" }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: "240px", children: "240px" }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: "320px", children: "320px" }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: "max-content", children: t("auto") })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "icon", variant: "outline", onClick: handleExport, title: t("export"), children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Download, { className: "h-3.5 w-3.5" }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "icon", variant: "outline", onClick: () => fileInputRef.current?.click(), title: t("import"), children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Upload, { className: "h-3.5 w-3.5" }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("input", { ref: fileInputRef, type: "file", accept: ".json", className: "hidden", onChange: (event) => {
+                const file = event.target.files?.[0];
+                if (file) handleImport(file);
+              } })
             ] })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center gap-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(PresetStrip, { theme: settings.theme, language: settings.uiLanguage, onApply: applyPreset }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: "outline", onClick: resetAppearance, title: t("resetCards"), children: [
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(RotateCcw, { className: "mr-1.5 h-3.5 w-3.5" }),
-              t("resetCards")
-            ] })
-          ] })
-        ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsContent2, { value: "templates", className: "m-0 flex min-h-0 flex-1 flex-col overflow-hidden", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "shrink-0 border-b bg-background px-5 py-3 shadow-sm", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center gap-3", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "relative min-w-[260px] flex-1 max-w-xl", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Search, { className: "absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" }),
-                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Input, { placeholder: t("searchNotesPlaceholder"), className: "pl-9", value: searchQuery, onChange: (event) => setSearchQuery(event.target.value) })
+          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("main", { className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Tabs2, { value: activeTab, onValueChange: (value) => updateSettings({ lastBaseTab: value }), className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "z-20 shrink-0 border-b bg-background px-5 py-3 shadow-sm", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsList2, { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsTrigger2, { value: "templates", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(FileText, { className: "mr-1.5 h-3.5 w-3.5" }),
+                  t("notesAndTemplates")
+                ] }),
+                settings.showVariablesTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsTrigger2, { value: "variables", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(BookOpen, { className: "mr-1.5 h-3.5 w-3.5" }),
+                  t("variables")
+                ] }),
+                settings.showTodoTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsTrigger2, { value: "todo", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(LayoutGrid, { className: "mr-1.5 h-3.5 w-3.5" }),
+                  t("tasks")
+                ] })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TagFilter, { tags: allTags, selected: selectedTags, language: settings.uiLanguage, onChange: setSelectedTags }),
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: showFavorites ? "accent" : "outline", onClick: () => setShowFavorites(!showFavorites), children: [
-                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Star, { className: `mr-1.5 h-3.5 w-3.5 ${showFavorites ? "fill-current" : ""}` }),
-                t("favorites")
-              ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", onClick: () => {
-                setIsCreating(true);
-                setEditingTemplate(null);
-              }, children: [
-                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Plus, { className: "mr-1.5 h-3.5 w-3.5" }),
-                t("createNote")
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center gap-2", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(PresetStrip, { theme: settings.theme, language: settings.uiLanguage, onApply: applyPreset }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: "outline", onClick: resetAppearance, title: t("resetCards"), children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(RotateCcw, { className: "mr-1.5 h-3.5 w-3.5" }),
+                  t("resetCards")
+                ] })
               ] })
+            ] }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsContent2, { value: "templates", className: "m-0 flex min-h-0 flex-1 flex-col overflow-hidden", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "shrink-0 border-b bg-background px-5 py-3 shadow-sm", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center gap-3", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "relative min-w-[260px] flex-1 max-w-xl", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Search, { className: "absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Input, { placeholder: t("searchNotesPlaceholder"), className: "pl-9", value: searchQuery, onChange: (event) => setSearchQuery(event.target.value) })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TagFilter, { tags: allTags, selected: selectedTags, language: settings.uiLanguage, onChange: setSelectedTags }),
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: showFavorites ? "accent" : "outline", onClick: () => setShowFavorites(!showFavorites), children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Star, { className: `mr-1.5 h-3.5 w-3.5 ${showFavorites ? "fill-current" : ""}` }),
+                    t("favorites")
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", onClick: () => {
+                    setIsCreating(true);
+                    setEditingTemplate(null);
+                  }, children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Plus, { className: "mr-1.5 h-3.5 w-3.5" }),
+                    t("createNote")
+                  ] })
+                ] }),
+                selectedTags.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mt-3 flex flex-wrap gap-2", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "sm", variant: "ghost", className: "h-7 text-xs", onClick: () => setSelectedTags([]), children: t("clearAllTags") }),
+                  selectedTags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Badge, { variant: "secondary", className: "cursor-pointer hover:bg-destructive hover:text-destructive-foreground", onClick: () => setSelectedTags(selectedTags.filter((item) => item !== tag)), children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Tags, { className: "mr-1 h-3 w-3" }),
+                    tag,
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(X, { className: "ml-1 h-3 w-3" })
+                  ] }, tag))
+                ] })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "min-h-0 flex-1 overflow-y-auto p-5", children: filteredTemplates.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mx-auto mt-16 max-w-md rounded-lg border border-dashed p-8 text-center text-muted-foreground", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { children: templates.length === 0 ? t("emptyBase") : t("nothingFoundCriteria") }),
+                templates.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "sm", variant: "outline", className: "mt-4", onClick: addStarterTemplates, children: t("addStarterNotes") })
+              ] }) : settings.gridHeight === "max-content" ? /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "grid gap-4", style: { gridTemplateColumns: `repeat(${settings.gridCols}, minmax(0, 1fr))` }, children: masonryColumns.map((column, columnIndex) => /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "flex min-w-0 flex-col gap-4", children: column.map((template) => renderTemplateCard(template, true)) }, columnIndex)) }) : /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "grid gap-4", style: { gridTemplateColumns: `repeat(${settings.gridCols}, minmax(0, 1fr))` }, children: filteredTemplates.map((template) => renderTemplateCard(template, false)) }) })
             ] }),
-            selectedTags.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mt-3 flex flex-wrap gap-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "sm", variant: "ghost", className: "h-7 text-xs", onClick: () => setSelectedTags([]), children: t("clearAllTags") }),
-              selectedTags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Badge, { variant: "secondary", className: "cursor-pointer hover:bg-destructive hover:text-destructive-foreground", onClick: () => setSelectedTags(selectedTags.filter((item) => item !== tag)), children: [
-                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Tags, { className: "mr-1 h-3 w-3" }),
-                tag,
-                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(X, { className: "ml-1 h-3 w-3" })
-              ] }, tag))
-            ] })
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "min-h-0 flex-1 overflow-y-auto p-5", children: filteredTemplates.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mx-auto mt-16 max-w-md rounded-lg border border-dashed p-8 text-center text-muted-foreground", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { children: templates.length === 0 ? t("emptyBase") : t("nothingFoundCriteria") }),
-            templates.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "sm", variant: "outline", className: "mt-4", onClick: addStarterTemplates, children: t("addStarterNotes") })
-          ] }) : settings.gridHeight === "max-content" ? /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "grid gap-4", style: { gridTemplateColumns: `repeat(${settings.gridCols}, minmax(0, 1fr))` }, children: masonryColumns.map((column, columnIndex) => /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "flex min-w-0 flex-col gap-4", children: column.map((template) => renderTemplateCard(template, true)) }, columnIndex)) }) : /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "grid gap-4", style: { gridTemplateColumns: `repeat(${settings.gridCols}, minmax(0, 1fr))` }, children: filteredTemplates.map((template) => renderTemplateCard(template, false)) }) })
-        ] }),
-        settings.showVariablesTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TabsContent2, { value: "variables", className: "m-0 min-h-0 flex-1 overflow-y-auto bg-background", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(VariablesPanel, {}) }),
-        settings.showTodoTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TabsContent2, { value: "todo", className: "m-0 min-h-0 flex-1 overflow-y-auto bg-background", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TodoPanel, {}) })
-      ] }) }),
-      editorOpen && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "fixed inset-0 z-[2147483647] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))] overflow-y-auto rounded-lg border bg-background p-5 text-foreground shadow-2xl", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mb-4 flex items-center justify-between gap-3 border-b pb-3", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "text-sm font-semibold", children: editingTemplate ? t("editNote") : t("newNote") }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "text-xs text-muted-foreground", children: t("editorNoShift") })
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "icon", variant: "ghost", onClick: closeEditor, children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(X, { className: "h-4 w-4" }) })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
-          TemplateEditor,
-          {
-            template: editingTemplate,
-            isNew: isCreating,
-            onSave: handleSaveTemplate,
-            onCancel: closeEditor,
-            allTags,
-            variables: settings.showVariablesTab ? variables : [],
-            language: settings.uiLanguage
-          }
-        )
-      ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ToastContainer, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
-        TemplatePreviewModal,
-        {
-          template: previewTemplate,
-          variables: settings.showVariablesTab ? variables : null,
-          language: settings.uiLanguage,
-          allowInsert: embedded,
-          onInserted: onAfterInsert,
-          onClose: () => setPreviewTemplate(null)
-        }
-      )
-    ] });
+            settings.showVariablesTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TabsContent2, { value: "variables", className: "m-0 min-h-0 flex-1 overflow-y-auto bg-background", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(VariablesPanel, {}) }),
+            settings.showTodoTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TabsContent2, { value: "todo", className: "m-0 min-h-0 flex-1 overflow-y-auto bg-background", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TodoPanel, {}) })
+          ] }) }),
+          editorOpen && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "fixed inset-0 z-[2147483630] flex animate-in fade-in items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm duration-150", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))] animate-in zoom-in-95 overflow-y-auto rounded-lg border bg-background p-5 text-foreground shadow-2xl duration-150", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mb-4 flex items-center justify-between gap-3 border-b pb-3", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "text-sm font-semibold", children: editingTemplate ? t("editNote") : t("newNote") }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "text-xs text-muted-foreground", children: t("editorNoShift") })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "icon", variant: "ghost", onClick: closeEditor, children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(X, { className: "h-4 w-4" }) })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+              TemplateEditor,
+              {
+                template: editingTemplate,
+                isNew: isCreating,
+                onSave: handleSaveTemplate,
+                onCancel: closeEditor,
+                allTags,
+                variables: settings.showVariablesTab ? variables : [],
+                language: settings.uiLanguage
+              }
+            )
+          ] }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+            TemplatePreviewModal,
+            {
+              template: previewTemplate,
+              variables: settings.showVariablesTab ? variables : null,
+              language: settings.uiLanguage,
+              allowInsert: embedded,
+              onInserted: onAfterInsert,
+              onClose: () => setPreviewTemplate(null)
+            }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ToastContainer, {})
+        ]
+      }
+    );
     function renderTemplateCard(template, showFullText) {
       return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
         TemplateCard,
@@ -14607,8 +14745,8 @@
       return () => document.removeEventListener("keydown", handleKeydown);
     }, [open, onOpenChange]);
     if (!open) return null;
-    return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("div", { className: "fixed inset-0 z-[2147483646] bg-slate-950/45 backdrop-blur-sm p-4 text-foreground", children: /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "relative h-full w-full overflow-hidden rounded-lg border bg-background shadow-2xl", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("div", { className: "absolute right-3 top-3 z-[2147483647]", children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(Button, { size: "icon", variant: "secondary", className: "h-9 w-9 rounded-lg shadow", onClick: () => onOpenChange(false), children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(X, { className: "h-4 w-4" }) }) }),
+    return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("div", { className: "fixed inset-0 z-[2147483646] animate-in fade-in bg-slate-950/45 p-4 text-foreground backdrop-blur-sm duration-150", children: /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "relative h-full w-full animate-in zoom-in-95 overflow-hidden rounded-lg border bg-background shadow-2xl duration-150", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("div", { className: "absolute right-3 top-3 z-[2147483646]", children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(Button, { size: "icon", variant: "secondary", className: "h-9 w-9 rounded-lg shadow", onClick: () => onOpenChange(false), children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(X, { className: "h-4 w-4" }) }) }),
       /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(KnowledgeBase, { embedded: true, onAfterInsert: (autoSend) => {
         if (autoSend) onOpenChange(false);
       } })
@@ -14721,16 +14859,18 @@
     const [showBase, setShowBase] = import_react14.default.useState(false);
     const [enabledForHost, setEnabledForHost] = import_react14.default.useState(true);
     const [theme, setTheme] = import_react14.default.useState("light");
+    const [uiScale, setUiScale] = import_react14.default.useState("100");
     import_react14.default.useEffect(() => {
       const uninstallTracker = installEditableTracker();
       const loadActivation = async () => {
         const snapshot = await readRuntimeSnapshot();
         setEnabledForHost(isHostEnabled(snapshot));
         setTheme(snapshot.theme);
+        setUiScale(snapshot.uiScale);
       };
       void loadActivation();
       const handleStorage = (changes, area) => {
-        if (area === "sync" && (changes.activationMode || changes.enabledHosts || changes.theme)) void loadActivation();
+        if (area === "sync" && (changes.activationMode || changes.enabledHosts || changes.theme || changes.uiScale)) void loadActivation();
       };
       const handleKeydown = (event) => {
         if (event.ctrlKey && event.shiftKey && event.code === "Space") {
@@ -14772,11 +14912,12 @@
         chrome.runtime?.onMessage?.removeListener(handleMessage);
       };
     }, [enabledForHost]);
-    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_react14.default.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: theme === "dark" ? "dark" : "", children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_react14.default.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: theme === "dark" ? "dark" : "", style: uiScaleStyle(uiScale), children: [
       enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(FloatingPanel, { onOpenBase: () => setShowBase(true) }),
       enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(AtMenu, {}),
       enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(SmartSearch, { open: showSmartSearch, onOpenChange: setShowSmartSearch }),
-      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(BaseModal, { open: showBase, onOpenChange: setShowBase })
+      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(BaseModal, { open: showBase, onOpenChange: setShowBase }),
+      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(ToastContainer, {})
     ] }) });
   }
   function init() {
@@ -15051,6 +15192,22 @@ lucide-react/dist/esm/icons/list-todo.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 
+lucide-react/dist/esm/icons/maximize-2.js:
+  (**
+   * @license lucide-react v0.378.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/minimize-2.js:
+  (**
+   * @license lucide-react v0.378.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
 lucide-react/dist/esm/icons/moon.js:
   (**
    * @license lucide-react v0.378.0 - ISC
@@ -15164,6 +15321,14 @@ lucide-react/dist/esm/icons/wand-sparkles.js:
    *)
 
 lucide-react/dist/esm/icons/x.js:
+  (**
+   * @license lucide-react v0.378.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/zoom-in.js:
   (**
    * @license lucide-react v0.378.0 - ISC
    *

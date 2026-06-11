@@ -30,8 +30,6 @@ const firefoxManifestPath = join(firefoxNoDrive, 'manifest.json')
 const firefoxManifest = JSON.parse(readFileSync(firefoxManifestPath, 'utf8'))
 firefoxManifest.background = {
   scripts: ['src/background/index.js'],
-  service_worker: 'src/background/index.js',
-  type: 'module',
 }
 firefoxManifest.browser_specific_settings = {
   gecko: {

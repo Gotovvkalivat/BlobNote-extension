@@ -1,8 +1,9 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { ClipboardList, Database, Eraser, Send } from 'lucide-react'
+import { ClipboardList, Database, Eraser, Maximize2, Minimize2, Send, Trash2 } from 'lucide-react'
 import type { Template } from '@/types'
 import { translate } from '@/lib/i18n'
+import { showToast } from '@/components/ui/toast'
 import {
   getActiveEditableElement,
   insertTextIntoEditable,
@@ -24,7 +25,9 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
   const [enabled, setEnabled] = React.useState(true)
   const [clipboardEnabled, setClipboardEnabled] = React.useState(false)
   const [language, setLanguage] = React.useState<'ru' | 'en'>('ru')
+  const [collapsed, setCollapsed] = React.useState(false)
   const panelRef = React.useRef<HTMLDivElement>(null)
+  const targetRef = React.useRef<Element | null>(null)
   const t = React.useCallback((key: string) => translate(language, key), [language])
 
   React.useEffect(() => {
@@ -68,7 +71,13 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
       const target = getActiveEditableElement()
       if (!target || !document.contains(target)) {
         setVisible(false)
+        setCollapsed(false)
         return
+      }
+
+      if (targetRef.current !== target) {
+        targetRef.current = target
+        setCollapsed(false)
       }
 
       const panelHovered = Boolean(panelRef.current?.matches(':hover'))
@@ -143,6 +152,27 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
 
   const target = getActiveEditableElement()
 
+  if (collapsed) {
+    return (
+      <button
+        type="button"
+        style={{
+          position: 'fixed',
+          top: position.top,
+          left: position.left,
+          zIndex: 2147483640,
+        }}
+        className="inline-flex h-8 items-center gap-1 rounded-lg border border-border bg-popover px-2 text-[10px] font-semibold text-popover-foreground shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95"
+        title={t('showPanel')}
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={() => setCollapsed(false)}
+      >
+        <Maximize2 className="h-3 w-3" />
+        BlobNote
+      </button>
+    )
+  }
+
   return (
     <div
       ref={panelRef}
@@ -154,7 +184,7 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
         maxWidth: 'calc(100vw - 16px)',
         zIndex: 2147483640,
       }}
-      className="overflow-hidden rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-2xl"
+      className="animate-in fade-in zoom-in-95 slide-in-from-top-1 overflow-hidden rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-2xl duration-150"
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
@@ -175,6 +205,16 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
           >
             <Eraser className="mr-1 h-3 w-3" />
             {t('clear')}
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-6 w-6"
+            title={t('hidePanel')}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => setCollapsed(true)}
+          >
+            <Minimize2 className="h-3 w-3" />
           </Button>
           <Button
             size="sm"
@@ -224,7 +264,22 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
         <div className="mt-2 border-t pt-2">
           <div className="mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
             <ClipboardList className="h-3 w-3" />
-            {t('clipboardHistory')}
+            <span className="min-w-0 flex-1 truncate">{t('clipboardHistory')}</span>
+            {clipboardItems.length > 0 && (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-5 w-5 text-muted-foreground hover:text-destructive"
+                title={t('clearClipboardHistory')}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => {
+                  setClipboardItems([])
+                  showToast(t('clipboardCleared'), 'success')
+                }}
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            )}
           </div>
           <div className="flex max-h-[112px] flex-col gap-1 overflow-y-auto overflow-x-hidden pr-1">
             {clipboardItems.length === 0 ? (

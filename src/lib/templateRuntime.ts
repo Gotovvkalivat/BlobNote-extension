@@ -1,6 +1,7 @@
-﻿import type { AppSettings, CRMBinding, Template, TemplateVariable } from '@/types'
+import type { AppSettings, CRMBinding, Template, TemplateVariable } from '@/types'
 import { extractVariables, replaceDateVariable } from '@/lib/utils'
 import { isLanguage } from '@/lib/i18n'
+import { normalizeUiScale } from '@/lib/uiScale'
 
 export type EditableElement = HTMLTextAreaElement | HTMLInputElement | HTMLElement
 
@@ -31,6 +32,7 @@ export type RuntimeSnapshot = {
   variables: TemplateVariable[]
   theme: AppSettings['theme']
   uiLanguage: AppSettings['uiLanguage']
+  uiScale: AppSettings['uiScale']
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean
@@ -58,6 +60,7 @@ type RawSyncData = {
   customBindings: Record<string, RawBinding>
   theme: AppSettings['theme']
   uiLanguage: AppSettings['uiLanguage']
+  uiScale: AppSettings['uiScale']
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean
@@ -73,6 +76,7 @@ const defaults: RawSyncData = {
   customBindings: {},
   theme: 'light',
   uiLanguage: 'ru',
+  uiScale: '100',
   atMenuEnabled: true,
   floatingPanelEnabled: true,
   clipboardPanelEnabled: false,
@@ -96,6 +100,7 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
       variables: cachedVariablesEnabled ? cachedVariables : [],
       theme: 'light',
       uiLanguage: 'ru',
+      uiScale: '100',
       atMenuEnabled: true,
       floatingPanelEnabled: true,
       clipboardPanelEnabled: false,
@@ -119,6 +124,7 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
         variables: variablesEnabled ? variables : [],
         theme: data.theme === 'dark' ? 'dark' : 'light',
         uiLanguage: isLanguage(data.uiLanguage) ? data.uiLanguage : 'ru',
+        uiScale: normalizeUiScale(data.uiScale),
         atMenuEnabled: data.atMenuEnabled ?? true,
         floatingPanelEnabled: data.floatingPanelEnabled ?? true,
         clipboardPanelEnabled: data.clipboardPanelEnabled ?? false,

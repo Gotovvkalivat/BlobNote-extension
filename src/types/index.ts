@@ -21,6 +21,7 @@ export interface CRMBinding {
 export interface AppSettings {
   theme: 'light' | 'dark'
   uiLanguage: 'ru' | 'en'
+  uiScale: '70' | '80' | '90' | '100' | '110' | '120' | '130'
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean

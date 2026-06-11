@@ -3,6 +3,7 @@ import type { Template, CRMBinding, AppSettings, Toast, TemplateVariable, TodoIt
 import { generateId } from '@/lib/utils'
 import { cardPresetFor, normalizeCardPreset } from '@/lib/cardPresets'
 import { isLanguage } from '@/lib/i18n'
+import { normalizeUiScale } from '@/lib/uiScale'
 
 interface AppState {
   templates: Template[]
@@ -58,6 +59,7 @@ type SyncSnapshot = {
   customBindings: RawBindingMap
   theme: AppSettings['theme']
   uiLanguage: AppSettings['uiLanguage']
+  uiScale: AppSettings['uiScale']
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean
@@ -80,6 +82,7 @@ type SyncSnapshot = {
 const defaultSettings: AppSettings = {
   theme: 'light',
   uiLanguage: 'ru',
+  uiScale: '100',
   atMenuEnabled: true,
   floatingPanelEnabled: true,
   clipboardPanelEnabled: false,
@@ -210,6 +213,7 @@ function snapshotToState(snapshot: SyncSnapshot) {
     settings: {
       theme,
       uiLanguage: isLanguage(snapshot.uiLanguage) ? snapshot.uiLanguage : defaultSettings.uiLanguage,
+      uiScale: normalizeUiScale(snapshot.uiScale),
       atMenuEnabled: snapshot.atMenuEnabled ?? defaultSettings.atMenuEnabled,
       floatingPanelEnabled: snapshot.floatingPanelEnabled ?? defaultSettings.floatingPanelEnabled,
       clipboardPanelEnabled: snapshot.clipboardPanelEnabled ?? defaultSettings.clipboardPanelEnabled,
@@ -255,6 +259,11 @@ function attachStorageListener() {
 
     if (changes.uiLanguage) {
       nextSettings.uiLanguage = isLanguage(changes.uiLanguage.newValue) ? changes.uiLanguage.newValue : defaultSettings.uiLanguage
+      settingsChanged = true
+    }
+
+    if (changes.uiScale) {
+      nextSettings.uiScale = normalizeUiScale(changes.uiScale.newValue)
       settingsChanged = true
     }
 
@@ -513,6 +522,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       ...settings,
       theme,
       uiLanguage: isLanguage(settings.uiLanguage) ? settings.uiLanguage : state.settings.uiLanguage,
+      uiScale: normalizeUiScale(settings.uiScale ?? state.settings.uiScale),
       searchTrigger: settings.searchTrigger === '@' ? '@' : settings.searchTrigger === '/' ? '/' : state.settings.searchTrigger,
       ...cardPresetFor(theme, cardPreset),
     }
@@ -520,6 +530,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
     chromeSet({
       theme: nextSettings.theme,
       uiLanguage: nextSettings.uiLanguage,
+      uiScale: nextSettings.uiScale,
       atMenuEnabled: nextSettings.atMenuEnabled,
       floatingPanelEnabled: nextSettings.floatingPanelEnabled,
       clipboardPanelEnabled: nextSettings.clipboardPanelEnabled,

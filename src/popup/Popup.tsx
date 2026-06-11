@@ -6,6 +6,7 @@ import { ToastContainer, showToast } from '@/components/ui/toast'
 import { useAppStore } from '@/store'
 import { assetUrl } from '@/lib/assets'
 import { LANGUAGE_OPTIONS, translate } from '@/lib/i18n'
+import { UI_SCALE_OPTIONS, uiScaleStyle } from '@/lib/uiScale'
 import type { AppSettings } from '@/types'
 import {
   AtSign,
@@ -48,7 +49,7 @@ export function Popup() {
   const currentSiteEnabled = currentHost ? settings.enabledHosts.includes(currentHost) : false
 
   return (
-    <div className="h-[590px] w-[460px] overflow-hidden bg-background p-4 text-foreground">
+    <div className="h-[590px] w-[460px] overflow-hidden bg-background p-4 text-foreground" style={uiScaleStyle(settings.uiScale)}>
       <header className="mb-3 flex items-center justify-between border-b pb-2">
         <h1 className="flex items-center gap-2 text-sm font-semibold">
           {settings.theme === 'dark' ? (
@@ -154,6 +155,13 @@ export function Popup() {
               label={t('darkTheme')}
               checked={settings.theme === 'dark'}
               onCheckedChange={(checked) => updateSettings({ theme: checked ? 'dark' : 'light' })}
+            />
+            <SelectRow
+              icon={<Languages className="h-3.5 w-3.5" />}
+              label={t('interfaceScale')}
+              value={settings.uiScale}
+              onChange={(value) => updateSettings({ uiScale: value as AppSettings['uiScale'] })}
+              options={UI_SCALE_OPTIONS}
             />
           </section>
 

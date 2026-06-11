@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import { Copy, Send, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -45,8 +45,8 @@ export function TemplatePreviewModal({ template, variables, language, allowInser
   }
 
   return (
-    <div className="fixed inset-0 z-[2147483647] bg-slate-950/40 backdrop-blur-sm flex items-center justify-center p-4 text-foreground">
-      <div className="w-[min(760px,calc(100vw-32px))] max-h-[calc(100vh-48px)] bg-background border rounded-lg shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[2147483630] flex animate-in fade-in items-center justify-center bg-slate-950/40 p-4 text-foreground backdrop-blur-sm duration-150">
+      <div className="flex max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))] animate-in zoom-in-95 flex-col overflow-hidden rounded-lg border bg-background shadow-2xl duration-150">
         <div className="flex items-center gap-3 border-b px-4 py-3">
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-sm truncate">{template.title}</div>

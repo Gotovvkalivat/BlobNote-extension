@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import { cn } from '@/lib/utils'
 import type { EditableElement } from '@/lib/templateRuntime'
 import type { AppSettings, Template } from '@/types'
@@ -169,7 +169,7 @@ export function AtMenu() {
   return (
     <div
       data-opspost-at-menu
-      className="fixed z-[2147483647] max-h-[250px] min-w-[220px] overflow-y-auto rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl"
+      className="fixed z-[2147483640] max-h-[250px] min-w-[220px] animate-in fade-in zoom-in-95 overflow-y-auto rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl duration-150"
       style={{
         top: position.top,
         left: position.left,
