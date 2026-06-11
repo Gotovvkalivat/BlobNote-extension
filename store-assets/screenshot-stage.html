@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Блокнот screenshots</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 1280px;
+      height: 800px;
+      overflow: hidden;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: #0f172a;
+      background: linear-gradient(135deg, #eaf7ff, #fbfdff 52%, #f2edff);
+    }
+    .shot { display: none; width: 100%; height: 100%; padding: 44px; }
+    body[data-shot="popup"] .popup,
+    body[data-shot="base"] .base,
+    body[data-shot="panel"] .panel,
+    body[data-shot="search"] .search { display: block; }
+    .browser, .base-app {
+      height: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, .14);
+      box-shadow: 0 30px 90px rgba(15, 23, 42, .2);
+      background: #fff;
+      position: relative;
+    }
+    .bar, .top {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 20px;
+      border-bottom: 1px solid #dbe3ec;
+      background: #f8fafc;
+    }
+    .dot { width: 11px; height: 11px; border-radius: 50%; background: #cbd5e1; display: inline-block; }
+    .url { flex: 1; height: 30px; border-radius: 999px; background: #e2e8f0; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; }
+    .brand img { height: 34px; width: auto; }
+    .hero-copy { position: absolute; left: 82px; top: 134px; max-width: 450px; }
+    .hero-copy h1 { margin: 0 0 16px; font-size: 48px; letter-spacing: 0; }
+    .hero-copy p { margin: 0; color: #64748b; font-size: 20px; line-height: 1.55; }
+    .popup-card {
+      position: absolute;
+      right: 78px;
+      top: 86px;
+      width: 460px;
+      height: 590px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #07111f;
+      color: #f8fafc;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, .38);
+    }
+    .popup-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid #26364f; }
+    .version, .pill { border-radius: 8px; background: rgba(148, 163, 184, .18); padding: 5px 9px; font-size: 12px; font-weight: 800; }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 14px 0; }
+    .tab { display: grid; place-items: center; height: 36px; border-radius: 10px; background: #17243a; color: #cbd5e1; font-weight: 800; }
+    .active { background: #0ea5e9; color: white; }
+    .onboarding, .hint { border: 1px solid rgba(14, 165, 233, .38); background: rgba(14, 165, 233, .1); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+    .onboarding h2, .hint h3 { margin: 0 0 7px; font-size: 16px; }
+    .onboarding p, .onboarding li, .hint p { margin: 0; color: #b6c6d9; font-size: 13px; line-height: 1.45; }
+    .onboarding ul { margin: 10px 0 0; padding-left: 18px; }
+    .btn { display: grid; place-items: center; height: 48px; border-radius: 10px; background: #0ea5e9; color: white; font-weight: 900; margin-bottom: 10px; }
+    .btn.secondary { background: transparent; border: 1px solid #334155; color: #f8fafc; }
+    .base-app { background: #07111f; color: #e2e8f0; }
+    .base-app .top { background: #091525; border-color: #1e293b; }
+    .toolbar { display: flex; gap: 10px; padding: 14px 20px; border-bottom: 1px solid #1e293b; background: #0b1726; }
+    .fieldline { height: 38px; border-radius: 10px; background: #0f1f33; border: 1px solid #26364f; color: #94a3b8; padding: 10px 14px; }
+    .fieldline.searchbox { flex: 1; }
+    .smallbtn { height: 38px; border-radius: 9px; border: 1px solid #26364f; padding: 0 14px; display: grid; place-items: center; color: #f8fafc; font-weight: 800; }
+    .smallbtn.primary { background: #0ea5e9; border-color: #0ea5e9; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 20px; }
+    .note { height: 154px; border-radius: 12px; padding: 16px 16px 16px 24px; box-shadow: inset 5px 0 0 rgba(255,255,255,.2); border: 1px solid rgba(148,163,184,.24); }
+    .green { background: #113c2b; } .blue { background: #132746; } .orchid { background: #32204f; }
+    .note span { font-size: 11px; opacity: .75; text-transform: uppercase; }
+    .note h3 { margin: 16px 0 10px; font-size: 17px; }
+    .note p { margin: 0; color: #cbd5e1; font-size: 13px; line-height: 1.5; }
+    .site { position: absolute; inset: 58px 0 0; padding: 70px 92px; background: #fff7ed; }
+    .form { width: 470px; display: grid; gap: 14px; }
+    .input { height: 44px; border: 1px solid #fdba74; border-radius: 8px; background: #fff; padding: 12px; color: #9a3412; font-weight: 800; }
+    .floating { width: 370px; margin-top: 16px; padding: 14px; border-radius: 12px; background: #07111f; color: #f8fafc; border: 1px solid #1e293b; box-shadow: 0 18px 55px rgba(15,23,42,.32); }
+    .floating-top { display: flex; justify-content: space-between; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #26364f; }
+    .chip, .clip { border: 1px solid #334155; border-radius: 7px; color: #dbeafe; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chip { display: inline-block; max-width: 148px; padding: 7px 10px; font-size: 12px; font-weight: 800; margin-right: 8px; }
+    .clip { height: 30px; margin-top: 8px; padding: 7px 9px; font-size: 12px; }
+    .search-modal { width: 720px; margin: 126px auto 0; border-radius: 14px; background: rgba(255,255,255,.95); border: 1px solid rgba(15,23,42,.14); box-shadow: 0 28px 85px rgba(15,23,42,.22); overflow: hidden; }
+    .search-head { height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; border-bottom: 1px solid #dbe3ec; font-weight: 900; }
+    .search-body { padding: 18px; }
+    .search-input { width: 100%; height: 42px; border: 1px solid #b7c5d5; border-radius: 9px; padding: 0 12px; font-size: 15px; }
+    .result { border: 1px solid #dbe3ec; border-radius: 10px; padding: 13px; margin-top: 10px; background: #f8fafc; }
+    .result h3 { margin: 0 0 6px; font-size: 16px; }
+    .result p { margin: 0; color: #475569; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <section class="shot popup">
+    <div class="browser">
+      <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="url"></div></div>
+      <div class="hero-copy"><h1>Блокнот</h1><p>Первый запуск сразу объясняет, как открыть базу, пользоваться быстрым поиском и включить панель рядом с полем ввода.</p></div>
+      <aside class="popup-card">
+        <div class="popup-head"><div class="brand"><img src="../public/icon-32.png" alt="">Блокнот</div><span class="version">v6.0</span></div>
+        <div class="tabs"><div class="tab active">База</div><div class="tab">Настройки</div></div>
+        <div class="onboarding"><h2>Быстрый старт</h2><p>Три действия, чтобы Блокнот сразу начал помогать в переписке.</p><ul><li>Откройте базу и добавьте частые ответы.</li><li>Введите / в поле сообщения, чтобы найти заметку.</li><li>Включите панель для избранного и буфера.</li></ul></div>
+        <div class="btn">Открыть базу на текущей странице</div><div class="btn secondary">Открыть отдельной вкладкой</div>
+        <div class="hint"><h3>/ меню</h3><p>Введите / в поле ввода и начните печатать название заметки.</p></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="shot base">
+    <div class="base-app">
+      <div class="top"><div class="brand"><img src="../public/icon-32.png" alt="">Блокнот <span style="color:#94a3b8;font-weight:600">База заметок</span></div><div style="display:flex;gap:8px"><span class="pill">Язык RU</span><span class="pill">Тёмная</span><span class="pill">/ поиск</span></div></div>
+      <div class="toolbar"><div class="fieldline searchbox">Поиск заметок по названию, тегу или тексту...</div><div class="smallbtn">Теги</div><div class="smallbtn">Избранное</div><div class="smallbtn primary">+ Создать заметку</div></div>
+      <div class="grid">
+        <article class="note green"><span>Старт</span><h3>Приветствие</h3><p>Здравствуйте! Меня зовут {{agent_name}}. Уже смотрю ваш вопрос и скоро вернусь с ответом.</p></article>
+        <article class="note green"><span>Поддержка</span><h3>Уточнение данных</h3><p>Подскажите номер заказа и телефон, который был указан при оформлении.</p></article>
+        <article class="note blue"><span>Поддержка</span><h3>Пауза на проверку</h3><p>Спасибо, взял(а) в работу. Мне понадобится несколько минут.</p></article>
+        <article class="note orchid"><span>Финал</span><h3>Завершение</h3><p>Рад(а), что удалось помочь. Если появятся вопросы, напишите нам.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="shot panel">
+    <div class="browser">
+      <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="url"></div></div>
+      <div class="site"><div class="form"><div class="input">Клиент</div><div class="input">Менеджер</div><div class="input">/</div><div class="floating"><div class="floating-top"><strong>Быстрые ответы</strong><span style="color:#38bdf8;font-weight:900">База</span></div><span class="chip">Приветствие</span><span class="chip">Уточнение данных</span><div style="margin-top:12px;color:#94a3b8;font-size:12px;text-transform:uppercase">Буфер обмена</div><div class="clip">Номер заказа 59348, клиент ждёт...</div><div class="clip">Адрес доставки: Минск, проспект...</div><div class="clip">Шаблон возврата для обращения...</div></div></div></div>
+    </div>
+  </section>
+
+  <section class="shot search">
+    <div class="browser">
+      <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="url"></div></div>
+      <div class="site" style="filter:blur(1px);opacity:.55"></div>
+      <div class="search-modal"><div class="search-head"><span>Умный поиск заметок</span><span>×</span></div><div class="search-body"><input class="search-input" value="проверка"><div class="result"><h3>Пауза на проверку</h3><p>Спасибо, взял(а) в работу. Мне понадобится несколько минут, чтобы всё проверить.</p></div><div class="result"><h3>Уточнение данных</h3><p>Подскажите номер заказа и телефон, который был указан при оформлении.</p></div></div></div>
+    </div>
+  </section>
+  <script>document.body.dataset.shot = new URLSearchParams(location.search).get('shot') || 'popup'</script>
+</body>
+</html>

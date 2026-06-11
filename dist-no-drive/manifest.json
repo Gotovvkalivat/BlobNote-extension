@@ -1,0 +1,73 @@
+{
+  "manifest_version": 3,
+  "name": "Блокнот",
+  "version": "6.0.0",
+  "description": "Быстрый блокнот для заметок, шаблонов, задач и вставки текста.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "alarms",
+    "notifications",
+    "clipboardRead"
+  ],
+  "background": {
+    "service_worker": "src/background/index.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "src/content/index.js"
+      ]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Блокнот",
+    "default_icon": {
+      "16": "icon-16.png",
+      "32": "icon-32.png",
+      "48": "icon-48.png",
+      "128": "icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icon-16.png",
+    "32": "icon-32.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/*"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
+  "commands": {
+    "open-search": {
+      "suggested_key": {
+        "default": "Ctrl+Space",
+        "mac": "Ctrl+Space"
+      },
+      "description": "Open smart note search"
+    },
+    "open-base-modal": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Space",
+        "mac": "Ctrl+Shift+Space"
+      },
+      "description": "Open notes base"
+    }
+  }
+}
