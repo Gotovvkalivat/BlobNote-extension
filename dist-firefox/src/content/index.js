@@ -10553,7 +10553,7 @@
     { value: "en", label: "EN" }
   ];
   var ru = {
-    appName: "\u0411\u043B\u043E\u043A\u043D\u043E\u0442",
+    appName: "BlobNote",
     baseSubtitle: "\u0411\u0430\u0437\u0430 \u0437\u0430\u043C\u0435\u0442\u043E\u043A",
     answersSubtitle: "\u0411\u0430\u0437\u0430 \u043E\u0442\u0432\u0435\u0442\u043E\u0432",
     darkTheme: "\u0422\u0451\u043C\u043D\u0430\u044F",
@@ -10590,7 +10590,7 @@
     floatingPanelHelp: "\u0418\u0437\u0431\u0440\u0430\u043D\u043D\u044B\u0435 \u0437\u0430\u043C\u0435\u0442\u043A\u0438 \u0438 \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435 \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u044B \u0431\u0443\u0444\u0435\u0440\u0430 \u043F\u043E\u044F\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u0440\u044F\u0434\u043E\u043C \u0441 \u0430\u043A\u0442\u0438\u0432\u043D\u044B\u043C \u043F\u043E\u043B\u0435\u043C. \u041A\u043D\u043E\u043F\u043A\u0430 \u201C\u0411\u0430\u0437\u0430\u201D \u043E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u0442 \u043F\u043E\u043B\u043D\u044B\u0439 \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440 \u043F\u043E\u0432\u0435\u0440\u0445 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u044B.",
     variablesHelp: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 {{example}}. \u0417\u043D\u0430\u0447\u0435\u043D\u0438\u044F \u043C\u043E\u0436\u043D\u043E \u0437\u0430\u043F\u043E\u043B\u043D\u0438\u0442\u044C \u0432\u043E \u0432\u043A\u043B\u0430\u0434\u043A\u0435 \u201C\u041F\u0435\u0440\u0435\u043C\u0435\u043D\u043D\u044B\u0435\u201D \u0432 \u0431\u0430\u0437\u0435.",
     onboardingTitle: "\u0411\u044B\u0441\u0442\u0440\u044B\u0439 \u0441\u0442\u0430\u0440\u0442",
-    onboardingSubtitle: "\u0422\u0440\u0438 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F, \u0447\u0442\u043E\u0431\u044B \u0411\u043B\u043E\u043A\u043D\u043E\u0442 \u0441\u0440\u0430\u0437\u0443 \u043D\u0430\u0447\u0430\u043B \u043F\u043E\u043C\u043E\u0433\u0430\u0442\u044C \u0432 \u043F\u0435\u0440\u0435\u043F\u0438\u0441\u043A\u0435.",
+    onboardingSubtitle: "\u0422\u0440\u0438 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F, \u0447\u0442\u043E\u0431\u044B BlobNote \u0441\u0440\u0430\u0437\u0443 \u043D\u0430\u0447\u0430\u043B \u043F\u043E\u043C\u043E\u0433\u0430\u0442\u044C \u0432 \u043F\u0435\u0440\u0435\u043F\u0438\u0441\u043A\u0435.",
     onboardingStepBase: "1. \u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0431\u0430\u0437\u0443 \u0438 \u0434\u043E\u0431\u0430\u0432\u044C\u0442\u0435 \u0441\u0432\u043E\u0438 \u0447\u0430\u0441\u0442\u044B\u0435 \u043E\u0442\u0432\u0435\u0442\u044B.",
     onboardingStepSearch: "2. \u0412\u0432\u0435\u0434\u0438\u0442\u0435 {{trigger}} \u0432 \u043F\u043E\u043B\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F, \u0447\u0442\u043E\u0431\u044B \u043D\u0430\u0439\u0442\u0438 \u0437\u0430\u043C\u0435\u0442\u043A\u0443 \u0431\u0435\u0437 \u043F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u044F \u0432\u043A\u043B\u0430\u0434\u043E\u043A.",
     onboardingStepPanel: "3. \u0412\u043A\u043B\u044E\u0447\u0438\u0442\u0435 \u043F\u043B\u0430\u0432\u0430\u044E\u0449\u0443\u044E \u043F\u0430\u043D\u0435\u043B\u044C \u0434\u043B\u044F \u0438\u0437\u0431\u0440\u0430\u043D\u043D\u043E\u0433\u043E \u0438 \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0445 \u0434\u0430\u043D\u043D\u044B\u0445 \u0438\u0437 \u0431\u0443\u0444\u0435\u0440\u0430 \u043E\u0431\u043C\u0435\u043D\u0430.",
@@ -14220,7 +14220,7 @@
       const blob = new Blob([JSON.stringify(templates, null, 2)], { type: "application/json" });
       const anchor = document.createElement("a");
       anchor.href = URL.createObjectURL(blob);
-      anchor.download = `bloknot_backup_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`;
+      anchor.download = `blobnote_backup_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`;
       anchor.click();
       showToast(t("templatesExported"), "success");
     };
@@ -14507,12 +14507,12 @@
           xmlns: "http://www.w3.org/2000/svg",
           children: [
             /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("defs", { children: [
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("linearGradient", { id: "bloknot-mark-gradient", x1: "10", y1: "8", x2: "54", y2: "58", gradientUnits: "userSpaceOnUse", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("linearGradient", { id: "blobnote-mark-gradient", x1: "10", y1: "8", x2: "54", y2: "58", gradientUnits: "userSpaceOnUse", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("stop", { stopColor: "#09B8F5" }),
                 /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("stop", { offset: "0.55", stopColor: "#2C6DF6" }),
                 /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("stop", { offset: "1", stopColor: "#7037F4" })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("linearGradient", { id: "bloknot-line-gradient", x1: "22", y1: "28", x2: "43", y2: "43", gradientUnits: "userSpaceOnUse", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("linearGradient", { id: "blobnote-line-gradient", x1: "22", y1: "28", x2: "43", y2: "43", gradientUnits: "userSpaceOnUse", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("stop", { stopColor: "#16B7F3" }),
                 /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("stop", { offset: "1", stopColor: "#6E3DF4" })
               ] })
@@ -14521,7 +14521,7 @@
               "path",
               {
                 d: "M12.5 38.5C7.8 28.7 12.7 15.3 23.4 10.2C32 6.1 42.7 8.3 48.9 15.7C54.8 22.8 56.2 34.8 50.8 43.6C44.7 53.5 30.9 57.8 20.9 52.4C14.9 49.2 10.8 43.6 12.5 38.5Z",
-                fill: "url(#bloknot-mark-gradient)"
+                fill: "url(#blobnote-mark-gradient)"
               }
             ),
             /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("circle", { cx: "51.5", cy: "14.5", r: "4.5", fill: "#2D74F7" }),
@@ -14535,9 +14535,9 @@
             ),
             /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("path", { d: "M38.5 14V23.5H48", fill: "#C9F3FF" }),
             /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("path", { d: "M38.5 14V21.5C38.5 22.6 39.4 23.5 40.5 23.5H48", stroke: "#18AEEB", strokeWidth: "2", strokeLinejoin: "round" }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("path", { d: "M27 29.5H38.5", stroke: "url(#bloknot-line-gradient)", strokeWidth: "3.2", strokeLinecap: "round" }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("path", { d: "M27 36H42", stroke: "url(#bloknot-line-gradient)", strokeWidth: "3.2", strokeLinecap: "round" }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("path", { d: "M27 42.5H37", stroke: "url(#bloknot-line-gradient)", strokeWidth: "3.2", strokeLinecap: "round" })
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("path", { d: "M27 29.5H38.5", stroke: "url(#blobnote-line-gradient)", strokeWidth: "3.2", strokeLinecap: "round" }),
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("path", { d: "M27 36H42", stroke: "url(#blobnote-line-gradient)", strokeWidth: "3.2", strokeLinecap: "round" }),
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("path", { d: "M27 42.5H37", stroke: "url(#blobnote-line-gradient)", strokeWidth: "3.2", strokeLinecap: "round" })
           ]
         }
       ),
@@ -14695,9 +14695,9 @@
       document.documentElement.appendChild(host);
     }
     const shadow = host.shadowRoot || host.attachShadow({ mode: "open" });
-    if (!shadow.querySelector("style[data-bloknot-shadow-theme]")) {
+    if (!shadow.querySelector("style[data-blobnote-shadow-theme]")) {
       const style = document.createElement("style");
-      style.dataset.bloknotShadowTheme = "true";
+      style.dataset.blobnoteShadowTheme = "true";
       style.textContent = SHADOW_THEME_STYLE;
       shadow.appendChild(style);
     }

@@ -10,7 +10,7 @@ export const LANGUAGE_OPTIONS: Array<{ value: Language; label: string }> = [
 ]
 
 const ru: Dictionary = {
-  appName: 'Блокнот',
+  appName: 'BlobNote',
   baseSubtitle: 'База заметок',
   answersSubtitle: 'База ответов',
   darkTheme: 'Тёмная',
@@ -47,7 +47,7 @@ const ru: Dictionary = {
   floatingPanelHelp: 'Избранные заметки и последние элементы буфера появляются рядом с активным полем. Кнопка “База” открывает полный просмотр поверх страницы.',
   variablesHelp: 'Используйте {{example}}. Значения можно заполнить во вкладке “Переменные” в базе.',
   onboardingTitle: 'Быстрый старт',
-  onboardingSubtitle: 'Три действия, чтобы Блокнот сразу начал помогать в переписке.',
+  onboardingSubtitle: 'Три действия, чтобы BlobNote сразу начал помогать в переписке.',
   onboardingStepBase: '1. Откройте базу и добавьте свои частые ответы.',
   onboardingStepSearch: '2. Введите {{trigger}} в поле сообщения, чтобы найти заметку без переключения вкладок.',
   onboardingStepPanel: '3. Включите плавающую панель для избранного и последних данных из буфера обмена.',

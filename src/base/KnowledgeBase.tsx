@@ -125,7 +125,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
     const blob = new Blob([JSON.stringify(templates, null, 2)], { type: 'application/json' })
     const anchor = document.createElement('a')
     anchor.href = URL.createObjectURL(blob)
-    anchor.download = `bloknot_backup_${new Date().toISOString().slice(0, 10)}.json`
+    anchor.download = `blobnote_backup_${new Date().toISOString().slice(0, 10)}.json`
     anchor.click()
     showToastEvent(t('templatesExported'), 'success')
   }
@@ -441,19 +441,19 @@ function BrandLogo({ title }: { title: string }) {
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <linearGradient id="bloknot-mark-gradient" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+          <linearGradient id="blobnote-mark-gradient" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
             <stop stopColor="#09B8F5" />
             <stop offset="0.55" stopColor="#2C6DF6" />
             <stop offset="1" stopColor="#7037F4" />
           </linearGradient>
-          <linearGradient id="bloknot-line-gradient" x1="22" y1="28" x2="43" y2="43" gradientUnits="userSpaceOnUse">
+          <linearGradient id="blobnote-line-gradient" x1="22" y1="28" x2="43" y2="43" gradientUnits="userSpaceOnUse">
             <stop stopColor="#16B7F3" />
             <stop offset="1" stopColor="#6E3DF4" />
           </linearGradient>
         </defs>
         <path
           d="M12.5 38.5C7.8 28.7 12.7 15.3 23.4 10.2C32 6.1 42.7 8.3 48.9 15.7C54.8 22.8 56.2 34.8 50.8 43.6C44.7 53.5 30.9 57.8 20.9 52.4C14.9 49.2 10.8 43.6 12.5 38.5Z"
-          fill="url(#bloknot-mark-gradient)"
+          fill="url(#blobnote-mark-gradient)"
         />
         <circle cx="51.5" cy="14.5" r="4.5" fill="#2D74F7" />
         <circle cx="11" cy="50" r="3.8" fill="#6D38F3" />
@@ -463,9 +463,9 @@ function BrandLogo({ title }: { title: string }) {
         />
         <path d="M38.5 14V23.5H48" fill="#C9F3FF" />
         <path d="M38.5 14V21.5C38.5 22.6 39.4 23.5 40.5 23.5H48" stroke="#18AEEB" strokeWidth="2" strokeLinejoin="round" />
-        <path d="M27 29.5H38.5" stroke="url(#bloknot-line-gradient)" strokeWidth="3.2" strokeLinecap="round" />
-        <path d="M27 36H42" stroke="url(#bloknot-line-gradient)" strokeWidth="3.2" strokeLinecap="round" />
-        <path d="M27 42.5H37" stroke="url(#bloknot-line-gradient)" strokeWidth="3.2" strokeLinecap="round" />
+        <path d="M27 29.5H38.5" stroke="url(#blobnote-line-gradient)" strokeWidth="3.2" strokeLinecap="round" />
+        <path d="M27 36H42" stroke="url(#blobnote-line-gradient)" strokeWidth="3.2" strokeLinecap="round" />
+        <path d="M27 42.5H37" stroke="url(#blobnote-line-gradient)" strokeWidth="3.2" strokeLinecap="round" />
       </svg>
       <span className="text-base font-bold leading-none text-foreground">{title}</span>
     </span>

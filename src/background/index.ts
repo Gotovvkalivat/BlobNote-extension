@@ -36,8 +36,8 @@ chrome.alarms.onAlarm.addListener((alarm) => {
             ? 'BlobNote: important task'
             : 'BlobNote: reminder'
           : todo.priority === 'high'
-            ? 'Блокнот: важная задача'
-            : 'Блокнот: напоминание',
+            ? 'BlobNote: важная задача'
+            : 'BlobNote: напоминание',
       message: todo.text,
       contextMessage: todo.dueAt
         ? `${language === 'en' ? 'Deadline' : 'Дедлайн'}: ${formatNotificationDate(todo.dueAt, language)}`
@@ -132,7 +132,7 @@ function updateContextMenu() {
     chrome.contextMenus.removeAll(() => {
       chrome.contextMenus.create({
         id: 'ops-templates-parent',
-        title: language === 'en' ? 'BlobNote: notes' : 'Блокнот: заметки',
+        title: language === 'en' ? 'BlobNote: notes' : 'BlobNote: заметки',
         contexts: ['editable'],
       })
 

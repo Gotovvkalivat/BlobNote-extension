@@ -35,7 +35,7 @@ firefoxManifest.background = {
 }
 firefoxManifest.browser_specific_settings = {
   gecko: {
-    id: 'bloknot@goti.local',
+    id: 'blobnote@goti.local',
     strict_min_version: '109.0',
   },
 }

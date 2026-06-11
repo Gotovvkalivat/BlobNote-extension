@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Блокнот",
-  "version": "6.0.0",
-  "description": "Быстрый блокнот для заметок, шаблонов, задач и вставки текста.",
+  "name": "BlobNote",
+  "version": "1.0",
+  "description": "Fast notes, reply templates, tasks, and text insertion.",
   "permissions": [
     "storage",
     "activeTab",
@@ -24,7 +24,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Блокнот",
+    "default_title": "BlobNote",
     "default_icon": {
       "16": "icon-16.png",
       "32": "icon-32.png",

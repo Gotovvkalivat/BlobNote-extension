@@ -1,7 +1,7 @@
 {
-  "name": "bloknot-extension",
-  "version": "6.0.0",
-  "description": "Fast notes and templates Chrome extension",
+  "name": "blobnote-extension",
+  "version": "1.0.0",
+  "description": "Fast notes and reply templates browser extension",
   "type": "module",
   "scripts": {
     "dev": "vite",

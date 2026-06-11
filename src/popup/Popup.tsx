@@ -61,7 +61,7 @@ export function Popup() {
           )}
           <span className="sr-only">{t('appName')}</span>
         </h1>
-        <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium">v6.0</span>
+        <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium">v1.0</span>
       </header>
 
       <Tabs defaultValue="open" className="w-full">
@@ -302,7 +302,7 @@ function usePopupActions() {
     const blob = new Blob([JSON.stringify(templates, null, 2)], { type: 'application/json' })
     const anchor = document.createElement('a')
     anchor.href = URL.createObjectURL(blob)
-    anchor.download = `bloknot_backup_${new Date().toISOString().slice(0, 10)}.json`
+    anchor.download = `blobnote_backup_${new Date().toISOString().slice(0, 10)}.json`
     anchor.click()
     showToast(translate(settings.uiLanguage, 'templatesExported'), 'success')
   }, [settings.uiLanguage, templates])

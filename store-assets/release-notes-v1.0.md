@@ -1,6 +1,6 @@
-# Release Notes 6.0.0
+# Release Notes 1.0
 
-- Renamed the extension to Блокнот / BlobNote.
+- Set the extension name to BlobNote across the browser UI, manifests, and store assets.
 - Added Russian and English interface language.
 - Added first-run onboarding in the popup.
 - Reworked light and dark themes for better contrast.

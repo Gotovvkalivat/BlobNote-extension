@@ -88,9 +88,9 @@ function createRootContainer(id: string) {
 
   const shadow = host.shadowRoot || host.attachShadow({ mode: 'open' })
 
-  if (!shadow.querySelector('style[data-bloknot-shadow-theme]')) {
+  if (!shadow.querySelector('style[data-blobnote-shadow-theme]')) {
     const style = document.createElement('style')
-    style.dataset.bloknotShadowTheme = 'true'
+    style.dataset.blobnoteShadowTheme = 'true'
     style.textContent = SHADOW_THEME_STYLE
     shadow.appendChild(style)
   }
