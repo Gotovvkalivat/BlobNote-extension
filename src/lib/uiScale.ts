@@ -21,6 +21,8 @@ export function uiScaleZoom(value: AppSettings['uiScale']) {
   return Number(value) / 100
 }
 
+export const uiScaleFactor = uiScaleZoom
+
 export function uiScaleStyle(value: AppSettings['uiScale']) {
   return { zoom: uiScaleZoom(value) } as CSSProperties
 }

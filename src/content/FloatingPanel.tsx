@@ -1,9 +1,10 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { ClipboardList, Database, Eraser, Maximize2, Minimize2, Send, Trash2 } from 'lucide-react'
-import type { Template } from '@/types'
+import type { AppSettings, Template } from '@/types'
 import { translate } from '@/lib/i18n'
 import { showToast } from '@/components/ui/toast'
+import { uiScaleFactor } from '@/lib/uiScale'
 import {
   getActiveEditableElement,
   insertTextIntoEditable,
@@ -14,10 +15,15 @@ import {
 } from '@/lib/templateRuntime'
 
 type FloatingPanelProps = {
+  uiScale: AppSettings['uiScale']
   onOpenBase: () => void
 }
 
-export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), Math.max(min, max))
+}
+
+export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
   const [visible, setVisible] = React.useState(false)
   const [favorites, setFavorites] = React.useState<Template[]>([])
   const [clipboardItems, setClipboardItems] = React.useState<string[]>([])
@@ -29,6 +35,7 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
   const panelRef = React.useRef<HTMLDivElement>(null)
   const targetRef = React.useRef<Element | null>(null)
   const t = React.useCallback((key: string) => translate(language, key), [language])
+  const scale = uiScaleFactor(uiScale)
 
   React.useEffect(() => {
     let mounted = true
@@ -40,7 +47,6 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
       setEnabled(snapshot.floatingPanelEnabled)
       setClipboardEnabled(snapshot.clipboardPanelEnabled)
       setLanguage(snapshot.uiLanguage)
-      document.documentElement.classList.toggle('dark', snapshot.theme === 'dark')
     }
 
     void loadSnapshot()
@@ -85,18 +91,22 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
 
       if (editableFocused || panelHovered) {
         const rect = target.getBoundingClientRect()
-        const estimatedHeight = panelRef.current?.offsetHeight || (favorites.length > 0 || clipboardItems.length > 0 ? 168 : 78)
-        const placeAbove = rect.top > estimatedHeight + 12
+        const layoutHeight = panelRef.current?.offsetHeight || (favorites.length > 0 || clipboardItems.length > 0 ? 168 : 78)
+        const visualHeight = layoutHeight * scale
+        const visualWidth = Math.min(Math.max(320, rect.width), window.innerWidth - 16)
+        const layoutWidth = visualWidth / scale
+        const availableAbove = rect.top - 8
+        const availableBelow = window.innerHeight - rect.bottom - 8
+        const placeAbove = availableAbove >= visualHeight + 8 && availableAbove > availableBelow
         const top = placeAbove
-          ? rect.top - estimatedHeight - 8
-          : Math.min(window.innerHeight - estimatedHeight - 8, rect.bottom + 8)
-        const width = Math.min(Math.max(320, rect.width), window.innerWidth - 16)
-        const left = Math.min(Math.max(8, rect.left), window.innerWidth - width - 8)
+          ? rect.top - visualHeight - 8
+          : rect.bottom + 8
+        const left = clamp(rect.left, 8, window.innerWidth - visualWidth - 8)
 
         setPosition({
-          top: Math.max(8, top),
+          top: clamp(top, 8, window.innerHeight - visualHeight - 8),
           left,
-          width,
+          width: layoutWidth,
         })
         setVisible(true)
         return
@@ -118,7 +128,7 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
       document.removeEventListener('input', checkFocus, true)
       window.clearInterval(interval)
     }
-  }, [enabled, favorites.length, clipboardItems.length])
+  }, [enabled, favorites.length, clipboardItems.length, scale])
 
   React.useEffect(() => {
     if (!enabled || !clipboardEnabled) {
@@ -160,6 +170,8 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
           position: 'fixed',
           top: position.top,
           left: position.left,
+          transform: `scale(${scale})`,
+          transformOrigin: 'top left',
           zIndex: 2147483640,
         }}
         className="inline-flex h-8 items-center gap-1 rounded-lg border border-border bg-popover px-2 text-[10px] font-semibold text-popover-foreground shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95"
@@ -181,10 +193,11 @@ export function FloatingPanel({ onOpenBase }: FloatingPanelProps) {
         top: position.top,
         left: position.left,
         width: position.width,
-        maxWidth: 'calc(100vw - 16px)',
+        transform: `scale(${scale})`,
+        transformOrigin: 'top left',
         zIndex: 2147483640,
       }}
-      className="animate-in fade-in zoom-in-95 slide-in-from-top-1 overflow-hidden rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-2xl duration-150"
+      className="animate-in fade-in overflow-hidden rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-2xl duration-150"
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">

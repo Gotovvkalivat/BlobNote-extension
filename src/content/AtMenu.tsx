@@ -2,6 +2,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import type { EditableElement } from '@/lib/templateRuntime'
 import type { AppSettings, Template } from '@/types'
+import { uiScaleFactor } from '@/lib/uiScale'
 import {
   editableValue,
   isEditableElement,
@@ -11,7 +12,15 @@ import {
   setNativeValue,
 } from '@/lib/templateRuntime'
 
-export function AtMenu() {
+type AtMenuProps = {
+  uiScale: AppSettings['uiScale']
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), Math.max(min, max))
+}
+
+export function AtMenu({ uiScale }: AtMenuProps) {
   const [active, setActive] = React.useState(false)
   const [templates, setTemplates] = React.useState<Template[]>([])
   const [filtered, setFiltered] = React.useState<Template[]>([])
@@ -19,13 +28,15 @@ export function AtMenu() {
   const [inputElement, setInputElement] = React.useState<EditableElement | null>(null)
   const [triggerPos, setTriggerPos] = React.useState(-1)
   const [searchText, setSearchText] = React.useState('')
-  const [position, setPosition] = React.useState<{ top: number; left: number; placement: 'above' | 'below' }>({
+  const [position, setPosition] = React.useState({
     top: 0,
     left: 0,
-    placement: 'above',
+    width: 240,
+    maxHeight: 250,
   })
   const [enabled, setEnabled] = React.useState(true)
   const [trigger, setTrigger] = React.useState<AppSettings['searchTrigger']>('/')
+  const scale = uiScaleFactor(uiScale)
 
   React.useEffect(() => {
     let mounted = true
@@ -98,14 +109,20 @@ export function AtMenu() {
       setSearchText(search)
       setFiltered(matching)
       setSelectedIndex(0)
-      const estimatedHeight = Math.min(250, Math.max(44, matching.length * 34))
-      const placeAbove = rect.top > estimatedHeight + 12
-      const menuWidth = 240
+      const visualWidth = Math.min(280, window.innerWidth - 16)
+      const layoutWidth = visualWidth / scale
+      const visualHeight = Math.min(250, Math.max(44, matching.length * 34 * scale))
+      const layoutMaxHeight = 250 / scale
+      const availableAbove = rect.top - 8
+      const availableBelow = window.innerHeight - rect.bottom - 8
+      const placeAbove = availableAbove >= visualHeight + 8 && availableAbove > availableBelow
+      const top = placeAbove ? rect.top - visualHeight - 8 : rect.bottom + 8
 
       setPosition({
-        top: placeAbove ? rect.top - 8 : Math.min(window.innerHeight - estimatedHeight - 8, rect.bottom + 8),
-        left: Math.min(Math.max(8, rect.left), window.innerWidth - menuWidth - 8),
-        placement: placeAbove ? 'above' : 'below',
+        top: clamp(top, 8, window.innerHeight - visualHeight - 8),
+        left: clamp(rect.left, 8, window.innerWidth - visualWidth - 8),
+        width: layoutWidth,
+        maxHeight: layoutMaxHeight,
       })
       setActive(true)
     }
@@ -143,7 +160,7 @@ export function AtMenu() {
       document.removeEventListener('keydown', handleKeydown)
       document.removeEventListener('click', handleClick)
     }
-  }, [active, enabled, filtered, selectedIndex, templates, trigger])
+  }, [active, enabled, filtered, scale, selectedIndex, templates, trigger])
 
   const insertAtTemplate = (template: Template) => {
     if (!inputElement) return
@@ -169,11 +186,15 @@ export function AtMenu() {
   return (
     <div
       data-opspost-at-menu
-      className="fixed z-[2147483640] max-h-[250px] min-w-[220px] animate-in fade-in zoom-in-95 overflow-y-auto rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl duration-150"
+      className="fixed z-[2147483640] animate-in fade-in overflow-y-auto rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl duration-150"
       style={{
         top: position.top,
         left: position.left,
-        transform: position.placement === 'above' ? 'translateY(-100%)' : 'none',
+        width: position.width,
+        minWidth: 220 / scale,
+        maxHeight: position.maxHeight,
+        transform: `scale(${scale})`,
+        transformOrigin: 'top left',
       }}
     >
       {filtered.map((template, index) => (
@@ -194,5 +215,4 @@ export function AtMenu() {
     </div>
   )
 }
-
 

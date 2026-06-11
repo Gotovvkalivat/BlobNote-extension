@@ -6,7 +6,6 @@ import { SmartSearch } from './SmartSearch'
 import { BaseModal } from './BaseModal'
 import { insertTemplate, installEditableTracker, isHostEnabled, readRuntimeSnapshot } from '@/lib/templateRuntime'
 import type { AppSettings, Template } from '@/types'
-import { uiScaleStyle } from '@/lib/uiScale'
 import { ToastContainer } from '@/components/ui/toast'
 
 const SHADOW_THEME_STYLE = `
@@ -192,10 +191,10 @@ function ContentApp() {
 
   return (
     <React.StrictMode>
-      <div className={theme === 'dark' ? 'dark' : ''} style={uiScaleStyle(uiScale)}>
-        {enabledForHost && <FloatingPanel onOpenBase={() => setShowBase(true)} />}
-        {enabledForHost && <AtMenu />}
-        {enabledForHost && <SmartSearch open={showSmartSearch} onOpenChange={setShowSmartSearch} />}
+      <div className={theme === 'dark' ? 'dark' : ''}>
+        {enabledForHost && <FloatingPanel uiScale={uiScale} onOpenBase={() => setShowBase(true)} />}
+        {enabledForHost && <AtMenu uiScale={uiScale} />}
+        {enabledForHost && <SmartSearch uiScale={uiScale} open={showSmartSearch} onOpenChange={setShowSmartSearch} />}
         <BaseModal open={showBase} onOpenChange={setShowBase} />
         <ToastContainer />
       </div>

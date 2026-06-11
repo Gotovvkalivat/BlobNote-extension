@@ -10930,6 +10930,7 @@
   function uiScaleZoom(value) {
     return Number(value) / 100;
   }
+  var uiScaleFactor = uiScaleZoom;
   function uiScaleStyle(value) {
     return { zoom: uiScaleZoom(value) };
   }
@@ -11179,7 +11180,10 @@
 
   // src/content/FloatingPanel.tsx
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
-  function FloatingPanel({ onOpenBase }) {
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), Math.max(min, max));
+  }
+  function FloatingPanel({ uiScale, onOpenBase }) {
     const [visible, setVisible] = import_react3.default.useState(false);
     const [favorites, setFavorites] = import_react3.default.useState([]);
     const [clipboardItems, setClipboardItems] = import_react3.default.useState([]);
@@ -11191,6 +11195,7 @@
     const panelRef = import_react3.default.useRef(null);
     const targetRef = import_react3.default.useRef(null);
     const t = import_react3.default.useCallback((key) => translate(language, key), [language]);
+    const scale = uiScaleFactor(uiScale);
     import_react3.default.useEffect(() => {
       let mounted = true;
       const loadSnapshot = async () => {
@@ -11200,7 +11205,6 @@
         setEnabled(snapshot.floatingPanelEnabled);
         setClipboardEnabled(snapshot.clipboardPanelEnabled);
         setLanguage(snapshot.uiLanguage);
-        document.documentElement.classList.toggle("dark", snapshot.theme === "dark");
       };
       void loadSnapshot();
       const handleStorage = (changes, area) => {
@@ -11234,15 +11238,19 @@
         const editableFocused = isEditableElement(document.activeElement);
         if (editableFocused || panelHovered) {
           const rect = target2.getBoundingClientRect();
-          const estimatedHeight = panelRef.current?.offsetHeight || (favorites.length > 0 || clipboardItems.length > 0 ? 168 : 78);
-          const placeAbove = rect.top > estimatedHeight + 12;
-          const top = placeAbove ? rect.top - estimatedHeight - 8 : Math.min(window.innerHeight - estimatedHeight - 8, rect.bottom + 8);
-          const width = Math.min(Math.max(320, rect.width), window.innerWidth - 16);
-          const left = Math.min(Math.max(8, rect.left), window.innerWidth - width - 8);
+          const layoutHeight = panelRef.current?.offsetHeight || (favorites.length > 0 || clipboardItems.length > 0 ? 168 : 78);
+          const visualHeight = layoutHeight * scale;
+          const visualWidth = Math.min(Math.max(320, rect.width), window.innerWidth - 16);
+          const layoutWidth = visualWidth / scale;
+          const availableAbove = rect.top - 8;
+          const availableBelow = window.innerHeight - rect.bottom - 8;
+          const placeAbove = availableAbove >= visualHeight + 8 && availableAbove > availableBelow;
+          const top = placeAbove ? rect.top - visualHeight - 8 : rect.bottom + 8;
+          const left = clamp(rect.left, 8, window.innerWidth - visualWidth - 8);
           setPosition({
-            top: Math.max(8, top),
+            top: clamp(top, 8, window.innerHeight - visualHeight - 8),
             left,
-            width
+            width: layoutWidth
           });
           setVisible(true);
           return;
@@ -11261,7 +11269,7 @@
         document.removeEventListener("input", checkFocus, true);
         window.clearInterval(interval);
       };
-    }, [enabled, favorites.length, clipboardItems.length]);
+    }, [enabled, favorites.length, clipboardItems.length, scale]);
     import_react3.default.useEffect(() => {
       if (!enabled || !clipboardEnabled) {
         setClipboardItems([]);
@@ -11296,6 +11304,8 @@
             position: "fixed",
             top: position.top,
             left: position.left,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
             zIndex: 2147483640
           },
           className: "inline-flex h-8 items-center gap-1 rounded-lg border border-border bg-popover px-2 text-[10px] font-semibold text-popover-foreground shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95",
@@ -11318,10 +11328,11 @@
           top: position.top,
           left: position.left,
           width: position.width,
-          maxWidth: "calc(100vw - 16px)",
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
           zIndex: 2147483640
         },
-        className: "animate-in fade-in zoom-in-95 slide-in-from-top-1 overflow-hidden rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-2xl duration-150",
+        className: "animate-in fade-in overflow-hidden rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-2xl duration-150",
         children: [
           /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
             /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: t("quickReplies") }),
@@ -11445,7 +11456,10 @@
   // src/content/AtMenu.tsx
   var import_react4 = __toESM(require_react(), 1);
   var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
-  function AtMenu() {
+  function clamp2(value, min, max) {
+    return Math.min(Math.max(value, min), Math.max(min, max));
+  }
+  function AtMenu({ uiScale }) {
     const [active, setActive] = import_react4.default.useState(false);
     const [templates, setTemplates] = import_react4.default.useState([]);
     const [filtered, setFiltered] = import_react4.default.useState([]);
@@ -11456,10 +11470,12 @@
     const [position, setPosition] = import_react4.default.useState({
       top: 0,
       left: 0,
-      placement: "above"
+      width: 240,
+      maxHeight: 250
     });
     const [enabled, setEnabled] = import_react4.default.useState(true);
     const [trigger, setTrigger] = import_react4.default.useState("/");
+    const scale = uiScaleFactor(uiScale);
     import_react4.default.useEffect(() => {
       let mounted = true;
       const loadData = async () => {
@@ -11517,13 +11533,19 @@
         setSearchText(search);
         setFiltered(matching);
         setSelectedIndex(0);
-        const estimatedHeight = Math.min(250, Math.max(44, matching.length * 34));
-        const placeAbove = rect.top > estimatedHeight + 12;
-        const menuWidth = 240;
+        const visualWidth = Math.min(280, window.innerWidth - 16);
+        const layoutWidth = visualWidth / scale;
+        const visualHeight = Math.min(250, Math.max(44, matching.length * 34 * scale));
+        const layoutMaxHeight = 250 / scale;
+        const availableAbove = rect.top - 8;
+        const availableBelow = window.innerHeight - rect.bottom - 8;
+        const placeAbove = availableAbove >= visualHeight + 8 && availableAbove > availableBelow;
+        const top = placeAbove ? rect.top - visualHeight - 8 : rect.bottom + 8;
         setPosition({
-          top: placeAbove ? rect.top - 8 : Math.min(window.innerHeight - estimatedHeight - 8, rect.bottom + 8),
-          left: Math.min(Math.max(8, rect.left), window.innerWidth - menuWidth - 8),
-          placement: placeAbove ? "above" : "below"
+          top: clamp2(top, 8, window.innerHeight - visualHeight - 8),
+          left: clamp2(rect.left, 8, window.innerWidth - visualWidth - 8),
+          width: layoutWidth,
+          maxHeight: layoutMaxHeight
         });
         setActive(true);
       };
@@ -11556,7 +11578,7 @@
         document.removeEventListener("keydown", handleKeydown);
         document.removeEventListener("click", handleClick);
       };
-    }, [active, enabled, filtered, selectedIndex, templates, trigger]);
+    }, [active, enabled, filtered, scale, selectedIndex, templates, trigger]);
     const insertAtTemplate = (template) => {
       if (!inputElement) return;
       const resolvedText = resolveTemplateText(template.text);
@@ -11576,11 +11598,15 @@
       "div",
       {
         "data-opspost-at-menu": true,
-        className: "fixed z-[2147483640] max-h-[250px] min-w-[220px] animate-in fade-in zoom-in-95 overflow-y-auto rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl duration-150",
+        className: "fixed z-[2147483640] animate-in fade-in overflow-y-auto rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl duration-150",
         style: {
           top: position.top,
           left: position.left,
-          transform: position.placement === "above" ? "translateY(-100%)" : "none"
+          width: position.width,
+          minWidth: 220 / scale,
+          maxHeight: position.maxHeight,
+          transform: `scale(${scale})`,
+          transformOrigin: "top left"
         },
         children: filtered.map((template, index) => /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
           "button",
@@ -11651,7 +11677,7 @@
 
   // src/content/SmartSearch.tsx
   var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
-  function SmartSearch({ open, onOpenChange }) {
+  function SmartSearch({ uiScale, open, onOpenChange }) {
     const [templates, setTemplates] = import_react5.default.useState([]);
     const [language, setLanguage] = import_react5.default.useState("ru");
     const [query, setQuery] = import_react5.default.useState("");
@@ -11683,73 +11709,82 @@
     }, [query]);
     if (!open) return null;
     const t = (key) => translate(language, key);
+    const scale = uiScaleFactor(uiScale);
+    const width = Math.min(720, window.innerWidth - 32) / scale;
     const chooseTemplate = async (template, autoSend = false) => {
       insertTemplate(template, { autoSend });
       onOpenChange(false);
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "fixed inset-0 z-[2147483646] bg-slate-950/35 backdrop-blur-sm flex items-start justify-center pt-[12vh] text-foreground", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "w-[min(720px,calc(100vw-32px))] overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-3 border-b px-4 py-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Search, { className: "h-4 w-4 text-muted-foreground" }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "font-semibold text-sm flex-1", children: t("smartSearchTitle") }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Button, { size: "icon", variant: "ghost", className: "h-7 w-7", onClick: () => onOpenChange(false), children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "h-4 w-4" }) })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "p-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-          Input,
-          {
-            ref: inputRef,
-            value: query,
-            placeholder: t("smartSearchPlaceholder"),
-            onChange: (event) => setQuery(event.target.value),
-            onKeyDown: (event) => {
-              if (event.key === "ArrowDown") {
-                event.preventDefault();
-                setSelectedIndex((index) => (index + 1) % Math.max(filtered.length, 1));
-              } else if (event.key === "ArrowUp") {
-                event.preventDefault();
-                setSelectedIndex((index) => (index - 1 + Math.max(filtered.length, 1)) % Math.max(filtered.length, 1));
-              } else if (event.key === "Enter") {
-                event.preventDefault();
-                const template = filtered[selectedIndex];
-                if (template) void chooseTemplate(template, event.ctrlKey);
-              } else if (event.key === "Escape") {
-                event.preventDefault();
-                onOpenChange(false);
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "fixed inset-0 z-[2147483646] flex items-start justify-center bg-slate-950/35 pt-[12vh] text-foreground backdrop-blur-sm", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+      "div",
+      {
+        className: "overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl",
+        style: { width, transform: `scale(${scale})`, transformOrigin: "top center" },
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-3 border-b px-4 py-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Search, { className: "h-4 w-4 text-muted-foreground" }),
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "font-semibold text-sm flex-1", children: t("smartSearchTitle") }),
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Button, { size: "icon", variant: "ghost", className: "h-7 w-7", onClick: () => onOpenChange(false), children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "h-4 w-4" }) })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "p-4", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+              Input,
+              {
+                ref: inputRef,
+                value: query,
+                placeholder: t("smartSearchPlaceholder"),
+                onChange: (event) => setQuery(event.target.value),
+                onKeyDown: (event) => {
+                  if (event.key === "ArrowDown") {
+                    event.preventDefault();
+                    setSelectedIndex((index) => (index + 1) % Math.max(filtered.length, 1));
+                  } else if (event.key === "ArrowUp") {
+                    event.preventDefault();
+                    setSelectedIndex((index) => (index - 1 + Math.max(filtered.length, 1)) % Math.max(filtered.length, 1));
+                  } else if (event.key === "Enter") {
+                    event.preventDefault();
+                    const template = filtered[selectedIndex];
+                    if (template) void chooseTemplate(template, event.ctrlKey);
+                  } else if (event.key === "Escape") {
+                    event.preventDefault();
+                    onOpenChange(false);
+                  }
+                }
               }
-            }
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mt-3 max-h-[380px] overflow-y-auto rounded-lg border", children: filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "py-10 text-center text-sm text-muted-foreground", children: t("nothingFound") }) : filtered.map((template, index) => /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
-          "button",
-          {
-            type: "button",
-            className: cn(
-              "w-full text-left px-3 py-2 border-b last:border-b-0 hover:bg-muted transition-colors",
-              index === selectedIndex && "bg-muted"
             ),
-            onMouseEnter: () => setSelectedIndex(index),
-            onClick: () => void chooseTemplate(template),
-            children: [
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between gap-3", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-sm font-medium truncate", children: template.title }),
-                template.tag && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Badge, { variant: "secondary", className: "text-[10px] shrink-0", children: template.tag })
-              ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mt-1 text-xs text-muted-foreground line-clamp-2 whitespace-pre-wrap", children: template.text })
-            ]
-          },
-          template.id
-        )) }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-3 flex items-center gap-2 text-[11px] text-muted-foreground", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "\u2191" }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "\u2193" }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: t("navigation") }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "Enter" }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: t("insertVerb") }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "Ctrl+Enter" }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: t("insertAndSendVerb") })
-        ] })
-      ] })
-    ] }) });
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mt-3 max-h-[380px] overflow-y-auto rounded-lg border", children: filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "py-10 text-center text-sm text-muted-foreground", children: t("nothingFound") }) : filtered.map((template, index) => /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+              "button",
+              {
+                type: "button",
+                className: cn(
+                  "w-full text-left px-3 py-2 border-b last:border-b-0 hover:bg-muted transition-colors",
+                  index === selectedIndex && "bg-muted"
+                ),
+                onMouseEnter: () => setSelectedIndex(index),
+                onClick: () => void chooseTemplate(template),
+                children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between gap-3", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-sm font-medium truncate", children: template.title }),
+                    template.tag && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Badge, { variant: "secondary", className: "text-[10px] shrink-0", children: template.tag })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mt-1 text-xs text-muted-foreground line-clamp-2 whitespace-pre-wrap", children: template.text })
+                ]
+              },
+              template.id
+            )) }),
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-3 flex items-center gap-2 text-[11px] text-muted-foreground", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "\u2191" }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "\u2193" }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: t("navigation") }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "Enter" }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: t("insertVerb") }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 rounded bg-muted", children: "Ctrl+Enter" }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: t("insertAndSendVerb") })
+            ] })
+          ] })
+        ]
+      }
+    ) });
   }
 
   // src/content/BaseModal.tsx
@@ -14912,10 +14947,10 @@
         chrome.runtime?.onMessage?.removeListener(handleMessage);
       };
     }, [enabledForHost]);
-    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_react14.default.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: theme === "dark" ? "dark" : "", style: uiScaleStyle(uiScale), children: [
-      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(FloatingPanel, { onOpenBase: () => setShowBase(true) }),
-      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(AtMenu, {}),
-      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(SmartSearch, { open: showSmartSearch, onOpenChange: setShowSmartSearch }),
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_react14.default.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: theme === "dark" ? "dark" : "", children: [
+      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(FloatingPanel, { uiScale, onOpenBase: () => setShowBase(true) }),
+      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(AtMenu, { uiScale }),
+      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(SmartSearch, { uiScale, open: showSmartSearch, onOpenChange: setShowSmartSearch }),
       /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(BaseModal, { open: showBase, onOpenChange: setShowBase }),
       /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(ToastContainer, {})
     ] }) });

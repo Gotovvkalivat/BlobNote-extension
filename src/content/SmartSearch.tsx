@@ -1,19 +1,21 @@
-﻿import React from 'react'
+import React from 'react'
 import { Search, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import type { Template } from '@/types'
+import type { AppSettings, Template } from '@/types'
 import { insertTemplate, readRuntimeSnapshot } from '@/lib/templateRuntime'
 import { cn } from '@/lib/utils'
 import { translate } from '@/lib/i18n'
+import { uiScaleFactor } from '@/lib/uiScale'
 
 type SmartSearchProps = {
+  uiScale: AppSettings['uiScale']
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function SmartSearch({ open, onOpenChange }: SmartSearchProps) {
+export function SmartSearch({ uiScale, open, onOpenChange }: SmartSearchProps) {
   const [templates, setTemplates] = React.useState<Template[]>([])
   const [language, setLanguage] = React.useState<'ru' | 'en'>('ru')
   const [query, setQuery] = React.useState('')
@@ -55,6 +57,8 @@ export function SmartSearch({ open, onOpenChange }: SmartSearchProps) {
 
   if (!open) return null
   const t = (key: string) => translate(language, key)
+  const scale = uiScaleFactor(uiScale)
+  const width = Math.min(720, window.innerWidth - 32) / scale
 
   const chooseTemplate = async (template: Template, autoSend = false) => {
     insertTemplate(template, { autoSend })
@@ -62,8 +66,11 @@ export function SmartSearch({ open, onOpenChange }: SmartSearchProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-[2147483646] bg-slate-950/35 backdrop-blur-sm flex items-start justify-center pt-[12vh] text-foreground">
-      <div className="w-[min(720px,calc(100vw-32px))] overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl">
+    <div className="fixed inset-0 z-[2147483646] flex items-start justify-center bg-slate-950/35 pt-[12vh] text-foreground backdrop-blur-sm">
+      <div
+        className="overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-2xl"
+        style={{ width, transform: `scale(${scale})`, transformOrigin: 'top center' }}
+      >
         <div className="flex items-center gap-3 border-b px-4 py-3">
           <Search className="h-4 w-4 text-muted-foreground" />
           <div className="font-semibold text-sm flex-1">{t('smartSearchTitle')}</div>
