@@ -80,8 +80,10 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
   const editorOpen = isCreating || Boolean(editingTemplate)
 
   React.useEffect(() => {
+    if (embedded) return
     document.documentElement.classList.toggle('dark', settings.theme === 'dark')
-  }, [settings.theme])
+    return () => document.documentElement.classList.remove('dark')
+  }, [embedded, settings.theme])
 
   React.useEffect(() => {
     const nextTab = getVisibleTab(settings)

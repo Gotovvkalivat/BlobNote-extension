@@ -1,1 +1,0 @@
-import"./globals-BhcTdOJI.js";import{c as t,j as e,R as o}from"./toast-BXKlu1yo.js";import{K as r}from"./KnowledgeBase-Bh8QsSZT.js";t.createRoot(document.getElementById("root")).render(e.jsx(o.StrictMode,{children:e.jsx(r,{})}));

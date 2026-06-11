@@ -10,6 +10,16 @@ import { ToastContainer } from '@/components/ui/toast'
 
 const SHADOW_THEME_STYLE = `
   :host {
+    all: initial;
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: visible !important;
+    z-index: 2147483647 !important;
+    display: block !important;
+    isolation: isolate;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -34,10 +44,16 @@ const SHADOW_THEME_STYLE = `
   }
 
   #opspost-content-root {
+    all: initial;
     color: hsl(var(--foreground));
+    display: block;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 14px;
     line-height: 1.5;
+    text-align: initial;
+    text-transform: none;
+    letter-spacing: 0;
+    direction: ltr;
   }
 
   #opspost-content-root .dark {
@@ -79,13 +95,29 @@ const SHADOW_THEME_STYLE = `
   }
 `
 
+function configureHost(host: HTMLElement) {
+  host.style.setProperty('all', 'initial', 'important')
+  host.style.setProperty('position', 'fixed', 'important')
+  host.style.setProperty('left', '0', 'important')
+  host.style.setProperty('top', '0', 'important')
+  host.style.setProperty('width', '0', 'important')
+  host.style.setProperty('height', '0', 'important')
+  host.style.setProperty('overflow', 'visible', 'important')
+  host.style.setProperty('display', 'block', 'important')
+  host.style.setProperty('z-index', '2147483647', 'important')
+  host.style.setProperty('isolation', 'isolate', 'important')
+}
+
 function createRootContainer(id: string) {
   let host = document.getElementById(id)
   if (!host) {
     host = document.createElement('div')
     host.id = id
-    document.documentElement.appendChild(host)
+    const parent = document.body || document.documentElement
+    parent.appendChild(host)
   }
+
+  configureHost(host)
 
   const shadow = host.shadowRoot || host.attachShadow({ mode: 'open' })
 
