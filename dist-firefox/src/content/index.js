@@ -11669,8 +11669,13 @@
           setCollapsed(false);
         }
         const panelHovered = Boolean(panelRef.current?.matches(":hover"));
+        const panelRoot = panelRef.current?.getRootNode();
+        const panelFocused = Boolean(
+          panelRef.current && panelRoot instanceof ShadowRoot && panelRoot.activeElement instanceof Element && panelRef.current.contains(panelRoot.activeElement)
+        );
+        const panelActive = panelHovered || panelFocused || settingsOpen;
         const editableFocused = isEditableElement(document.activeElement);
-        if (editableFocused || panelHovered) {
+        if (editableFocused || panelActive) {
           const rect = target2.getBoundingClientRect();
           const layoutHeight = panelRef.current?.offsetHeight || (favorites.length > 0 || clipboardItems.length > 0 ? 168 : 78);
           const visualHeight = layoutHeight * scale;
@@ -11690,7 +11695,11 @@
           return;
         }
         window.setTimeout(() => {
-          if (!panelRef.current?.matches(":hover")) setVisible(false);
+          const root = panelRef.current?.getRootNode();
+          const focused = Boolean(
+            panelRef.current && root instanceof ShadowRoot && root.activeElement instanceof Element && panelRef.current.contains(root.activeElement)
+          );
+          if (!panelRef.current?.matches(":hover") && !focused && !settingsOpen) setVisible(false);
         }, 150);
       };
       document.addEventListener("focusin", checkFocus, true);
@@ -11703,7 +11712,7 @@
         document.removeEventListener("input", checkFocus, true);
         window.clearInterval(interval);
       };
-    }, [clipboardItems.length, compactMode, enabled, favorites.length, placement, scale]);
+    }, [clipboardItems.length, compactMode, enabled, favorites.length, placement, scale, settingsOpen]);
     import_react3.default.useEffect(() => {
       if (!enabled || !clipboardEnabled) {
         setClipboardItems([]);
@@ -11798,7 +11807,8 @@
             left: position.left,
             transform: `scale(${scale})`,
             transformOrigin: "top left",
-            zIndex: 2147483640
+            zIndex: 2147483640,
+            color: "#ffffff"
           },
           className: "inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/20 bg-slate-950 px-2 text-[10px] font-semibold text-white shadow-[0_18px_42px_rgba(2,6,23,.42),0_0_0_1px_rgba(255,255,255,.12)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_rgba(2,6,23,.52),0_0_0_1px_rgba(255,255,255,.18)] active:scale-95",
           title: t("showPanel"),
@@ -11806,7 +11816,7 @@
           onClick: () => setCollapsed(false),
           children: [
             /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(BlobNoteMark, { className: "h-5 w-5 shrink-0" }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "max-w-[80px] truncate [text-shadow:0_1px_2px_rgba(0,0,0,.8)]", children: "BlobNote" })
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "max-w-[80px] truncate [text-shadow:0_1px_2px_rgba(0,0,0,.8)]", style: { color: "#ffffff" }, children: "BlobNote" })
           ]
         }
       );
