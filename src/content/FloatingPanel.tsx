@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { ClipboardList, Clock3, Database, Eraser, Maximize2, Minimize2, Pencil, Save, Send, Settings2, Trash2, X } from 'lucide-react'
+import { ClipboardList, Clock3, Database, Eraser, Minimize2, Pencil, Save, Send, Settings2, Trash2, X } from 'lucide-react'
 import type { AppSettings, RecentInsertion, SendMethod, SiteSettings, Template } from '@/types'
 import { translate } from '@/lib/i18n'
 import { showToast } from '@/components/ui/toast'
@@ -24,6 +24,31 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), Math.max(min, max))
 }
 
+function BlobNoteMark({ className = 'h-5 w-5' }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" className={className} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="blobnote-panel-mark" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#09B8F5" />
+          <stop offset="0.55" stopColor="#2C6DF6" />
+          <stop offset="1" stopColor="#7037F4" />
+        </linearGradient>
+        <linearGradient id="blobnote-panel-lines" x1="22" y1="28" x2="43" y2="43" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#16B7F3" />
+          <stop offset="1" stopColor="#6E3DF4" />
+        </linearGradient>
+      </defs>
+      <path d="M12.5 38.5C7.8 28.7 12.7 15.3 23.4 10.2C32 6.1 42.7 8.3 48.9 15.7C54.8 22.8 56.2 34.8 50.8 43.6C44.7 53.5 30.9 57.8 20.9 52.4C14.9 49.2 10.8 43.6 12.5 38.5Z" fill="url(#blobnote-panel-mark)" />
+      <circle cx="51.5" cy="14.5" r="4.5" fill="#2D74F7" />
+      <path d="M21 19.5C21 16.5 23.5 14 26.5 14H38.5L48 23.5V41.5C48 45.1 45.1 48 41.5 48H26.5C23.5 48 21 45.5 21 42.5V19.5Z" fill="white" />
+      <path d="M38.5 14V21.5C38.5 22.6 39.4 23.5 40.5 23.5H48" fill="#C9F3FF" stroke="#18AEEB" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M27 29.5H38.5" stroke="url(#blobnote-panel-lines)" strokeWidth="3.2" strokeLinecap="round" />
+      <path d="M27 36H42" stroke="url(#blobnote-panel-lines)" strokeWidth="3.2" strokeLinecap="round" />
+      <path d="M27 42.5H37" stroke="url(#blobnote-panel-lines)" strokeWidth="3.2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
   const [visible, setVisible] = React.useState(false)
   const [templates, setTemplates] = React.useState<Template[]>([])
@@ -36,10 +61,10 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
   const [language, setLanguage] = React.useState<'ru' | 'en'>('ru')
   const [collapsed, setCollapsed] = React.useState(false)
   const [settingsOpen, setSettingsOpen] = React.useState(false)
+  const [panelScale, setPanelScale] = React.useState<AppSettings['panelScale']>(uiScale)
   const [placement, setPlacement] = React.useState<AppSettings['panelPlacement']>('auto')
   const [compactMode, setCompactMode] = React.useState(false)
-  const [safeSendEnabled, setSafeSendEnabled] = React.useState(false)
-  const [safeSendDelay, setSafeSendDelay] = React.useState(5)
+  const [safeSendDelay, setSafeSendDelay] = React.useState(0)
   const [sendMethod, setSendMethod] = React.useState<SendMethod>('auto')
   const [sendButtonSelector, setSendButtonSelector] = React.useState('')
   const [editingTemplate, setEditingTemplate] = React.useState<Template | null>(null)
@@ -48,7 +73,11 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
   const panelRef = React.useRef<HTMLDivElement>(null)
   const targetRef = React.useRef<Element | null>(null)
   const t = React.useCallback((key: string) => translate(language, key), [language])
-  const scale = uiScaleFactor(uiScale)
+  const scale = uiScaleFactor(panelScale)
+
+  React.useEffect(() => {
+    setPanelScale(uiScale)
+  }, [uiScale])
 
   React.useEffect(() => {
     let mounted = true
@@ -62,9 +91,9 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
       setEnabled(snapshot.floatingPanelEnabled)
       setClipboardEnabled(snapshot.clipboardPanelEnabled)
       setLanguage(snapshot.uiLanguage)
+      setPanelScale(snapshot.panelScale)
       setPlacement(snapshot.panelPlacement)
       setCompactMode(snapshot.panelCompactMode)
-      setSafeSendEnabled(snapshot.safeSendEnabled)
       setSafeSendDelay(snapshot.safeSendDelay)
       setSendMethod(snapshot.sendMethod)
       setSendButtonSelector(snapshot.sendButtonSelector || '')
@@ -81,9 +110,9 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           changes.floatingPanelEnabled ||
           changes.clipboardPanelEnabled ||
           changes.uiLanguage ||
+          changes.panelScale ||
           changes.panelPlacement ||
           changes.panelCompactMode ||
-          changes.safeSendEnabled ||
           changes.safeSendDelay ||
           changes.sendMethod ||
           changes.sendButtonSelector ||
@@ -203,11 +232,24 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
   const target = getActiveEditableElement()
   const updateSiteSettings = (patch: SiteSettings) => {
     const host = window.location.hostname
-    if (!host || typeof chrome === 'undefined' || !chrome.storage?.sync) return
+    if (typeof chrome === 'undefined' || !chrome.storage?.sync) return
+
+    const globalPatch: Partial<AppSettings> = {}
+    if (patch.panelScale) globalPatch.panelScale = patch.panelScale
+    if (patch.panelPlacement) globalPatch.panelPlacement = patch.panelPlacement
+    if (typeof patch.panelCompactMode === 'boolean') globalPatch.panelCompactMode = patch.panelCompactMode
+    if (patch.sendMethod) globalPatch.sendMethod = patch.sendMethod
+    if ('sendButtonSelector' in patch) globalPatch.sendButtonSelector = patch.sendButtonSelector ?? null
+
+    if (!host) {
+      chrome.storage.sync.set(globalPatch)
+      return
+    }
 
     chrome.storage.sync.get({ siteSettings: {} }, (items) => {
       const siteSettings = items.siteSettings || {}
       chrome.storage.sync.set({
+        ...globalPatch,
         siteSettings: {
           ...siteSettings,
           [host]: {
@@ -217,6 +259,12 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
         },
       })
     })
+  }
+
+  const clearActiveField = () => {
+    if (!target) return
+    setNativeValue(target, '')
+    target.focus()
   }
 
   const startEditing = (template: Template) => {
@@ -263,13 +311,13 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           transformOrigin: 'top left',
           zIndex: 2147483640,
         }}
-        className="inline-flex h-8 items-center gap-1 rounded-lg border border-border bg-popover px-2 text-[10px] font-semibold text-popover-foreground shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95"
+        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-semibold text-slate-950 shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
         title={t('showPanel')}
         onMouseDown={(event) => event.preventDefault()}
         onClick={() => setCollapsed(false)}
       >
-        <Maximize2 className="h-3 w-3" />
-        BlobNote
+        <BlobNoteMark className="h-5 w-5 shrink-0" />
+        <span className="max-w-[80px] truncate">BlobNote</span>
       </button>
     )
   }
@@ -306,6 +354,16 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           <Button
             size="icon"
             variant="ghost"
+            className="h-6 w-6 text-destructive"
+            title={t('clear')}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={clearActiveField}
+          >
+            <Eraser className="h-3 w-3" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
             className="h-6 w-6"
             title={t('hidePanel')}
             onMouseDown={(event) => event.preventDefault()}
@@ -327,105 +385,107 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
       </div>
 
       {settingsOpen && (
-        <div className="mb-2 grid gap-2 rounded-md border bg-muted/30 p-2 text-[10px]">
-          <div className="grid grid-cols-2 gap-2">
-            <label className="flex items-center justify-between gap-2">
-              <span>{t('panelScale')}</span>
-              <select
-                className="h-6 rounded border bg-background px-1"
-                value={uiScale}
-                onChange={(event) => updateSiteSettings({ panelScale: event.target.value as AppSettings['panelScale'] })}
-              >
-                {UI_SCALE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-              </select>
-            </label>
-            <label className="flex items-center justify-between gap-2">
-              <span>{t('panelPosition')}</span>
-              <select
-                className="h-6 rounded border bg-background px-1"
-                value={placement}
-                onChange={(event) => updateSiteSettings({ panelPlacement: event.target.value as AppSettings['panelPlacement'] })}
-              >
-                <option value="auto">{t('auto')}</option>
-                <option value="above">{t('aboveField')}</option>
-                <option value="below">{t('belowField')}</option>
-                <option value="top-right">{t('topRight')}</option>
-                <option value="bottom-right">{t('bottomRight')}</option>
-              </select>
-            </label>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <label className="flex items-center gap-1.5">
-              <input type="checkbox" checked={compactMode} onChange={(event) => updateSiteSettings({ panelCompactMode: event.target.checked })} />
-              <span>{t('compactPanel')}</span>
-            </label>
-            <label className="flex items-center gap-1.5">
+        <div className="mb-2 grid gap-3 rounded-lg border bg-background/95 p-3 text-[11px] shadow-sm">
+          <div className="grid gap-2">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{t('panelDisplay')}</div>
+            <div className="grid grid-cols-2 gap-2">
+              <label className="grid gap-1">
+                <span className="text-muted-foreground">{t('panelScale')}</span>
+                <select
+                  className="h-8 rounded-md border bg-background px-2 text-xs"
+                  value={panelScale}
+                  onChange={(event) => {
+                    const value = event.target.value as AppSettings['panelScale']
+                    setPanelScale(value)
+                    updateSiteSettings({ panelScale: value })
+                  }}
+                >
+                  {UI_SCALE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                </select>
+              </label>
+              <label className="grid gap-1">
+                <span className="text-muted-foreground">{t('panelPosition')}</span>
+                <select
+                  className="h-8 rounded-md border bg-background px-2 text-xs"
+                  value={placement}
+                  onChange={(event) => {
+                    const value = event.target.value as AppSettings['panelPlacement']
+                    setPlacement(value)
+                    updateSiteSettings({ panelPlacement: value })
+                  }}
+                >
+                  <option value="auto">{t('auto')}</option>
+                  <option value="above">{t('aboveField')}</option>
+                  <option value="below">{t('belowField')}</option>
+                  <option value="top-right">{t('topRight')}</option>
+                  <option value="bottom-right">{t('bottomRight')}</option>
+                </select>
+              </label>
+            </div>
+            <label className="flex items-center gap-2 rounded-md border bg-muted/30 px-2 py-1.5">
               <input
                 type="checkbox"
-                checked={safeSendEnabled}
-                onChange={(event) => chrome.storage?.sync?.set({ safeSendEnabled: event.target.checked })}
+                checked={!compactMode}
+                onChange={(event) => {
+                  const nextCompactMode = !event.target.checked
+                  setCompactMode(nextCompactMode)
+                  updateSiteSettings({ panelCompactMode: nextCompactMode })
+                }}
               />
-              <span>{t('safeSend')}</span>
+              <span>{t('compactPanel')}</span>
             </label>
           </div>
-          <label className="flex items-center justify-between gap-2">
-            <span>{t('safeSendDelay')}</span>
-            <select
-              className="h-6 rounded border bg-background px-1"
-              value={safeSendDelay}
-              onChange={(event) => chrome.storage?.sync?.set({ safeSendDelay: parseInt(event.target.value, 10) })}
-            >
-              {Array.from({ length: 13 }, (_, index) => index + 3).map((value) => <option key={value} value={value}>{value} c</option>)}
-            </select>
-          </label>
-          <label className="flex items-center justify-between gap-2">
-            <span>{t('sendMethod')}</span>
-            <select
-              className="h-6 rounded border bg-background px-1"
-              value={sendMethod}
-              onChange={(event) => {
-                const value = event.target.value as SendMethod
-                setSendMethod(value)
-                updateSiteSettings({ sendMethod: value })
-              }}
-            >
-              <option value="auto">{t('sendAuto')}</option>
-              <option value="button">{t('sendButton')}</option>
-              <option value="enter">{t('sendEnter')}</option>
-              <option value="ctrl-enter">{t('sendCtrlEnter')}</option>
-              <option value="shift-enter">{t('sendShiftEnter')}</option>
-              <option value="alt-enter">{t('sendAltEnter')}</option>
-            </select>
-          </label>
-          {sendMethod === 'button' && (
+
+          <div className="grid gap-2">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{t('sendSettings')}</div>
             <label className="grid gap-1">
-              <span>{t('sendButtonSelector')}</span>
-              <input
-                className="h-7 min-w-0 rounded border bg-background px-2 text-[10px]"
-                value={sendButtonSelector}
+              <span className="text-muted-foreground">{t('safeSendDelay')}</span>
+              <select
+                className="h-8 rounded-md border bg-background px-2 text-xs"
+                value={safeSendDelay}
                 onChange={(event) => {
-                  setSendButtonSelector(event.target.value)
-                  updateSiteSettings({ sendButtonSelector: event.target.value.trim() || null })
+                  const value = parseInt(event.target.value, 10)
+                  setSafeSendDelay(value)
+                  chrome.storage?.sync?.set({ safeSendDelay: value, safeSendEnabled: value > 0 })
                 }}
-                placeholder="button[type='submit']"
-              />
+              >
+                {[0, ...Array.from({ length: 13 }, (_, index) => index + 3)].map((value) => <option key={value} value={value}>{value} c</option>)}
+              </select>
             </label>
-          )}
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-6 justify-start text-[10px] text-destructive"
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => {
-              if (target) {
-                setNativeValue(target, '')
-                target.focus()
-              }
-            }}
-          >
-            <Eraser className="mr-1 h-3 w-3" />
-            {t('clear')}
-          </Button>
+            <label className="grid gap-1">
+              <span className="text-muted-foreground">{t('sendMethod')}</span>
+              <select
+                className="h-8 rounded-md border bg-background px-2 text-xs"
+                value={sendMethod}
+                onChange={(event) => {
+                  const value = event.target.value as SendMethod
+                  setSendMethod(value)
+                  updateSiteSettings({ sendMethod: value })
+                }}
+              >
+                <option value="auto">{t('sendAuto')}</option>
+                <option value="button">{t('sendButton')}</option>
+                <option value="enter">{t('sendEnter')}</option>
+                <option value="ctrl-enter">{t('sendCtrlEnter')}</option>
+                <option value="shift-enter">{t('sendShiftEnter')}</option>
+                <option value="alt-enter">{t('sendAltEnter')}</option>
+              </select>
+            </label>
+            {sendMethod === 'button' && (
+              <label className="grid gap-1">
+                <span className="text-muted-foreground">{t('sendButtonSelector')}</span>
+                <input
+                  className="h-8 min-w-0 rounded-md border bg-background px-2 text-xs"
+                  value={sendButtonSelector}
+                  onChange={(event) => {
+                    setSendButtonSelector(event.target.value)
+                    updateSiteSettings({ sendButtonSelector: event.target.value.trim() || null })
+                  }}
+                  placeholder="button[type='submit']"
+                />
+              </label>
+            )}
+          </div>
         </div>
       )}
 

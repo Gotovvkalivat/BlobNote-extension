@@ -21,6 +21,7 @@ import {
   PanelTopOpen,
   Settings,
   Upload,
+  ZoomIn,
 } from 'lucide-react'
 
 export function Popup() {
@@ -96,7 +97,7 @@ export function Popup() {
               </div>
               <div className="grid gap-1.5 leading-relaxed text-muted-foreground">
                 <span>{t('onboardingStepBase')}</span>
-                {settings.atMenuEnabled && <span>{t('onboardingStepSearch', { trigger: settings.searchTrigger })}</span>}
+                {settings.atMenuEnabled && <OnboardingSearchStep language={settings.uiLanguage} trigger={settings.searchTrigger} />}
                 <span>{t('onboardingStepPanel')}</span>
               </div>
             </section>
@@ -113,9 +114,7 @@ export function Popup() {
             <ExternalLink className="mr-2 h-3 w-3" />
             {t('openBaseTab')}
           </Button>
-          <p className="text-[11px] leading-relaxed text-muted-foreground">
-            {t('quickInsertHint', { trigger: settings.searchTrigger })}
-          </p>
+          <QuickInsertHint language={settings.uiLanguage} trigger={settings.searchTrigger} atMenuEnabled={settings.atMenuEnabled} />
 
           <div className="grid gap-3 text-xs">
             {settings.atMenuEnabled && (
@@ -125,7 +124,7 @@ export function Popup() {
                   {t('triggerMenuTitle', { trigger: settings.searchTrigger })}
                 </h3>
                 <p className="leading-relaxed text-muted-foreground">
-                  {t('triggerMenuHelp', { trigger: settings.searchTrigger })}
+                  <TriggerMenuHelp language={settings.uiLanguage} trigger={settings.searchTrigger} />
                 </p>
               </section>
             )}
@@ -159,7 +158,7 @@ export function Popup() {
               onCheckedChange={(checked) => updateSettings({ theme: checked ? 'dark' : 'light' })}
             />
             <SelectRow
-              icon={<Languages className="h-3.5 w-3.5" />}
+              icon={<ZoomIn className="h-3.5 w-3.5" />}
               label={t('interfaceScale')}
               value={settings.uiScale}
               onChange={(value) => updateSettings({ uiScale: value as AppSettings['uiScale'] })}
@@ -334,4 +333,67 @@ function usePopupActions() {
   }, [importToStore, settings.uiLanguage])
 
   return { settings, updateSettings, exportTemplates, importTemplates }
+}
+
+function Kbd({ children }: { children: React.ReactNode }) {
+  return (
+    <kbd className="mx-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-md border border-border bg-muted px-1.5 text-[10px] font-semibold leading-none text-foreground shadow-sm">
+      {children}
+    </kbd>
+  )
+}
+
+function Hotkey({ keys }: { keys: string[] }) {
+  return (
+    <span className="inline-flex items-center gap-0.5 whitespace-nowrap">
+      {keys.map((key, index) => (
+        <React.Fragment key={key}>
+          {index > 0 && <span className="text-muted-foreground">+</span>}
+          <Kbd>{key}</Kbd>
+        </React.Fragment>
+      ))}
+    </span>
+  )
+}
+
+function QuickInsertHint({
+  language,
+  trigger,
+  atMenuEnabled,
+}: {
+  language: AppSettings['uiLanguage']
+  trigger: AppSettings['searchTrigger']
+  atMenuEnabled: boolean
+}) {
+  if (language === 'en') {
+    return (
+      <p className="text-[11px] leading-relaxed text-muted-foreground">
+        Use the floating panel near the field, {atMenuEnabled && <><Kbd>{trigger}</Kbd> search, </>}
+        or <Hotkey keys={['Ctrl', 'Space']} />. Open the base over a site with <Hotkey keys={['Ctrl', 'Shift', 'Space']} />.
+      </p>
+    )
+  }
+
+  return (
+    <p className="text-[11px] leading-relaxed text-muted-foreground">
+      Для быстрой вставки используйте плавающую панель у поля, {atMenuEnabled && <><Kbd>{trigger}</Kbd>-поиск, </>}
+      или <Hotkey keys={['Ctrl', 'Space']} />. База поверх сайта открывается через <Hotkey keys={['Ctrl', 'Shift', 'Space']} />.
+    </p>
+  )
+}
+
+function TriggerMenuHelp({ language, trigger }: { language: AppSettings['uiLanguage']; trigger: AppSettings['searchTrigger'] }) {
+  if (language === 'en') {
+    return <>Type <Kbd>{trigger}</Kbd> in an input field and start typing a note title.</>
+  }
+
+  return <>Введите <Kbd>{trigger}</Kbd> в поле ввода и начните печатать название заметки.</>
+}
+
+function OnboardingSearchStep({ language, trigger }: { language: AppSettings['uiLanguage']; trigger: AppSettings['searchTrigger'] }) {
+  if (language === 'en') {
+    return <span>2. Type <Kbd>{trigger}</Kbd> in a message field to find a note without changing tabs.</span>
+  }
+
+  return <span>2. Введите <Kbd>{trigger}</Kbd> в поле сообщения, чтобы найти заметку без переключения вкладок.</span>
 }

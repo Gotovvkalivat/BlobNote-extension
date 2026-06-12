@@ -10142,7 +10142,7 @@
     {
       variants: {
         variant: {
-          default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          default: "bg-primary text-white shadow hover:bg-primary/90 hover:text-white",
           destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
           outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
           secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
@@ -10427,14 +10427,6 @@
     ["path", { d: "M13 18h8", key: "oe0vm4" }]
   ]);
 
-  // node_modules/lucide-react/dist/esm/icons/maximize-2.js
-  var Maximize2 = createLucideIcon("Maximize2", [
-    ["polyline", { points: "15 3 21 3 21 9", key: "mznyad" }],
-    ["polyline", { points: "9 21 3 21 3 15", key: "1avn1i" }],
-    ["line", { x1: "21", x2: "14", y1: "3", y2: "10", key: "ota7mn" }],
-    ["line", { x1: "3", x2: "10", y1: "21", y2: "14", key: "1atl0r" }]
-  ]);
-
   // node_modules/lucide-react/dist/esm/icons/minimize-2.js
   var Minimize2 = createLucideIcon("Minimize2", [
     ["polyline", { points: "4 14 10 14 10 20", key: "11kfnr" }],
@@ -10702,13 +10694,15 @@
     showPanel: "\u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u043F\u0430\u043D\u0435\u043B\u044C",
     clipboardCleared: "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0431\u0443\u0444\u0435\u0440\u0430 \u043E\u0447\u0438\u0449\u0435\u043D\u0430",
     panelSettings: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 \u043F\u0430\u043D\u0435\u043B\u0438",
+    panelDisplay: "\u0412\u0438\u0434 \u043F\u0430\u043D\u0435\u043B\u0438",
     panelScale: "\u041C\u0430\u0441\u0448\u0442\u0430\u0431 \u043F\u0430\u043D\u0435\u043B\u0438",
     panelPosition: "\u041F\u043E\u043B\u043E\u0436\u0435\u043D\u0438\u0435",
     aboveField: "\u041D\u0430\u0434 \u043F\u043E\u043B\u0435\u043C",
     belowField: "\u041F\u043E\u0434 \u043F\u043E\u043B\u0435\u043C",
     topRight: "\u0421\u043F\u0440\u0430\u0432\u0430 \u0441\u0432\u0435\u0440\u0445\u0443",
     bottomRight: "\u0421\u043F\u0440\u0430\u0432\u0430 \u0441\u043D\u0438\u0437\u0443",
-    compactPanel: "\u041A\u043E\u043C\u043F\u0430\u043A\u0442\u043D\u0430\u044F \u043F\u0430\u043D\u0435\u043B\u044C",
+    compactPanel: "\u041F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0442\u044C \u043D\u0435\u0434\u0430\u0432\u043D\u0438\u0435 \u0432\u0441\u0442\u0430\u0432\u043A\u0438",
+    sendSettings: "\u041E\u0442\u043F\u0440\u0430\u0432\u043A\u0430",
     safeSend: "\u0411\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u0430\u044F \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0430",
     safeSendDelay: "\u0417\u0430\u0434\u0435\u0440\u0436\u043A\u0430 \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0438",
     sendMethod: "\u041A\u0430\u043A \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u044F\u0442\u044C",
@@ -10875,13 +10869,15 @@
     showPanel: "Show panel",
     clipboardCleared: "Clipboard history cleared",
     panelSettings: "Panel settings",
+    panelDisplay: "Panel view",
     panelScale: "Panel scale",
     panelPosition: "Position",
     aboveField: "Above field",
     belowField: "Below field",
     topRight: "Top right",
     bottomRight: "Bottom right",
-    compactPanel: "Compact panel",
+    compactPanel: "Show recent inserts",
+    sendSettings: "Sending",
     safeSend: "Safe send",
     safeSendDelay: "Send delay",
     sendMethod: "Send with",
@@ -11039,7 +11035,7 @@
     panelPlacement: "auto",
     panelCompactMode: false,
     safeSendEnabled: false,
-    safeSendDelay: 5,
+    safeSendDelay: 0,
     sendMethod: "auto",
     sendButtonSelector: null,
     atMenuEnabled: false,
@@ -11069,7 +11065,7 @@
         panelPlacement: "auto",
         panelCompactMode: false,
         safeSendEnabled: false,
-        safeSendDelay: 5,
+        safeSendDelay: 0,
         sendMethod: "auto",
         sendButtonSelector: null,
         atMenuEnabled: false,
@@ -11090,6 +11086,7 @@
         const variables = normalizeVariables(data.variables);
         const siteSettings = normalizeSiteSettings(data.siteSettings);
         const currentSiteSettings = siteSettings[window.location.hostname] || {};
+        const safeSendDelay = data.safeSendEnabled ? normalizeSafeSendDelay(data.safeSendDelay) : 0;
         cachedVariablesEnabled = variablesEnabled;
         cachedVariables = variablesEnabled ? variables : [];
         resolve({
@@ -11103,7 +11100,7 @@
           panelPlacement: currentSiteSettings.panelPlacement || normalizePanelPlacement(data.panelPlacement),
           panelCompactMode: currentSiteSettings.panelCompactMode ?? data.panelCompactMode ?? false,
           safeSendEnabled: data.safeSendEnabled ?? false,
-          safeSendDelay: normalizeSafeSendDelay(data.safeSendDelay),
+          safeSendDelay,
           sendMethod: currentSiteSettings.sendMethod || normalizeSendMethod(data.sendMethod),
           sendButtonSelector: currentSiteSettings.sendButtonSelector ?? normalizeSendButtonSelector(data.sendButtonSelector),
           atMenuEnabled: data.atMenuEnabled ?? false,
@@ -11173,7 +11170,7 @@
   }
   function normalizeSafeSendDelay(value) {
     const numeric = typeof value === "number" ? value : parseInt(String(value || ""), 10);
-    if (Number.isNaN(numeric)) return 5;
+    if (Number.isNaN(numeric) || numeric <= 0) return 0;
     return Math.min(15, Math.max(3, numeric));
   }
   function normalizeSendMethod(value) {
@@ -11310,8 +11307,7 @@
   function readAutoSendSettings() {
     if (!hasChromeStorage()) {
       return Promise.resolve({
-        enabled: false,
-        delaySeconds: 5,
+        delaySeconds: 0,
         sendMethod: "auto",
         sendButtonSelector: null
       });
@@ -11319,16 +11315,16 @@
     return new Promise((resolve) => {
       chrome.storage.sync.get({
         safeSendEnabled: false,
-        safeSendDelay: 5,
+        safeSendDelay: 0,
         sendMethod: "auto",
         sendButtonSelector: null,
         siteSettings: {}
       }, (items) => {
         const siteSettings = normalizeSiteSettings(items.siteSettings);
         const currentSiteSettings = siteSettings[window.location.hostname] || {};
+        const delaySeconds = items.safeSendEnabled ? normalizeSafeSendDelay(items.safeSendDelay) : 0;
         resolve({
-          enabled: Boolean(items.safeSendEnabled),
-          delaySeconds: normalizeSafeSendDelay(items.safeSendDelay),
+          delaySeconds,
           sendMethod: currentSiteSettings.sendMethod || normalizeSendMethod(items.sendMethod),
           sendButtonSelector: currentSiteSettings.sendButtonSelector ?? normalizeSendButtonSelector(items.sendButtonSelector)
         });
@@ -11382,7 +11378,7 @@
   function scheduleAutoSend(target, crm) {
     void readAutoSendSettings().then((settings) => {
       const send = () => runConfiguredSend(target, crm, settings);
-      if (!settings.enabled) {
+      if (settings.delaySeconds <= 0) {
         window.setTimeout(send, 150);
         return;
       }
@@ -11443,6 +11439,28 @@
   function clamp(value, min, max) {
     return Math.min(Math.max(value, min), Math.max(min, max));
   }
+  function BlobNoteMark({ className = "h-5 w-5" }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { "aria-hidden": "true", className, viewBox: "0 0 64 64", fill: "none", xmlns: "http://www.w3.org/2000/svg", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("defs", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("linearGradient", { id: "blobnote-panel-mark", x1: "10", y1: "8", x2: "54", y2: "58", gradientUnits: "userSpaceOnUse", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("stop", { stopColor: "#09B8F5" }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("stop", { offset: "0.55", stopColor: "#2C6DF6" }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("stop", { offset: "1", stopColor: "#7037F4" })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("linearGradient", { id: "blobnote-panel-lines", x1: "22", y1: "28", x2: "43", y2: "43", gradientUnits: "userSpaceOnUse", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("stop", { stopColor: "#16B7F3" }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("stop", { offset: "1", stopColor: "#6E3DF4" })
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M12.5 38.5C7.8 28.7 12.7 15.3 23.4 10.2C32 6.1 42.7 8.3 48.9 15.7C54.8 22.8 56.2 34.8 50.8 43.6C44.7 53.5 30.9 57.8 20.9 52.4C14.9 49.2 10.8 43.6 12.5 38.5Z", fill: "url(#blobnote-panel-mark)" }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "51.5", cy: "14.5", r: "4.5", fill: "#2D74F7" }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M21 19.5C21 16.5 23.5 14 26.5 14H38.5L48 23.5V41.5C48 45.1 45.1 48 41.5 48H26.5C23.5 48 21 45.5 21 42.5V19.5Z", fill: "white" }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M38.5 14V21.5C38.5 22.6 39.4 23.5 40.5 23.5H48", fill: "#C9F3FF", stroke: "#18AEEB", strokeWidth: "2", strokeLinejoin: "round" }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M27 29.5H38.5", stroke: "url(#blobnote-panel-lines)", strokeWidth: "3.2", strokeLinecap: "round" }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M27 36H42", stroke: "url(#blobnote-panel-lines)", strokeWidth: "3.2", strokeLinecap: "round" }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M27 42.5H37", stroke: "url(#blobnote-panel-lines)", strokeWidth: "3.2", strokeLinecap: "round" })
+    ] });
+  }
   function FloatingPanel({ uiScale, onOpenBase }) {
     const [visible, setVisible] = import_react3.default.useState(false);
     const [templates, setTemplates] = import_react3.default.useState([]);
@@ -11455,10 +11473,10 @@
     const [language, setLanguage] = import_react3.default.useState("ru");
     const [collapsed, setCollapsed] = import_react3.default.useState(false);
     const [settingsOpen, setSettingsOpen] = import_react3.default.useState(false);
+    const [panelScale, setPanelScale] = import_react3.default.useState(uiScale);
     const [placement, setPlacement] = import_react3.default.useState("auto");
     const [compactMode, setCompactMode] = import_react3.default.useState(false);
-    const [safeSendEnabled, setSafeSendEnabled] = import_react3.default.useState(false);
-    const [safeSendDelay, setSafeSendDelay] = import_react3.default.useState(5);
+    const [safeSendDelay, setSafeSendDelay] = import_react3.default.useState(0);
     const [sendMethod, setSendMethod] = import_react3.default.useState("auto");
     const [sendButtonSelector, setSendButtonSelector] = import_react3.default.useState("");
     const [editingTemplate, setEditingTemplate] = import_react3.default.useState(null);
@@ -11467,7 +11485,10 @@
     const panelRef = import_react3.default.useRef(null);
     const targetRef = import_react3.default.useRef(null);
     const t = import_react3.default.useCallback((key) => translate(language, key), [language]);
-    const scale = uiScaleFactor(uiScale);
+    const scale = uiScaleFactor(panelScale);
+    import_react3.default.useEffect(() => {
+      setPanelScale(uiScale);
+    }, [uiScale]);
     import_react3.default.useEffect(() => {
       let mounted = true;
       const loadSnapshot = async () => {
@@ -11479,16 +11500,16 @@
         setEnabled(snapshot.floatingPanelEnabled);
         setClipboardEnabled(snapshot.clipboardPanelEnabled);
         setLanguage(snapshot.uiLanguage);
+        setPanelScale(snapshot.panelScale);
         setPlacement(snapshot.panelPlacement);
         setCompactMode(snapshot.panelCompactMode);
-        setSafeSendEnabled(snapshot.safeSendEnabled);
         setSafeSendDelay(snapshot.safeSendDelay);
         setSendMethod(snapshot.sendMethod);
         setSendButtonSelector(snapshot.sendButtonSelector || "");
       };
       void loadSnapshot();
       const handleStorage = (changes, area) => {
-        if (area === "sync" && (changes.templates || changes.recentInsertions || changes.floatingPanelEnabled || changes.clipboardPanelEnabled || changes.uiLanguage || changes.panelPlacement || changes.panelCompactMode || changes.safeSendEnabled || changes.safeSendDelay || changes.sendMethod || changes.sendButtonSelector || changes.siteSettings)) {
+        if (area === "sync" && (changes.templates || changes.recentInsertions || changes.floatingPanelEnabled || changes.clipboardPanelEnabled || changes.uiLanguage || changes.panelScale || changes.panelPlacement || changes.panelCompactMode || changes.safeSendDelay || changes.sendMethod || changes.sendButtonSelector || changes.siteSettings)) {
           void loadSnapshot();
         }
       };
@@ -11577,10 +11598,21 @@
     const target = getActiveEditableElement();
     const updateSiteSettings = (patch) => {
       const host = window.location.hostname;
-      if (!host || typeof chrome === "undefined" || !chrome.storage?.sync) return;
+      if (typeof chrome === "undefined" || !chrome.storage?.sync) return;
+      const globalPatch = {};
+      if (patch.panelScale) globalPatch.panelScale = patch.panelScale;
+      if (patch.panelPlacement) globalPatch.panelPlacement = patch.panelPlacement;
+      if (typeof patch.panelCompactMode === "boolean") globalPatch.panelCompactMode = patch.panelCompactMode;
+      if (patch.sendMethod) globalPatch.sendMethod = patch.sendMethod;
+      if ("sendButtonSelector" in patch) globalPatch.sendButtonSelector = patch.sendButtonSelector ?? null;
+      if (!host) {
+        chrome.storage.sync.set(globalPatch);
+        return;
+      }
       chrome.storage.sync.get({ siteSettings: {} }, (items) => {
         const siteSettings = items.siteSettings || {};
         chrome.storage.sync.set({
+          ...globalPatch,
           siteSettings: {
             ...siteSettings,
             [host]: {
@@ -11590,6 +11622,11 @@
           }
         });
       });
+    };
+    const clearActiveField = () => {
+      if (!target) return;
+      setNativeValue(target, "");
+      target.focus();
     };
     const startEditing = (template) => {
       setEditingTemplate(template);
@@ -11630,13 +11667,13 @@
             transformOrigin: "top left",
             zIndex: 2147483640
           },
-          className: "inline-flex h-8 items-center gap-1 rounded-lg border border-border bg-popover px-2 text-[10px] font-semibold text-popover-foreground shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95",
+          className: "inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-semibold text-slate-950 shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 dark:border-slate-700 dark:bg-slate-950 dark:text-white",
           title: t("showPanel"),
           onMouseDown: (event) => event.preventDefault(),
           onClick: () => setCollapsed(false),
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Maximize2, { className: "h-3 w-3" }),
-            "BlobNote"
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(BlobNoteMark, { className: "h-5 w-5 shrink-0" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "max-w-[80px] truncate", children: "BlobNote" })
           ]
         }
       );
@@ -11676,6 +11713,18 @@
                 {
                   size: "icon",
                   variant: "ghost",
+                  className: "h-6 w-6 text-destructive",
+                  title: t("clear"),
+                  onMouseDown: (event) => event.preventDefault(),
+                  onClick: clearActiveField,
+                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Eraser, { className: "h-3 w-3" })
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                Button,
+                {
+                  size: "icon",
+                  variant: "ghost",
                   className: "h-6 w-6",
                   title: t("hidePanel"),
                   onMouseDown: (event) => event.preventDefault(),
@@ -11699,128 +11748,125 @@
               )
             ] })
           ] }),
-          settingsOpen && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-2 grid gap-2 rounded-md border bg-muted/30 p-2 text-[10px]", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid grid-cols-2 gap-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center justify-between gap-2", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("panelScale") }),
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-                  "select",
-                  {
-                    className: "h-6 rounded border bg-background px-1",
-                    value: uiScale,
-                    onChange: (event) => updateSiteSettings({ panelScale: event.target.value }),
-                    children: UI_SCALE_OPTIONS.map((option) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: option.value, children: option.label }, option.value))
-                  }
-                )
+          settingsOpen && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-2 grid gap-3 rounded-lg border bg-background/95 p-3 text-[11px] shadow-sm", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid gap-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: t("panelDisplay") }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid grid-cols-2 gap-2", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-muted-foreground", children: t("panelScale") }),
+                  /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                    "select",
+                    {
+                      className: "h-8 rounded-md border bg-background px-2 text-xs",
+                      value: panelScale,
+                      onChange: (event) => {
+                        const value = event.target.value;
+                        setPanelScale(value);
+                        updateSiteSettings({ panelScale: value });
+                      },
+                      children: UI_SCALE_OPTIONS.map((option) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: option.value, children: option.label }, option.value))
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-muted-foreground", children: t("panelPosition") }),
+                  /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+                    "select",
+                    {
+                      className: "h-8 rounded-md border bg-background px-2 text-xs",
+                      value: placement,
+                      onChange: (event) => {
+                        const value = event.target.value;
+                        setPlacement(value);
+                        updateSiteSettings({ panelPlacement: value });
+                      },
+                      children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "auto", children: t("auto") }),
+                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "above", children: t("aboveField") }),
+                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "below", children: t("belowField") }),
+                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "top-right", children: t("topRight") }),
+                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "bottom-right", children: t("bottomRight") })
+                      ]
+                    }
+                  )
+                ] })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center justify-between gap-2", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("panelPosition") }),
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
-                  "select",
-                  {
-                    className: "h-6 rounded border bg-background px-1",
-                    value: placement,
-                    onChange: (event) => updateSiteSettings({ panelPlacement: event.target.value }),
-                    children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "auto", children: t("auto") }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "above", children: t("aboveField") }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "below", children: t("belowField") }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "top-right", children: t("topRight") }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "bottom-right", children: t("bottomRight") })
-                    ]
-                  }
-                )
-              ] })
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid grid-cols-2 gap-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center gap-1.5", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("input", { type: "checkbox", checked: compactMode, onChange: (event) => updateSiteSettings({ panelCompactMode: event.target.checked }) }),
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("compactPanel") })
-              ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center gap-1.5", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center gap-2 rounded-md border bg-muted/30 px-2 py-1.5", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
                   "input",
                   {
                     type: "checkbox",
-                    checked: safeSendEnabled,
-                    onChange: (event) => chrome.storage?.sync?.set({ safeSendEnabled: event.target.checked })
+                    checked: !compactMode,
+                    onChange: (event) => {
+                      const nextCompactMode = !event.target.checked;
+                      setCompactMode(nextCompactMode);
+                      updateSiteSettings({ panelCompactMode: nextCompactMode });
+                    }
                   }
                 ),
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("safeSend") })
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("compactPanel") })
               ] })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center justify-between gap-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("safeSendDelay") }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-                "select",
-                {
-                  className: "h-6 rounded border bg-background px-1",
-                  value: safeSendDelay,
-                  onChange: (event) => chrome.storage?.sync?.set({ safeSendDelay: parseInt(event.target.value, 10) }),
-                  children: Array.from({ length: 13 }, (_, index) => index + 3).map((value) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("option", { value, children: [
-                    value,
-                    " c"
-                  ] }, value))
-                }
-              )
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center justify-between gap-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("sendMethod") }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
-                "select",
-                {
-                  className: "h-6 rounded border bg-background px-1",
-                  value: sendMethod,
-                  onChange: (event) => {
-                    const value = event.target.value;
-                    setSendMethod(value);
-                    updateSiteSettings({ sendMethod: value });
-                  },
-                  children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "auto", children: t("sendAuto") }),
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "button", children: t("sendButton") }),
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "enter", children: t("sendEnter") }),
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "ctrl-enter", children: t("sendCtrlEnter") }),
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "shift-enter", children: t("sendShiftEnter") }),
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "alt-enter", children: t("sendAltEnter") })
-                  ]
-                }
-              )
-            ] }),
-            sendMethod === "button" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("sendButtonSelector") }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-                "input",
-                {
-                  className: "h-7 min-w-0 rounded border bg-background px-2 text-[10px]",
-                  value: sendButtonSelector,
-                  onChange: (event) => {
-                    setSendButtonSelector(event.target.value);
-                    updateSiteSettings({ sendButtonSelector: event.target.value.trim() || null });
-                  },
-                  placeholder: "button[type='submit']"
-                }
-              )
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
-              Button,
-              {
-                size: "sm",
-                variant: "ghost",
-                className: "h-6 justify-start text-[10px] text-destructive",
-                onMouseDown: (event) => event.preventDefault(),
-                onClick: () => {
-                  if (target) {
-                    setNativeValue(target, "");
-                    target.focus();
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid gap-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: t("sendSettings") }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-muted-foreground", children: t("safeSendDelay") }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                  "select",
+                  {
+                    className: "h-8 rounded-md border bg-background px-2 text-xs",
+                    value: safeSendDelay,
+                    onChange: (event) => {
+                      const value = parseInt(event.target.value, 10);
+                      setSafeSendDelay(value);
+                      chrome.storage?.sync?.set({ safeSendDelay: value, safeSendEnabled: value > 0 });
+                    },
+                    children: [0, ...Array.from({ length: 13 }, (_, index) => index + 3)].map((value) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("option", { value, children: [
+                      value,
+                      " c"
+                    ] }, value))
                   }
-                },
-                children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Eraser, { className: "mr-1 h-3 w-3" }),
-                  t("clear")
-                ]
-              }
-            )
+                )
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-muted-foreground", children: t("sendMethod") }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+                  "select",
+                  {
+                    className: "h-8 rounded-md border bg-background px-2 text-xs",
+                    value: sendMethod,
+                    onChange: (event) => {
+                      const value = event.target.value;
+                      setSendMethod(value);
+                      updateSiteSettings({ sendMethod: value });
+                    },
+                    children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "auto", children: t("sendAuto") }),
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "button", children: t("sendButton") }),
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "enter", children: t("sendEnter") }),
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "ctrl-enter", children: t("sendCtrlEnter") }),
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "shift-enter", children: t("sendShiftEnter") }),
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "alt-enter", children: t("sendAltEnter") })
+                    ]
+                  }
+                )
+              ] }),
+              sendMethod === "button" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-muted-foreground", children: t("sendButtonSelector") }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                  "input",
+                  {
+                    className: "h-8 min-w-0 rounded-md border bg-background px-2 text-xs",
+                    value: sendButtonSelector,
+                    onChange: (event) => {
+                      setSendButtonSelector(event.target.value);
+                      updateSiteSettings({ sendButtonSelector: event.target.value.trim() || null });
+                    },
+                    placeholder: "button[type='submit']"
+                  }
+                )
+              ] })
+            ] })
           ] }),
           editingTemplate && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-2 rounded-md border bg-muted/30 p-2", children: [
             /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
@@ -12439,7 +12485,7 @@
     panelPlacement: "auto",
     panelCompactMode: false,
     safeSendEnabled: false,
-    safeSendDelay: 5,
+    safeSendDelay: 0,
     sendMethod: "auto",
     sendButtonSelector: null,
     atMenuEnabled: false,
@@ -12547,6 +12593,7 @@
   function normalizeSafeSendDelay2(value) {
     const numeric = typeof value === "number" ? value : parseInt(String(value || ""), 10);
     if (Number.isNaN(numeric)) return defaultSettings.safeSendDelay;
+    if (numeric <= 0) return 0;
     return Math.min(15, Math.max(3, numeric));
   }
   function normalizeSendMethod2(value) {
@@ -12607,7 +12654,7 @@
         panelPlacement: normalizePanelPlacement2(snapshot.panelPlacement),
         panelCompactMode: snapshot.panelCompactMode ?? defaultSettings.panelCompactMode,
         safeSendEnabled: snapshot.safeSendEnabled ?? defaultSettings.safeSendEnabled,
-        safeSendDelay: normalizeSafeSendDelay2(snapshot.safeSendDelay),
+        safeSendDelay: snapshot.safeSendEnabled ? normalizeSafeSendDelay2(snapshot.safeSendDelay) : 0,
         sendMethod: normalizeSendMethod2(snapshot.sendMethod),
         sendButtonSelector: normalizeSendButtonSelector2(snapshot.sendButtonSelector),
         atMenuEnabled: snapshot.atMenuEnabled ?? defaultSettings.atMenuEnabled,
@@ -16178,14 +16225,6 @@ lucide-react/dist/esm/icons/layout-grid.js:
    *)
 
 lucide-react/dist/esm/icons/list-todo.js:
-  (**
-   * @license lucide-react v0.378.0 - ISC
-   *
-   * This source code is licensed under the ISC license.
-   * See the LICENSE file in the root directory of this source tree.
-   *)
-
-lucide-react/dist/esm/icons/maximize-2.js:
   (**
    * @license lucide-react v0.378.0 - ISC
    *

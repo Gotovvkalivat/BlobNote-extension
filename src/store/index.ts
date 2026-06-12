@@ -98,7 +98,7 @@ const defaultSettings: AppSettings = {
   panelPlacement: 'auto',
   panelCompactMode: false,
   safeSendEnabled: false,
-  safeSendDelay: 5,
+  safeSendDelay: 0,
   sendMethod: 'auto',
   sendButtonSelector: null,
   atMenuEnabled: false,
@@ -228,6 +228,7 @@ function normalizePanelPlacement(value: unknown): AppSettings['panelPlacement'] 
 function normalizeSafeSendDelay(value: unknown) {
   const numeric = typeof value === 'number' ? value : parseInt(String(value || ''), 10)
   if (Number.isNaN(numeric)) return defaultSettings.safeSendDelay
+  if (numeric <= 0) return 0
   return Math.min(15, Math.max(3, numeric))
 }
 
@@ -298,7 +299,7 @@ function snapshotToState(snapshot: SyncSnapshot) {
       panelPlacement: normalizePanelPlacement(snapshot.panelPlacement),
       panelCompactMode: snapshot.panelCompactMode ?? defaultSettings.panelCompactMode,
       safeSendEnabled: snapshot.safeSendEnabled ?? defaultSettings.safeSendEnabled,
-      safeSendDelay: normalizeSafeSendDelay(snapshot.safeSendDelay),
+      safeSendDelay: snapshot.safeSendEnabled ? normalizeSafeSendDelay(snapshot.safeSendDelay) : 0,
       sendMethod: normalizeSendMethod(snapshot.sendMethod),
       sendButtonSelector: normalizeSendButtonSelector(snapshot.sendButtonSelector),
       atMenuEnabled: snapshot.atMenuEnabled ?? defaultSettings.atMenuEnabled,

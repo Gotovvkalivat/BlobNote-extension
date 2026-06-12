@@ -99,7 +99,7 @@ const defaults: RawSyncData = {
   panelPlacement: 'auto',
   panelCompactMode: false,
   safeSendEnabled: false,
-  safeSendDelay: 5,
+  safeSendDelay: 0,
   sendMethod: 'auto',
   sendButtonSelector: null,
   atMenuEnabled: false,
@@ -132,7 +132,7 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
       panelPlacement: 'auto',
       panelCompactMode: false,
       safeSendEnabled: false,
-      safeSendDelay: 5,
+      safeSendDelay: 0,
       sendMethod: 'auto',
       sendButtonSelector: null,
       atMenuEnabled: false,
@@ -154,6 +154,7 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
       const variables = normalizeVariables(data.variables)
       const siteSettings = normalizeSiteSettings(data.siteSettings)
       const currentSiteSettings = siteSettings[window.location.hostname] || {}
+      const safeSendDelay = data.safeSendEnabled ? normalizeSafeSendDelay(data.safeSendDelay) : 0
       cachedVariablesEnabled = variablesEnabled
       cachedVariables = variablesEnabled ? variables : []
       resolve({
@@ -167,7 +168,7 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
         panelPlacement: currentSiteSettings.panelPlacement || normalizePanelPlacement(data.panelPlacement),
         panelCompactMode: currentSiteSettings.panelCompactMode ?? data.panelCompactMode ?? false,
         safeSendEnabled: data.safeSendEnabled ?? false,
-        safeSendDelay: normalizeSafeSendDelay(data.safeSendDelay),
+        safeSendDelay,
         sendMethod: currentSiteSettings.sendMethod || normalizeSendMethod(data.sendMethod),
         sendButtonSelector: currentSiteSettings.sendButtonSelector ?? normalizeSendButtonSelector(data.sendButtonSelector),
         atMenuEnabled: data.atMenuEnabled ?? false,
@@ -248,7 +249,7 @@ function normalizePanelPlacement(value: unknown): AppSettings['panelPlacement'] 
 
 function normalizeSafeSendDelay(value: unknown) {
   const numeric = typeof value === 'number' ? value : parseInt(String(value || ''), 10)
-  if (Number.isNaN(numeric)) return 5
+  if (Number.isNaN(numeric) || numeric <= 0) return 0
   return Math.min(15, Math.max(3, numeric))
 }
 
@@ -445,7 +446,6 @@ export type SafeSendRequestDetail = {
 }
 
 type AutoSendSettings = {
-  enabled: boolean
   delaySeconds: number
   sendMethod: SendMethod
   sendButtonSelector: string | null
@@ -454,8 +454,7 @@ type AutoSendSettings = {
 function readAutoSendSettings(): Promise<AutoSendSettings> {
   if (!hasChromeStorage()) {
     return Promise.resolve({
-      enabled: false,
-      delaySeconds: 5,
+      delaySeconds: 0,
       sendMethod: 'auto',
       sendButtonSelector: null,
     })
@@ -464,16 +463,16 @@ function readAutoSendSettings(): Promise<AutoSendSettings> {
   return new Promise((resolve) => {
     chrome.storage.sync.get({
       safeSendEnabled: false,
-      safeSendDelay: 5,
+      safeSendDelay: 0,
       sendMethod: 'auto',
       sendButtonSelector: null,
       siteSettings: {},
     }, (items) => {
       const siteSettings = normalizeSiteSettings(items.siteSettings)
       const currentSiteSettings = siteSettings[window.location.hostname] || {}
+      const delaySeconds = items.safeSendEnabled ? normalizeSafeSendDelay(items.safeSendDelay) : 0
       resolve({
-        enabled: Boolean(items.safeSendEnabled),
-        delaySeconds: normalizeSafeSendDelay(items.safeSendDelay),
+        delaySeconds,
         sendMethod: currentSiteSettings.sendMethod || normalizeSendMethod(items.sendMethod),
         sendButtonSelector: currentSiteSettings.sendButtonSelector ?? normalizeSendButtonSelector(items.sendButtonSelector),
       })
@@ -536,7 +535,7 @@ function scheduleAutoSend(target: EditableElement, crm?: CRMConfig | null) {
   void readAutoSendSettings().then((settings) => {
     const send = () => runConfiguredSend(target, crm, settings)
 
-    if (!settings.enabled) {
+    if (settings.delaySeconds <= 0) {
       window.setTimeout(send, 150)
       return
     }
