@@ -1,4 +1,4 @@
-import type { AppSettings, CRMBinding, Template, TemplateVariable } from '@/types'
+import type { AppSettings, CRMBinding, RecentInsertion, SendMethod, SiteSettings, Template, TemplateVariable } from '@/types'
 import { extractVariables, replaceDateVariable } from '@/lib/utils'
 import { isLanguage } from '@/lib/i18n'
 import { normalizeUiScale } from '@/lib/uiScale'
@@ -33,18 +33,27 @@ export type RuntimeSnapshot = {
   theme: AppSettings['theme']
   uiLanguage: AppSettings['uiLanguage']
   uiScale: AppSettings['uiScale']
+  panelScale: AppSettings['panelScale']
+  panelPlacement: AppSettings['panelPlacement']
+  panelCompactMode: boolean
+  safeSendEnabled: boolean
+  safeSendDelay: number
+  sendMethod: SendMethod
+  sendButtonSelector: string | null
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean
+  recentInsertions: RecentInsertion[]
   searchTrigger: AppSettings['searchTrigger']
   showVariablesTab: boolean
   activationMode: 'all' | 'allowlist'
   enabledHosts: string[]
+  siteSettings: Record<string, SiteSettings>
 }
 
 let lastEditableElement: EditableElement | null = null
 let cachedVariables: TemplateVariable[] = []
-let cachedVariablesEnabled = true
+let cachedVariablesEnabled = false
 let variableListenerAttached = false
 
 type RawBinding = {
@@ -61,13 +70,22 @@ type RawSyncData = {
   theme: AppSettings['theme']
   uiLanguage: AppSettings['uiLanguage']
   uiScale: AppSettings['uiScale']
+  panelScale: AppSettings['panelScale']
+  panelPlacement: AppSettings['panelPlacement']
+  panelCompactMode: boolean
+  safeSendEnabled: boolean
+  safeSendDelay: number
+  sendMethod: SendMethod
+  sendButtonSelector: string | null
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean
+  recentInsertions: Partial<RecentInsertion>[]
   searchTrigger: AppSettings['searchTrigger']
   showVariablesTab: boolean
   activationMode: 'all' | 'allowlist'
   enabledHosts: string[]
+  siteSettings: Record<string, SiteSettings>
 }
 
 const defaults: RawSyncData = {
@@ -77,13 +95,22 @@ const defaults: RawSyncData = {
   theme: 'light',
   uiLanguage: 'ru',
   uiScale: '100',
-  atMenuEnabled: true,
+  panelScale: '100',
+  panelPlacement: 'auto',
+  panelCompactMode: false,
+  safeSendEnabled: false,
+  safeSendDelay: 5,
+  sendMethod: 'auto',
+  sendButtonSelector: null,
+  atMenuEnabled: false,
   floatingPanelEnabled: true,
   clipboardPanelEnabled: false,
+  recentInsertions: [],
   searchTrigger: '/',
-  showVariablesTab: true,
+  showVariablesTab: false,
   activationMode: 'all',
   enabledHosts: [],
+  siteSettings: {},
 }
 
 function hasChromeStorage() {
@@ -101,21 +128,32 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
       theme: 'light',
       uiLanguage: 'ru',
       uiScale: '100',
-      atMenuEnabled: true,
+      panelScale: '100',
+      panelPlacement: 'auto',
+      panelCompactMode: false,
+      safeSendEnabled: false,
+      safeSendDelay: 5,
+      sendMethod: 'auto',
+      sendButtonSelector: null,
+      atMenuEnabled: false,
       floatingPanelEnabled: true,
       clipboardPanelEnabled: false,
+      recentInsertions: [],
       searchTrigger: '/',
-      showVariablesTab: true,
+      showVariablesTab: false,
       activationMode: 'all',
       enabledHosts: [],
+      siteSettings: {},
     })
   }
 
   return new Promise((resolve) => {
     chrome.storage.sync.get(defaults, (items) => {
       const data = items as RawSyncData
-      const variablesEnabled = data.showVariablesTab ?? true
+      const variablesEnabled = data.showVariablesTab ?? false
       const variables = normalizeVariables(data.variables)
+      const siteSettings = normalizeSiteSettings(data.siteSettings)
+      const currentSiteSettings = siteSettings[window.location.hostname] || {}
       cachedVariablesEnabled = variablesEnabled
       cachedVariables = variablesEnabled ? variables : []
       resolve({
@@ -124,14 +162,23 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
         variables: variablesEnabled ? variables : [],
         theme: data.theme === 'dark' ? 'dark' : 'light',
         uiLanguage: isLanguage(data.uiLanguage) ? data.uiLanguage : 'ru',
-        uiScale: normalizeUiScale(data.uiScale),
-        atMenuEnabled: data.atMenuEnabled ?? true,
+        uiScale: currentSiteSettings.uiScale || normalizeUiScale(data.uiScale),
+        panelScale: currentSiteSettings.panelScale || normalizeUiScale(data.panelScale),
+        panelPlacement: currentSiteSettings.panelPlacement || normalizePanelPlacement(data.panelPlacement),
+        panelCompactMode: currentSiteSettings.panelCompactMode ?? data.panelCompactMode ?? false,
+        safeSendEnabled: data.safeSendEnabled ?? false,
+        safeSendDelay: normalizeSafeSendDelay(data.safeSendDelay),
+        sendMethod: currentSiteSettings.sendMethod || normalizeSendMethod(data.sendMethod),
+        sendButtonSelector: currentSiteSettings.sendButtonSelector ?? normalizeSendButtonSelector(data.sendButtonSelector),
+        atMenuEnabled: data.atMenuEnabled ?? false,
         floatingPanelEnabled: data.floatingPanelEnabled ?? true,
         clipboardPanelEnabled: data.clipboardPanelEnabled ?? false,
+        recentInsertions: normalizeRecentInsertions(data.recentInsertions),
         searchTrigger: data.searchTrigger === '@' ? '@' : '/',
         showVariablesTab: variablesEnabled,
         activationMode: data.activationMode || 'all',
         enabledHosts: Array.isArray(data.enabledHosts) ? data.enabledHosts : [],
+        siteSettings,
       })
     })
   })
@@ -147,7 +194,7 @@ function attachVariableCacheListener() {
   variableListenerAttached = true
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'sync') return
-    if (changes.showVariablesTab) cachedVariablesEnabled = changes.showVariablesTab.newValue ?? true
+    if (changes.showVariablesTab) cachedVariablesEnabled = changes.showVariablesTab.newValue ?? false
     if (changes.variables || changes.showVariablesTab) {
       cachedVariables = cachedVariablesEnabled ? normalizeVariables(changes.variables?.newValue || cachedVariables) : []
     }
@@ -162,6 +209,7 @@ export function normalizeTemplates(templates: Partial<Template>[] = []): Templat
     tag: template.tag ? String(template.tag) : null,
     color: template.color ? String(template.color) : null,
     favorite: Boolean(template.favorite),
+    usageCount: typeof template.usageCount === 'number' && template.usageCount > 0 ? Math.floor(template.usageCount) : 0,
     createdAt: template.createdAt || new Date().toISOString(),
     updatedAt: template.updatedAt || new Date().toISOString(),
     order: typeof template.order === 'number' ? template.order : order,
@@ -176,6 +224,60 @@ function normalizeVariables(variables: Partial<TemplateVariable>[] = []): Templa
     createdAt: variable.createdAt || new Date().toISOString(),
     updatedAt: variable.updatedAt || new Date().toISOString(),
   })).filter((variable) => variable.name)
+}
+
+function normalizeRecentInsertions(items: Partial<RecentInsertion>[] = []): RecentInsertion[] {
+  return items
+    .map((item, index) => ({
+      id: item.id || `${Date.now()}-${index}`,
+      templateId: item.templateId ? String(item.templateId) : null,
+      title: String(item.title || '').trim() || 'Шаблон',
+      text: String(item.text || ''),
+      tag: item.tag ? String(item.tag) : null,
+      usedAt: item.usedAt || new Date(Date.now() - index).toISOString(),
+      host: item.host ? String(item.host) : null,
+    }))
+    .filter((item) => item.text)
+    .sort((a, b) => new Date(b.usedAt).getTime() - new Date(a.usedAt).getTime())
+    .slice(0, 10)
+}
+
+function normalizePanelPlacement(value: unknown): AppSettings['panelPlacement'] {
+  return value === 'above' || value === 'below' || value === 'top-right' || value === 'bottom-right' ? value : 'auto'
+}
+
+function normalizeSafeSendDelay(value: unknown) {
+  const numeric = typeof value === 'number' ? value : parseInt(String(value || ''), 10)
+  if (Number.isNaN(numeric)) return 5
+  return Math.min(15, Math.max(3, numeric))
+}
+
+function normalizeSendMethod(value: unknown): SendMethod {
+  return value === 'button' || value === 'enter' || value === 'ctrl-enter' || value === 'shift-enter' || value === 'alt-enter'
+    ? value
+    : 'auto'
+}
+
+function normalizeSendButtonSelector(value: unknown) {
+  const selector = typeof value === 'string' ? value.trim() : ''
+  return selector || null
+}
+
+function normalizeSiteSettings(value: unknown): Record<string, SiteSettings> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
+
+  return Object.entries(value as Record<string, Partial<SiteSettings>>).reduce<Record<string, SiteSettings>>((acc, [host, settings]) => {
+    if (!host || !settings || typeof settings !== 'object') return acc
+    const next: SiteSettings = {}
+    if (settings.uiScale) next.uiScale = normalizeUiScale(settings.uiScale)
+    if (settings.panelScale) next.panelScale = normalizeUiScale(settings.panelScale)
+    if (settings.panelPlacement) next.panelPlacement = normalizePanelPlacement(settings.panelPlacement)
+    if (typeof settings.panelCompactMode === 'boolean') next.panelCompactMode = settings.panelCompactMode
+    if (settings.sendMethod) next.sendMethod = normalizeSendMethod(settings.sendMethod)
+    if ('sendButtonSelector' in settings) next.sendButtonSelector = normalizeSendButtonSelector(settings.sendButtonSelector)
+    if (Object.keys(next).length > 0) acc[host] = next
+    return acc
+  }, {})
 }
 
 function bindingsFromMap(map: Record<string, RawBinding> = {}): CRMBinding[] {
@@ -336,6 +438,140 @@ export function findLikelySendButton(element: EditableElement | null) {
   return document.querySelector<HTMLElement>('button[type="submit"], input[type="submit"]')
 }
 
+export type SafeSendRequestDetail = {
+  delaySeconds: number
+  send: () => void
+  handled?: boolean
+}
+
+type AutoSendSettings = {
+  enabled: boolean
+  delaySeconds: number
+  sendMethod: SendMethod
+  sendButtonSelector: string | null
+}
+
+function readAutoSendSettings(): Promise<AutoSendSettings> {
+  if (!hasChromeStorage()) {
+    return Promise.resolve({
+      enabled: false,
+      delaySeconds: 5,
+      sendMethod: 'auto',
+      sendButtonSelector: null,
+    })
+  }
+
+  return new Promise((resolve) => {
+    chrome.storage.sync.get({
+      safeSendEnabled: false,
+      safeSendDelay: 5,
+      sendMethod: 'auto',
+      sendButtonSelector: null,
+      siteSettings: {},
+    }, (items) => {
+      const siteSettings = normalizeSiteSettings(items.siteSettings)
+      const currentSiteSettings = siteSettings[window.location.hostname] || {}
+      resolve({
+        enabled: Boolean(items.safeSendEnabled),
+        delaySeconds: normalizeSafeSendDelay(items.safeSendDelay),
+        sendMethod: currentSiteSettings.sendMethod || normalizeSendMethod(items.sendMethod),
+        sendButtonSelector: currentSiteSettings.sendButtonSelector ?? normalizeSendButtonSelector(items.sendButtonSelector),
+      })
+    })
+  })
+}
+
+function clickSendButton(button: HTMLElement | null) {
+  if (!button || ('disabled' in button && button.disabled)) return false
+  button.click()
+  return true
+}
+
+function findConfiguredSendButton(selector: string | null) {
+  if (!selector) return null
+  try {
+    return document.querySelector<HTMLElement>(selector)
+  } catch {
+    return null
+  }
+}
+
+function dispatchEnterSend(target: EditableElement, method: SendMethod) {
+  target.focus()
+  const init = {
+    key: 'Enter',
+    code: 'Enter',
+    bubbles: true,
+    cancelable: true,
+    ctrlKey: method === 'ctrl-enter',
+    shiftKey: method === 'shift-enter',
+    altKey: method === 'alt-enter',
+    keyCode: 13,
+    which: 13,
+  } as KeyboardEventInit & { keyCode: number; which: number }
+
+  target.dispatchEvent(new KeyboardEvent('keydown', init))
+  target.dispatchEvent(new KeyboardEvent('keypress', init))
+  target.dispatchEvent(new KeyboardEvent('keyup', init))
+}
+
+function runConfiguredSend(target: EditableElement, crm: CRMConfig | null | undefined, settings: AutoSendSettings) {
+  if (settings.sendMethod === 'button') {
+    if (clickSendButton(findConfiguredSendButton(settings.sendButtonSelector))) return
+    clickSendButton(crm?.sendBtn() || findLikelySendButton(target))
+    return
+  }
+
+  if (settings.sendMethod !== 'auto') {
+    dispatchEnterSend(target, settings.sendMethod)
+    return
+  }
+
+  if (!clickSendButton(crm?.sendBtn() || findLikelySendButton(target))) {
+    dispatchEnterSend(target, 'enter')
+  }
+}
+
+function scheduleAutoSend(target: EditableElement, crm?: CRMConfig | null) {
+  void readAutoSendSettings().then((settings) => {
+    const send = () => runConfiguredSend(target, crm, settings)
+
+    if (!settings.enabled) {
+      window.setTimeout(send, 150)
+      return
+    }
+
+    const detail: SafeSendRequestDetail = { delaySeconds: settings.delaySeconds, send, handled: false }
+    window.dispatchEvent(new CustomEvent<SafeSendRequestDetail>('blobnote:safe-send', { detail }))
+    if (!detail.handled) window.setTimeout(send, settings.delaySeconds * 1000)
+  })
+}
+
+export function recordTemplateUse(template: Pick<Template, 'text'> & Partial<Pick<Template, 'id' | 'title' | 'tag'>>) {
+  if (!template.id || !template.title || !hasChromeStorage()) return
+
+  chrome.storage.sync.get({ templates: [], recentInsertions: [] }, (items) => {
+    const now = new Date().toISOString()
+    const templates = normalizeTemplates(items.templates || []).map((item) =>
+      item.id === template.id ? { ...item, usageCount: (item.usageCount || 0) + 1, updatedAt: now } : item
+    )
+    const recentInsertions = normalizeRecentInsertions([
+      {
+        id: `${Date.now()}-${template.id}`,
+        templateId: template.id,
+        title: template.title,
+        text: template.text,
+        tag: template.tag || null,
+        usedAt: now,
+        host: window.location.hostname || null,
+      },
+      ...(items.recentInsertions || []).filter((item: Partial<RecentInsertion>) => item.templateId !== template.id),
+    ])
+
+    chrome.storage.sync.set({ templates, recentInsertions })
+  })
+}
+
 export function insertTextToActiveField(text: string, autoSend = false) {
   const target = getActiveEditableElement()
   if (!target) return false
@@ -343,16 +579,16 @@ export function insertTextToActiveField(text: string, autoSend = false) {
   insertTextIntoEditable(target, text)
 
   if (autoSend) {
-    window.setTimeout(() => {
-      const button = findLikelySendButton(target)
-      if (button && !('disabled' in button && button.disabled)) button.click()
-    }, 150)
+    scheduleAutoSend(target)
   }
 
   return true
 }
 
-export function insertTemplate(template: Pick<Template, 'text'>, options: { autoSend?: boolean; crm?: CRMConfig | null } = {}) {
+export function insertTemplate(
+  template: Pick<Template, 'text'> & Partial<Pick<Template, 'id' | 'title' | 'tag'>>,
+  options: { autoSend?: boolean; crm?: CRMConfig | null } = {}
+) {
   const resolvedText = resolveTemplateText(template.text)
   if (resolvedText === null) return false
 
@@ -360,12 +596,10 @@ export function insertTemplate(template: Pick<Template, 'text'>, options: { auto
   if (!target) return false
 
   insertTextIntoEditable(target, resolvedText)
+  recordTemplateUse(template)
 
   if (options.autoSend) {
-    window.setTimeout(() => {
-      const button = options.crm?.sendBtn() || findLikelySendButton(target)
-      if (button && !('disabled' in button && button.disabled)) button.click()
-    }, 150)
+    scheduleAutoSend(target, options.crm)
   }
 
   return true

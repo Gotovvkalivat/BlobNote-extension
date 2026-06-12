@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Template, CRMBinding, AppSettings, Toast, TemplateVariable, TodoItem } from '@/types'
+import type { Template, CRMBinding, AppSettings, Toast, TemplateVariable, TodoItem, RecentInsertion, SendMethod, SiteSettings } from '@/types'
 import { generateId } from '@/lib/utils'
 import { cardPresetFor, normalizeCardPreset } from '@/lib/cardPresets'
 import { isLanguage } from '@/lib/i18n'
@@ -10,17 +10,19 @@ interface AppState {
   bindings: CRMBinding[]
   variables: TemplateVariable[]
   todos: TodoItem[]
+  recentInsertions: RecentInsertion[]
   settings: AppSettings
   toasts: Toast[]
   hydrated: boolean
 
   hydrate: () => Promise<void>
 
-  addTemplate: (template: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => void
+  addTemplate: (template: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order' | 'usageCount'>) => void
   updateTemplate: (id: string, updates: Partial<Template>) => void
   deleteTemplate: (id: string) => void
   reorderTemplates: (templateIds: string[]) => void
   toggleFavorite: (id: string) => void
+  recordTemplateUse: (template: Pick<Template, 'id' | 'title' | 'text' | 'tag'>) => void
 
   addVariable: (variable: Omit<TemplateVariable, 'id' | 'createdAt' | 'updatedAt'>) => void
   updateVariable: (id: string, updates: Partial<TemplateVariable>) => void
@@ -56,10 +58,18 @@ type SyncSnapshot = {
   templates: Partial<Template>[]
   variables: Partial<TemplateVariable>[]
   todos: Partial<TodoItem>[]
+  recentInsertions: Partial<RecentInsertion>[]
   customBindings: RawBindingMap
   theme: AppSettings['theme']
   uiLanguage: AppSettings['uiLanguage']
   uiScale: AppSettings['uiScale']
+  panelScale: AppSettings['panelScale']
+  panelPlacement: AppSettings['panelPlacement']
+  panelCompactMode: boolean
+  safeSendEnabled: boolean
+  safeSendDelay: number
+  sendMethod: SendMethod
+  sendButtonSelector: string | null
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean
@@ -77,31 +87,41 @@ type SyncSnapshot = {
   gridCols: number
   gridHeight: string
   onboardingCompleted: boolean
+  siteSettings: Record<string, SiteSettings>
 }
 
 const defaultSettings: AppSettings = {
   theme: 'light',
   uiLanguage: 'ru',
   uiScale: '100',
-  atMenuEnabled: true,
+  panelScale: '100',
+  panelPlacement: 'auto',
+  panelCompactMode: false,
+  safeSendEnabled: false,
+  safeSendDelay: 5,
+  sendMethod: 'auto',
+  sendButtonSelector: null,
+  atMenuEnabled: false,
   floatingPanelEnabled: true,
   clipboardPanelEnabled: false,
   searchTrigger: '/',
   activationMode: 'all',
   enabledHosts: [],
   ...cardPresetFor('light', 'lagoon'),
-  showVariablesTab: true,
-  showTodoTab: true,
+  showVariablesTab: false,
+  showTodoTab: false,
   lastBaseTab: 'templates',
   gridCols: 3,
   gridHeight: '240px',
   onboardingCompleted: false,
+  siteSettings: {},
 }
 
 const defaultSnapshot: SyncSnapshot = {
   templates: [],
   variables: [],
   todos: [],
+  recentInsertions: [],
   customBindings: {},
   ...defaultSettings,
 }
@@ -138,6 +158,7 @@ function normalizeTemplate(template: Partial<Template>, index: number): Template
     tag: template.tag ? String(template.tag) : null,
     color: template.color ? String(template.color) : null,
     favorite: Boolean(template.favorite),
+    usageCount: typeof template.usageCount === 'number' && template.usageCount > 0 ? Math.floor(template.usageCount) : 0,
     createdAt: template.createdAt || now,
     updatedAt: template.updatedAt || now,
     order: typeof template.order === 'number' ? template.order : index,
@@ -180,6 +201,64 @@ function normalizeTodos(todos: Partial<TodoItem>[] = []) {
   return todos.map(normalizeTodo).filter((todo) => todo.text)
 }
 
+function normalizeRecentInsertion(item: Partial<RecentInsertion>, index: number): RecentInsertion {
+  return {
+    id: item.id || generateId(),
+    templateId: item.templateId ? String(item.templateId) : null,
+    title: String(item.title || '').trim() || 'Шаблон',
+    text: String(item.text || ''),
+    tag: item.tag ? String(item.tag) : null,
+    usedAt: item.usedAt || new Date(Date.now() - index).toISOString(),
+    host: item.host ? String(item.host) : null,
+  }
+}
+
+function normalizeRecentInsertions(items: Partial<RecentInsertion>[] = []) {
+  return items
+    .map(normalizeRecentInsertion)
+    .filter((item) => item.text)
+    .sort((a, b) => new Date(b.usedAt).getTime() - new Date(a.usedAt).getTime())
+    .slice(0, 10)
+}
+
+function normalizePanelPlacement(value: unknown): AppSettings['panelPlacement'] {
+  return value === 'above' || value === 'below' || value === 'top-right' || value === 'bottom-right' ? value : 'auto'
+}
+
+function normalizeSafeSendDelay(value: unknown) {
+  const numeric = typeof value === 'number' ? value : parseInt(String(value || ''), 10)
+  if (Number.isNaN(numeric)) return defaultSettings.safeSendDelay
+  return Math.min(15, Math.max(3, numeric))
+}
+
+function normalizeSendMethod(value: unknown): SendMethod {
+  return value === 'button' || value === 'enter' || value === 'ctrl-enter' || value === 'shift-enter' || value === 'alt-enter'
+    ? value
+    : 'auto'
+}
+
+function normalizeSendButtonSelector(value: unknown) {
+  const selector = typeof value === 'string' ? value.trim() : ''
+  return selector || null
+}
+
+function normalizeSiteSettings(value: unknown): Record<string, SiteSettings> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
+
+  return Object.entries(value as Record<string, Partial<SiteSettings>>).reduce<Record<string, SiteSettings>>((acc, [host, settings]) => {
+    if (!host || !settings || typeof settings !== 'object') return acc
+    const next: SiteSettings = {}
+    if (settings.uiScale) next.uiScale = normalizeUiScale(settings.uiScale)
+    if (settings.panelScale) next.panelScale = normalizeUiScale(settings.panelScale)
+    if (settings.panelPlacement) next.panelPlacement = normalizePanelPlacement(settings.panelPlacement)
+    if (typeof settings.panelCompactMode === 'boolean') next.panelCompactMode = settings.panelCompactMode
+    if (settings.sendMethod) next.sendMethod = normalizeSendMethod(settings.sendMethod)
+    if ('sendButtonSelector' in settings) next.sendButtonSelector = normalizeSendButtonSelector(settings.sendButtonSelector)
+    if (Object.keys(next).length > 0) acc[host] = next
+    return acc
+  }, {})
+}
+
 function bindingsFromMap(map: RawBindingMap = {}): CRMBinding[] {
   return Object.entries(map).map(([domain, binding]) => ({
     id: domain,
@@ -209,11 +288,19 @@ function snapshotToState(snapshot: SyncSnapshot) {
     templates: normalizeTemplates(snapshot.templates),
     variables: normalizeVariables(snapshot.variables),
     todos: normalizeTodos(snapshot.todos),
+    recentInsertions: normalizeRecentInsertions(snapshot.recentInsertions),
     bindings: bindingsFromMap(snapshot.customBindings),
     settings: {
       theme,
       uiLanguage: isLanguage(snapshot.uiLanguage) ? snapshot.uiLanguage : defaultSettings.uiLanguage,
       uiScale: normalizeUiScale(snapshot.uiScale),
+      panelScale: normalizeUiScale(snapshot.panelScale),
+      panelPlacement: normalizePanelPlacement(snapshot.panelPlacement),
+      panelCompactMode: snapshot.panelCompactMode ?? defaultSettings.panelCompactMode,
+      safeSendEnabled: snapshot.safeSendEnabled ?? defaultSettings.safeSendEnabled,
+      safeSendDelay: normalizeSafeSendDelay(snapshot.safeSendDelay),
+      sendMethod: normalizeSendMethod(snapshot.sendMethod),
+      sendButtonSelector: normalizeSendButtonSelector(snapshot.sendButtonSelector),
       atMenuEnabled: snapshot.atMenuEnabled ?? defaultSettings.atMenuEnabled,
       floatingPanelEnabled: snapshot.floatingPanelEnabled ?? defaultSettings.floatingPanelEnabled,
       clipboardPanelEnabled: snapshot.clipboardPanelEnabled ?? defaultSettings.clipboardPanelEnabled,
@@ -227,6 +314,7 @@ function snapshotToState(snapshot: SyncSnapshot) {
       gridCols: snapshot.gridCols || defaultSettings.gridCols,
       gridHeight: snapshot.gridHeight || defaultSettings.gridHeight,
       onboardingCompleted: snapshot.onboardingCompleted ?? defaultSettings.onboardingCompleted,
+      siteSettings: normalizeSiteSettings(snapshot.siteSettings),
     },
     hydrated: true,
   }
@@ -247,6 +335,7 @@ function attachStorageListener() {
     if (changes.templates) patch.templates = normalizeTemplates(changes.templates.newValue || [])
     if (changes.variables) patch.variables = normalizeVariables(changes.variables.newValue || [])
     if (changes.todos) patch.todos = normalizeTodos(changes.todos.newValue || [])
+    if (changes.recentInsertions) patch.recentInsertions = normalizeRecentInsertions(changes.recentInsertions.newValue || [])
     if (changes.customBindings) patch.bindings = bindingsFromMap(changes.customBindings.newValue || {})
 
     let cardPresetChanged = false
@@ -264,6 +353,41 @@ function attachStorageListener() {
 
     if (changes.uiScale) {
       nextSettings.uiScale = normalizeUiScale(changes.uiScale.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.panelScale) {
+      nextSettings.panelScale = normalizeUiScale(changes.panelScale.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.panelPlacement) {
+      nextSettings.panelPlacement = normalizePanelPlacement(changes.panelPlacement.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.panelCompactMode) {
+      nextSettings.panelCompactMode = Boolean(changes.panelCompactMode.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.safeSendEnabled) {
+      nextSettings.safeSendEnabled = Boolean(changes.safeSendEnabled.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.safeSendDelay) {
+      nextSettings.safeSendDelay = normalizeSafeSendDelay(changes.safeSendDelay.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.sendMethod) {
+      nextSettings.sendMethod = normalizeSendMethod(changes.sendMethod.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.sendButtonSelector) {
+      nextSettings.sendButtonSelector = normalizeSendButtonSelector(changes.sendButtonSelector.newValue)
       settingsChanged = true
     }
 
@@ -353,6 +477,11 @@ function attachStorageListener() {
       settingsChanged = true
     }
 
+    if (changes.siteSettings) {
+      nextSettings.siteSettings = normalizeSiteSettings(changes.siteSettings.newValue)
+      settingsChanged = true
+    }
+
     if (cardPresetChanged) Object.assign(nextSettings, cardPresetFor(nextSettings.theme, nextSettings.cardPreset))
 
     if (settingsChanged) patch.settings = nextSettings
@@ -371,6 +500,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
   bindings: [],
   variables: [],
   todos: [],
+  recentInsertions: [],
   settings: defaultSettings,
   toasts: [],
   hydrated: false,
@@ -386,6 +516,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       order: state.templates.length,
+      usageCount: 0,
     }]
     chromeSet({ templates })
     return { templates }
@@ -427,6 +558,29 @@ export const useAppStore = create<AppState>()((set, get) => ({
     )
     chromeSet({ templates })
     return { templates }
+  }),
+
+  recordTemplateUse: (template) => set((state) => {
+    const now = new Date().toISOString()
+    const host = typeof window !== 'undefined' && window.location?.hostname ? window.location.hostname : null
+    const templates = state.templates.map((item) =>
+      item.id === template.id ? { ...item, usageCount: (item.usageCount || 0) + 1, updatedAt: now } : item
+    )
+    const recentInsertions = [
+      {
+        id: generateId(),
+        templateId: template.id || null,
+        title: template.title,
+        text: template.text,
+        tag: template.tag,
+        usedAt: now,
+        host,
+      },
+      ...state.recentInsertions.filter((item) => item.templateId !== template.id),
+    ].slice(0, 10)
+
+    chromeSet({ templates, recentInsertions })
+    return { templates, recentInsertions }
   }),
 
   addVariable: (variable) => set((state) => {
@@ -523,6 +677,14 @@ export const useAppStore = create<AppState>()((set, get) => ({
       theme,
       uiLanguage: isLanguage(settings.uiLanguage) ? settings.uiLanguage : state.settings.uiLanguage,
       uiScale: normalizeUiScale(settings.uiScale ?? state.settings.uiScale),
+      panelScale: normalizeUiScale(settings.panelScale ?? state.settings.panelScale),
+      panelPlacement: normalizePanelPlacement(settings.panelPlacement ?? state.settings.panelPlacement),
+      panelCompactMode: settings.panelCompactMode ?? state.settings.panelCompactMode,
+      safeSendEnabled: settings.safeSendEnabled ?? state.settings.safeSendEnabled,
+      safeSendDelay: normalizeSafeSendDelay(settings.safeSendDelay ?? state.settings.safeSendDelay),
+      sendMethod: normalizeSendMethod(settings.sendMethod ?? state.settings.sendMethod),
+      sendButtonSelector: normalizeSendButtonSelector(settings.sendButtonSelector ?? state.settings.sendButtonSelector),
+      siteSettings: normalizeSiteSettings(settings.siteSettings ?? state.settings.siteSettings),
       searchTrigger: settings.searchTrigger === '@' ? '@' : settings.searchTrigger === '/' ? '/' : state.settings.searchTrigger,
       ...cardPresetFor(theme, cardPreset),
     }
@@ -531,6 +693,13 @@ export const useAppStore = create<AppState>()((set, get) => ({
       theme: nextSettings.theme,
       uiLanguage: nextSettings.uiLanguage,
       uiScale: nextSettings.uiScale,
+      panelScale: nextSettings.panelScale,
+      panelPlacement: nextSettings.panelPlacement,
+      panelCompactMode: nextSettings.panelCompactMode,
+      safeSendEnabled: nextSettings.safeSendEnabled,
+      safeSendDelay: nextSettings.safeSendDelay,
+      sendMethod: nextSettings.sendMethod,
+      sendButtonSelector: nextSettings.sendButtonSelector,
       atMenuEnabled: nextSettings.atMenuEnabled,
       floatingPanelEnabled: nextSettings.floatingPanelEnabled,
       clipboardPanelEnabled: nextSettings.clipboardPanelEnabled,
@@ -548,6 +717,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       gridCols: nextSettings.gridCols,
       gridHeight: nextSettings.gridHeight,
       onboardingCompleted: nextSettings.onboardingCompleted,
+      siteSettings: nextSettings.siteSettings,
     })
     return { settings: nextSettings }
   }),

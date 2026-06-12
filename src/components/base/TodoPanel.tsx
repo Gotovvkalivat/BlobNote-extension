@@ -23,6 +23,8 @@ export function TodoPanel() {
   const [reminderAt, setReminderAt] = React.useState('')
   const [priority, setPriority] = React.useState<TodoItem['priority']>('normal')
   const [filter, setFilter] = React.useState<TodoFilter>('all')
+  const [textError, setTextError] = React.useState('')
+  const textRef = React.useRef<HTMLInputElement>(null)
   const t = React.useCallback((key: string) => translate(language, key), [language])
 
   const now = Date.now()
@@ -50,6 +52,12 @@ export function TodoPanel() {
   })
 
   const handleAdd = () => {
+    if (!text.trim()) {
+      setTextError(t('textRequired'))
+      textRef.current?.focus()
+      return
+    }
+
     addTodo({
       text,
       dueAt: dueAt || null,
@@ -60,6 +68,7 @@ export function TodoPanel() {
     setDueAt('')
     setReminderAt('')
     setPriority('normal')
+    setTextError('')
   }
 
   return (
@@ -79,14 +88,22 @@ export function TodoPanel() {
             </Button>
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Input
-              placeholder={t('todoPlaceholder')}
-              value={text}
-              onChange={(event) => setText(event.target.value)}
-              onKeyDown={(event) => { if (event.key === 'Enter') handleAdd() }}
-              className="min-w-[240px] flex-1"
-            />
+          <div className="mt-4 flex flex-wrap items-start gap-2">
+            <div className="min-w-[240px] flex-1">
+              <Input
+                ref={textRef}
+                placeholder={t('todoPlaceholder')}
+                value={text}
+                onChange={(event) => {
+                  setText(event.target.value)
+                  if (textError) setTextError('')
+                }}
+                onKeyDown={(event) => { if (event.key === 'Enter') handleAdd() }}
+                aria-invalid={Boolean(textError)}
+                className={cn(textError && 'border-destructive ring-1 ring-destructive/40')}
+              />
+              {textError && <div className="mt-1 text-xs text-destructive">{textError}</div>}
+            </div>
             <Input className="w-[180px]" type="datetime-local" value={dueAt} onChange={(event) => setDueAt(event.target.value)} title={t('deadline')} />
             <Input className="w-[180px]" type="datetime-local" value={reminderAt} onChange={(event) => setReminderAt(event.target.value)} title={t('remind')} />
             <select

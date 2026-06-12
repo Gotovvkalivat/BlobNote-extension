@@ -96,7 +96,7 @@ export function Popup() {
               </div>
               <div className="grid gap-1.5 leading-relaxed text-muted-foreground">
                 <span>{t('onboardingStepBase')}</span>
-                <span>{t('onboardingStepSearch', { trigger: settings.searchTrigger })}</span>
+                {settings.atMenuEnabled && <span>{t('onboardingStepSearch', { trigger: settings.searchTrigger })}</span>}
                 <span>{t('onboardingStepPanel')}</span>
               </div>
             </section>
@@ -118,15 +118,17 @@ export function Popup() {
           </p>
 
           <div className="grid gap-3 text-xs">
-            <section className="rounded-lg border bg-muted/20 p-3">
-              <h3 className="mb-1 flex items-center gap-2 font-medium">
-                <span className="text-primary">{settings.searchTrigger}</span>
-                {t('triggerMenuTitle', { trigger: settings.searchTrigger })}
-              </h3>
-              <p className="leading-relaxed text-muted-foreground">
-                {t('triggerMenuHelp', { trigger: settings.searchTrigger })}
-              </p>
-            </section>
+            {settings.atMenuEnabled && (
+              <section className="rounded-lg border bg-muted/20 p-3">
+                <h3 className="mb-1 flex items-center gap-2 font-medium">
+                  <span className="text-primary">{settings.searchTrigger}</span>
+                  {t('triggerMenuTitle', { trigger: settings.searchTrigger })}
+                </h3>
+                <p className="leading-relaxed text-muted-foreground">
+                  {t('triggerMenuHelp', { trigger: settings.searchTrigger })}
+                </p>
+              </section>
+            )}
             <section className="rounded-lg border bg-muted/20 p-3">
               <h3 className="mb-1 font-medium">{t('floatingPanel')}</h3>
               <p className="leading-relaxed text-muted-foreground">{t('floatingPanelHelp')}</p>

@@ -9,7 +9,7 @@ import { translate } from '@/lib/i18n'
 interface TemplateEditorProps {
   template: Template | null
   isNew: boolean
-  onSave: (data: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => void
+  onSave: (data: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order' | 'usageCount'>) => void
   onCancel: () => void
   allTags: string[]
   variables: TemplateVariable[]
@@ -29,6 +29,7 @@ export function TemplateEditor({
   const [text, setText] = React.useState(template?.text || '')
   const [tag, setTag] = React.useState(template?.tag || '')
   const [showTagDropdown, setShowTagDropdown] = React.useState(false)
+  const [errors, setErrors] = React.useState<{ title?: string; text?: string }>({})
   const titleRef = React.useRef<HTMLInputElement>(null)
   const textRef = React.useRef<HTMLTextAreaElement>(null)
   const t = React.useCallback((key: string) => translate(language, key), [language])
@@ -38,6 +39,7 @@ export function TemplateEditor({
       setTitle(template?.title || '')
       setText(template?.text || '')
       setTag(template?.tag || '')
+      setErrors({})
       window.setTimeout(() => titleRef.current?.focus(), 100)
     }
   }, [template, isNew])
@@ -51,8 +53,14 @@ export function TemplateEditor({
   }
 
   const handleSubmit = () => {
-    if (!title.trim() || !text.trim()) {
-      alert(t('fillNoteFields'))
+    const nextErrors = {
+      title: title.trim() ? undefined : t('titleRequired'),
+      text: text.trim() ? undefined : t('textRequired'),
+    }
+    setErrors(nextErrors)
+    if (nextErrors.title || nextErrors.text) {
+      const ref = nextErrors.title ? titleRef.current : textRef.current
+      ref?.focus()
       return
     }
     onSave({
@@ -105,12 +113,17 @@ export function TemplateEditor({
             ref={titleRef}
             placeholder={t('noteTitlePlaceholder')}
             value={title}
-            onChange={(event) => setTitle(event.target.value)}
+            onChange={(event) => {
+              setTitle(event.target.value)
+              if (errors.title) setErrors((current) => ({ ...current, title: undefined }))
+            }}
             maxLength={50}
-            className="h-10 text-base"
+            aria-invalid={Boolean(errors.title)}
+            className={`h-10 text-base ${errors.title ? 'border-destructive ring-1 ring-destructive/40' : ''}`}
           />
-          <div className="mt-0.5 text-right text-[10px] text-muted-foreground">
-            {50 - title.length} {t('charsShort')}
+          <div className="mt-0.5 flex items-center justify-between gap-2 text-[10px]">
+            <span className={errors.title ? 'text-destructive' : 'text-muted-foreground'}>{errors.title || t('requiredField')}</span>
+            <span className="text-muted-foreground">{50 - title.length} {t('charsShort')}</span>
           </div>
         </div>
 
@@ -148,10 +161,15 @@ export function TemplateEditor({
           ref={textRef}
           placeholder={t('noteTextPlaceholder')}
           value={text}
-          onChange={(event) => setText(event.target.value)}
+          onChange={(event) => {
+            setText(event.target.value)
+            if (errors.text) setErrors((current) => ({ ...current, text: undefined }))
+          }}
           rows={14}
-          className="min-h-[300px] resize-y text-base leading-relaxed"
+          aria-invalid={Boolean(errors.text)}
+          className={`min-h-[300px] resize-y text-base leading-relaxed ${errors.text ? 'border-destructive ring-1 ring-destructive/40' : ''}`}
         />
+        {errors.text && <div className="text-[10px] text-destructive">{errors.text}</div>}
 
         {variables.length > 0 && (
           <div className="rounded-md border bg-muted/30 p-2">

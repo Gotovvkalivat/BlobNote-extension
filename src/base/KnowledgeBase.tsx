@@ -36,6 +36,7 @@ import {
 import type { AppSettings, Template } from '@/types'
 import { CARD_PRESETS, type CardPreset } from '@/lib/cardPresets'
 import { LANGUAGE_OPTIONS, translate } from '@/lib/i18n'
+import { SCENARIO_PRESETS, type ScenarioPresetId } from '@/lib/scenarioPresets'
 import { UI_SCALE_OPTIONS, uiScaleStyle } from '@/lib/uiScale'
 
 const CARD_PRESET_NAMES: Record<AppSettings['cardPreset'], string> = {
@@ -70,6 +71,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
   const [isCreating, setIsCreating] = React.useState(false)
   const [draggingTemplateId, setDraggingTemplateId] = React.useState<string | null>(null)
   const [previewTemplate, setPreviewTemplate] = React.useState<Template | null>(null)
+  const [scenarioPresetId, setScenarioPresetId] = React.useState<ScenarioPresetId>('support')
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const t = React.useCallback(
     (key: string, params?: Record<string, string | number>) => translate(settings.uiLanguage, key, params),
@@ -78,6 +80,9 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
 
   const activeTab = getVisibleTab(settings)
   const editorOpen = isCreating || Boolean(editingTemplate)
+  const currentHost = embedded && typeof window !== 'undefined' ? window.location.hostname : ''
+  const currentSiteSettings = currentHost ? settings.siteSettings[currentHost] : undefined
+  const effectiveUiScale = currentSiteSettings?.uiScale || settings.uiScale
 
   React.useEffect(() => {
     if (embedded) return
@@ -165,7 +170,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
     setDraggingTemplateId(null)
   }
 
-  const handleSaveTemplate = (data: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => {
+  const handleSaveTemplate = (data: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order' | 'usageCount'>) => {
     if (editingTemplate) {
       updateTemplate(editingTemplate.id, data)
       showToastEvent(t('noteUpdated'), 'success')
@@ -215,6 +220,30 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
     showToastEvent(t('starterAdded'), 'success')
   }
 
+  const addScenarioPreset = () => {
+    const preset = SCENARIO_PRESETS.find((item) => item.id === scenarioPresetId)
+    if (!preset) return
+    preset.templates.forEach((template) => addTemplate(template))
+    showToastEvent(t('scenarioPresetAdded'), 'success')
+  }
+
+  const updateInterfaceScale = (value: AppSettings['uiScale']) => {
+    if (!currentHost) {
+      updateSettings({ uiScale: value })
+      return
+    }
+
+    updateSettings({
+      siteSettings: {
+        ...settings.siteSettings,
+        [currentHost]: {
+          ...(currentSiteSettings || {}),
+          uiScale: value,
+        },
+      },
+    })
+  }
+
   const applyPreset = (preset: CardPreset) => {
     updateSettings({
       cardPreset: preset.cardPreset,
@@ -230,7 +259,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
   return (
     <div
       className={`${embedded ? 'h-full' : 'h-screen'} ${settings.theme === 'dark' ? 'dark' : ''} flex flex-col overflow-hidden bg-background text-foreground`}
-      style={uiScaleStyle(settings.uiScale)}
+      style={uiScaleStyle(effectiveUiScale)}
     >
       <header className={`z-30 flex shrink-0 flex-wrap items-center justify-between gap-4 border-b bg-background px-4 py-2 shadow-sm ${embedded ? 'pr-16' : ''}`}>
         <h1 className="flex shrink-0 items-center gap-3 text-sm font-semibold">
@@ -251,8 +280,8 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
           <SettingSelect
             icon={<ZoomIn className="h-3.5 w-3.5" />}
             label={t('interfaceScale')}
-            value={settings.uiScale}
-            onChange={(value) => updateSettings({ uiScale: value as AppSettings['uiScale'] })}
+            value={effectiveUiScale}
+            onChange={(value) => updateInterfaceScale(value as AppSettings['uiScale'])}
             options={UI_SCALE_OPTIONS}
           />
           <SettingSelect
@@ -317,6 +346,23 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
                 </div>
 
                 <TagFilter tags={allTags} selected={selectedTags} language={settings.uiLanguage} onChange={setSelectedTags} />
+
+                <div className="flex h-8 items-center gap-1 rounded-md border bg-background px-1.5 text-xs shadow-sm">
+                  <select
+                    className="h-6 rounded border bg-background px-1 text-xs"
+                    value={scenarioPresetId}
+                    onChange={(event) => setScenarioPresetId(event.target.value as ScenarioPresetId)}
+                    title={t('scenarioPresets')}
+                  >
+                    {SCENARIO_PRESETS.map((preset) => (
+                      <option key={preset.id} value={preset.id}>{t(preset.labelKey)}</option>
+                    ))}
+                  </select>
+                  <Button size="sm" variant="ghost" className="h-6 px-2 text-xs" onClick={addScenarioPreset} title={t('addScenarioPreset')}>
+                    <Plus className="mr-1 h-3 w-3" />
+                    {t('addScenarioPreset')}
+                  </Button>
+                </div>
 
                 <Button size="sm" variant={showFavorites ? 'accent' : 'outline'} onClick={() => setShowFavorites(!showFavorites)}>
                   <Star className={`mr-1.5 h-3.5 w-3.5 ${showFavorites ? 'fill-current' : ''}`} />
@@ -434,6 +480,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
         onDelete={() => { if (confirm(t('deleteNoteQuestion', { title: template.title }))) { deleteTemplate(template.id); showToastEvent(t('noteDeleted'), 'success') } }}
         onToggleFavorite={() => toggleFavorite(template.id)}
         onCopy={() => { navigator.clipboard.writeText(template.text); showToastEvent(t('textCopied'), 'success') }}
+        usageLabel={template.usageCount > 0 ? t('usageCount', { count: template.usageCount }) : undefined}
         cardStyle={showFullText ? undefined : { height: settings.gridHeight }}
         draggable={!showFullText}
         onDragStart={() => setDraggingTemplateId(template.id)}

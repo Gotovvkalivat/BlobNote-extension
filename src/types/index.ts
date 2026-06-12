@@ -5,6 +5,7 @@ export interface Template {
   tag: string | null
   color: string | null
   favorite: boolean
+  usageCount: number
   createdAt: string
   updatedAt: string
   order: number
@@ -18,10 +19,19 @@ export interface CRMBinding {
   createdAt: string
 }
 
+export type SendMethod = 'auto' | 'button' | 'enter' | 'ctrl-enter' | 'shift-enter' | 'alt-enter'
+
 export interface AppSettings {
   theme: 'light' | 'dark'
   uiLanguage: 'ru' | 'en'
   uiScale: '70' | '80' | '90' | '100' | '110' | '120' | '130'
+  panelScale: '70' | '80' | '90' | '100' | '110' | '120' | '130'
+  panelPlacement: 'auto' | 'above' | 'below' | 'top-right' | 'bottom-right'
+  panelCompactMode: boolean
+  safeSendEnabled: boolean
+  safeSendDelay: number
+  sendMethod: SendMethod
+  sendButtonSelector: string | null
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean
@@ -39,6 +49,26 @@ export interface AppSettings {
   gridCols: number
   gridHeight: string
   onboardingCompleted: boolean
+  siteSettings: Record<string, SiteSettings>
+}
+
+export interface SiteSettings {
+  uiScale?: AppSettings['uiScale']
+  panelScale?: AppSettings['panelScale']
+  panelPlacement?: AppSettings['panelPlacement']
+  panelCompactMode?: boolean
+  sendMethod?: SendMethod
+  sendButtonSelector?: string | null
+}
+
+export interface RecentInsertion {
+  id: string
+  templateId: string | null
+  title: string
+  text: string
+  tag: string | null
+  usedAt: string
+  host: string | null
 }
 
 export interface TemplateVariable {

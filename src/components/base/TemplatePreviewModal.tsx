@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { showToast } from '@/components/ui/toast'
 import type { AppSettings, Template, TemplateVariable } from '@/types'
 import { translate } from '@/lib/i18n'
-import { insertTextToActiveField, resolveTemplateText } from '@/lib/templateRuntime'
+import { insertTextToActiveField, recordTemplateUse, resolveTemplateText } from '@/lib/templateRuntime'
 
 type TemplatePreviewModalProps = {
   template: Template | null
@@ -40,6 +40,7 @@ export function TemplatePreviewModal({ template, variables, language, allowInser
       return
     }
 
+    recordTemplateUse({ id: template.id, title: template.title, text, tag: template.tag })
     onClose()
     onInserted?.(autoSend)
   }

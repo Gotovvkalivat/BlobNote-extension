@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Copy, FileText, Pencil, Star, Trash2 } from 'lucide-react'
+import { BarChart3, Copy, FileText, Pencil, Star, Trash2 } from 'lucide-react'
 import type { Template } from '@/types'
 
 interface TemplateCardProps {
@@ -22,6 +22,7 @@ interface TemplateCardProps {
   onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void
   onDragOver?: (event: React.DragEvent<HTMLDivElement>) => void
   onDrop?: (event: React.DragEvent<HTMLDivElement>) => void
+  usageLabel?: string
 }
 
 export function TemplateCard({
@@ -41,6 +42,7 @@ export function TemplateCard({
   onDragStart,
   onDragOver,
   onDrop,
+  usageLabel,
 }: TemplateCardProps) {
   const paletteColor = {
     amber: '#fffbeb',
@@ -79,6 +81,12 @@ export function TemplateCard({
         <div className="flex items-center gap-1.5 min-w-0 opacity-80">
           <FileText className="h-3.5 w-3.5 shrink-0" />
           <span className="text-[10px] uppercase tracking-wide truncate">{template.tag || 'Заметка'}</span>
+          {usageLabel && (
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-black/5 px-1.5 py-0.5 text-[10px] normal-case tracking-normal dark:bg-white/10" title={usageLabel}>
+              <BarChart3 className="h-3 w-3" />
+              {usageLabel}
+            </span>
+          )}
         </div>
         <div className="flex gap-1">
         <Button size="icon" variant="ghost" className="h-6 w-6" onClick={(event) => { event.stopPropagation(); onCopy() }}>

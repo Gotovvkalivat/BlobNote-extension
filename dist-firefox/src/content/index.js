@@ -10265,6 +10265,14 @@
     ["path", { d: "M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8", key: "7n84p3" }]
   ]);
 
+  // node_modules/lucide-react/dist/esm/icons/bar-chart-3.js
+  var BarChart3 = createLucideIcon("BarChart3", [
+    ["path", { d: "M3 3v18h18", key: "1s2lah" }],
+    ["path", { d: "M18 17V9", key: "2bz60n" }],
+    ["path", { d: "M13 17V5", key: "1frdt8" }],
+    ["path", { d: "M8 17v-3", key: "17ska0" }]
+  ]);
+
   // node_modules/lucide-react/dist/esm/icons/book-open.js
   var BookOpen = createLucideIcon("BookOpen", [
     ["path", { d: "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z", key: "vv98re" }],
@@ -10329,6 +10337,12 @@
     ["path", { d: "M12 16h4", key: "n85exb" }],
     ["path", { d: "M8 11h.01", key: "1dfujw" }],
     ["path", { d: "M8 16h.01", key: "18s6g9" }]
+  ]);
+
+  // node_modules/lucide-react/dist/esm/icons/clock-3.js
+  var Clock3 = createLucideIcon("Clock3", [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["polyline", { points: "12 6 12 12 16.5 12", key: "1aq6pp" }]
   ]);
 
   // node_modules/lucide-react/dist/esm/icons/copy.js
@@ -10497,6 +10511,14 @@
   var Send = createLucideIcon("Send", [
     ["path", { d: "m22 2-7 20-4-9-9-4Z", key: "1q3vgg" }],
     ["path", { d: "M22 2 11 13", key: "nzbqef" }]
+  ]);
+
+  // node_modules/lucide-react/dist/esm/icons/settings-2.js
+  var Settings2 = createLucideIcon("Settings2", [
+    ["path", { d: "M20 7h-9", key: "3s1dr2" }],
+    ["path", { d: "M14 17H5", key: "gfn3mx" }],
+    ["circle", { cx: "17", cy: "17", r: "3", key: "18b49y" }],
+    ["circle", { cx: "7", cy: "7", r: "3", key: "dfmy0x" }]
   ]);
 
   // node_modules/lucide-react/dist/esm/icons/star.js
@@ -10679,6 +10701,39 @@
     hidePanel: "\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C \u043F\u0430\u043D\u0435\u043B\u044C",
     showPanel: "\u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u043F\u0430\u043D\u0435\u043B\u044C",
     clipboardCleared: "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0431\u0443\u0444\u0435\u0440\u0430 \u043E\u0447\u0438\u0449\u0435\u043D\u0430",
+    panelSettings: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 \u043F\u0430\u043D\u0435\u043B\u0438",
+    panelScale: "\u041C\u0430\u0441\u0448\u0442\u0430\u0431 \u043F\u0430\u043D\u0435\u043B\u0438",
+    panelPosition: "\u041F\u043E\u043B\u043E\u0436\u0435\u043D\u0438\u0435",
+    aboveField: "\u041D\u0430\u0434 \u043F\u043E\u043B\u0435\u043C",
+    belowField: "\u041F\u043E\u0434 \u043F\u043E\u043B\u0435\u043C",
+    topRight: "\u0421\u043F\u0440\u0430\u0432\u0430 \u0441\u0432\u0435\u0440\u0445\u0443",
+    bottomRight: "\u0421\u043F\u0440\u0430\u0432\u0430 \u0441\u043D\u0438\u0437\u0443",
+    compactPanel: "\u041A\u043E\u043C\u043F\u0430\u043A\u0442\u043D\u0430\u044F \u043F\u0430\u043D\u0435\u043B\u044C",
+    safeSend: "\u0411\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u0430\u044F \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0430",
+    safeSendDelay: "\u0417\u0430\u0434\u0435\u0440\u0436\u043A\u0430 \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0438",
+    sendMethod: "\u041A\u0430\u043A \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u044F\u0442\u044C",
+    sendAuto: "\u0410\u0432\u0442\u043E",
+    sendButton: "\u041A\u043D\u043E\u043F\u043A\u0430",
+    sendEnter: "Enter",
+    sendCtrlEnter: "Ctrl+Enter",
+    sendShiftEnter: "Shift+Enter",
+    sendAltEnter: "Alt+Enter",
+    sendButtonSelector: "CSS-\u0441\u0435\u043B\u0435\u043A\u0442\u043E\u0440 \u043A\u043D\u043E\u043F\u043A\u0438",
+    safeSendTitle: "\u041E\u0442\u043F\u0440\u0430\u0432\u043A\u0430 \u0447\u0435\u0440\u0435\u0437 \u043F\u0430\u0443\u0437\u0443",
+    safeSendCountdown: "\u0421\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435 \u043E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u0441\u044F \u0447\u0435\u0440\u0435\u0437 {{seconds}} \u0441\u0435\u043A.",
+    sendNow: "\u041E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u044C \u0441\u0435\u0439\u0447\u0430\u0441",
+    cancelSend: "\u041E\u0442\u043C\u0435\u043D\u0438\u0442\u044C",
+    recentInsertions: "\u041D\u0435\u0434\u0430\u0432\u043D\u0438\u0435 \u0432\u0441\u0442\u0430\u0432\u043A\u0438",
+    usageCount: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u043E {{count}}",
+    textRequired: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0442\u0435\u043A\u0441\u0442",
+    titleRequired: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u0435",
+    requiredField: "\u041E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0435 \u043F\u043E\u043B\u0435",
+    scenarioPresets: "\u041D\u0430\u0431\u043E\u0440\u044B \u0441\u0446\u0435\u043D\u0430\u0440\u0438\u0435\u0432",
+    supportPreset: "\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
+    accountingPreset: "\u0411\u0443\u0445\u0433\u0430\u043B\u0442\u0435\u0440\u0438\u044F",
+    salesPreset: "\u041F\u0440\u043E\u0434\u0430\u0436\u0438",
+    addScenarioPreset: "\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u043D\u0430\u0431\u043E\u0440",
+    scenarioPresetAdded: "\u041D\u0430\u0431\u043E\u0440 \u0441\u0446\u0435\u043D\u0430\u0440\u0438\u0435\u0432 \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D",
     clipboardEmpty: "\u0411\u0443\u0444\u0435\u0440 \u043F\u043E\u043A\u0430 \u043F\u0443\u0441\u0442",
     smartSearchTitle: "\u0423\u043C\u043D\u044B\u0439 \u043F\u043E\u0438\u0441\u043A \u0437\u0430\u043C\u0435\u0442\u043E\u043A",
     smartSearchPlaceholder: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u0435, \u0442\u0435\u0433 \u0438\u043B\u0438 \u0442\u0435\u043A\u0441\u0442...",
@@ -10819,6 +10874,39 @@
     hidePanel: "Collapse panel",
     showPanel: "Show panel",
     clipboardCleared: "Clipboard history cleared",
+    panelSettings: "Panel settings",
+    panelScale: "Panel scale",
+    panelPosition: "Position",
+    aboveField: "Above field",
+    belowField: "Below field",
+    topRight: "Top right",
+    bottomRight: "Bottom right",
+    compactPanel: "Compact panel",
+    safeSend: "Safe send",
+    safeSendDelay: "Send delay",
+    sendMethod: "Send with",
+    sendAuto: "Auto",
+    sendButton: "Button",
+    sendEnter: "Enter",
+    sendCtrlEnter: "Ctrl+Enter",
+    sendShiftEnter: "Shift+Enter",
+    sendAltEnter: "Alt+Enter",
+    sendButtonSelector: "Button CSS selector",
+    safeSendTitle: "Sending after pause",
+    safeSendCountdown: "Message will be sent in {{seconds}} sec.",
+    sendNow: "Send now",
+    cancelSend: "Cancel",
+    recentInsertions: "Recent inserts",
+    usageCount: "Used {{count}}",
+    textRequired: "Enter text",
+    titleRequired: "Enter a title",
+    requiredField: "Required field",
+    scenarioPresets: "Scenario packs",
+    supportPreset: "Support",
+    accountingPreset: "Accounting",
+    salesPreset: "Sales",
+    addScenarioPreset: "Add pack",
+    scenarioPresetAdded: "Scenario pack added",
     clipboardEmpty: "Clipboard is empty",
     smartSearchTitle: "Smart note search",
     smartSearchPlaceholder: "Type a title, tag, or text...",
@@ -10938,7 +11026,7 @@
   // src/lib/templateRuntime.ts
   var lastEditableElement = null;
   var cachedVariables = [];
-  var cachedVariablesEnabled = true;
+  var cachedVariablesEnabled = false;
   var variableListenerAttached = false;
   var defaults = {
     templates: [],
@@ -10947,13 +11035,22 @@
     theme: "light",
     uiLanguage: "ru",
     uiScale: "100",
-    atMenuEnabled: true,
+    panelScale: "100",
+    panelPlacement: "auto",
+    panelCompactMode: false,
+    safeSendEnabled: false,
+    safeSendDelay: 5,
+    sendMethod: "auto",
+    sendButtonSelector: null,
+    atMenuEnabled: false,
     floatingPanelEnabled: true,
     clipboardPanelEnabled: false,
+    recentInsertions: [],
     searchTrigger: "/",
-    showVariablesTab: true,
+    showVariablesTab: false,
     activationMode: "all",
-    enabledHosts: []
+    enabledHosts: [],
+    siteSettings: {}
   };
   function hasChromeStorage() {
     return typeof chrome !== "undefined" && Boolean(chrome.storage?.sync);
@@ -10968,20 +11065,31 @@
         theme: "light",
         uiLanguage: "ru",
         uiScale: "100",
-        atMenuEnabled: true,
+        panelScale: "100",
+        panelPlacement: "auto",
+        panelCompactMode: false,
+        safeSendEnabled: false,
+        safeSendDelay: 5,
+        sendMethod: "auto",
+        sendButtonSelector: null,
+        atMenuEnabled: false,
         floatingPanelEnabled: true,
         clipboardPanelEnabled: false,
+        recentInsertions: [],
         searchTrigger: "/",
-        showVariablesTab: true,
+        showVariablesTab: false,
         activationMode: "all",
-        enabledHosts: []
+        enabledHosts: [],
+        siteSettings: {}
       });
     }
     return new Promise((resolve) => {
       chrome.storage.sync.get(defaults, (items) => {
         const data = items;
-        const variablesEnabled = data.showVariablesTab ?? true;
+        const variablesEnabled = data.showVariablesTab ?? false;
         const variables = normalizeVariables(data.variables);
+        const siteSettings = normalizeSiteSettings(data.siteSettings);
+        const currentSiteSettings = siteSettings[window.location.hostname] || {};
         cachedVariablesEnabled = variablesEnabled;
         cachedVariables = variablesEnabled ? variables : [];
         resolve({
@@ -10990,14 +11098,23 @@
           variables: variablesEnabled ? variables : [],
           theme: data.theme === "dark" ? "dark" : "light",
           uiLanguage: isLanguage(data.uiLanguage) ? data.uiLanguage : "ru",
-          uiScale: normalizeUiScale(data.uiScale),
-          atMenuEnabled: data.atMenuEnabled ?? true,
+          uiScale: currentSiteSettings.uiScale || normalizeUiScale(data.uiScale),
+          panelScale: currentSiteSettings.panelScale || normalizeUiScale(data.panelScale),
+          panelPlacement: currentSiteSettings.panelPlacement || normalizePanelPlacement(data.panelPlacement),
+          panelCompactMode: currentSiteSettings.panelCompactMode ?? data.panelCompactMode ?? false,
+          safeSendEnabled: data.safeSendEnabled ?? false,
+          safeSendDelay: normalizeSafeSendDelay(data.safeSendDelay),
+          sendMethod: currentSiteSettings.sendMethod || normalizeSendMethod(data.sendMethod),
+          sendButtonSelector: currentSiteSettings.sendButtonSelector ?? normalizeSendButtonSelector(data.sendButtonSelector),
+          atMenuEnabled: data.atMenuEnabled ?? false,
           floatingPanelEnabled: data.floatingPanelEnabled ?? true,
           clipboardPanelEnabled: data.clipboardPanelEnabled ?? false,
+          recentInsertions: normalizeRecentInsertions(data.recentInsertions),
           searchTrigger: data.searchTrigger === "@" ? "@" : "/",
           showVariablesTab: variablesEnabled,
           activationMode: data.activationMode || "all",
-          enabledHosts: Array.isArray(data.enabledHosts) ? data.enabledHosts : []
+          enabledHosts: Array.isArray(data.enabledHosts) ? data.enabledHosts : [],
+          siteSettings
         });
       });
     });
@@ -11011,7 +11128,7 @@
     variableListenerAttached = true;
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== "sync") return;
-      if (changes.showVariablesTab) cachedVariablesEnabled = changes.showVariablesTab.newValue ?? true;
+      if (changes.showVariablesTab) cachedVariablesEnabled = changes.showVariablesTab.newValue ?? false;
       if (changes.variables || changes.showVariablesTab) {
         cachedVariables = cachedVariablesEnabled ? normalizeVariables(changes.variables?.newValue || cachedVariables) : [];
       }
@@ -11025,6 +11142,7 @@
       tag: template.tag ? String(template.tag) : null,
       color: template.color ? String(template.color) : null,
       favorite: Boolean(template.favorite),
+      usageCount: typeof template.usageCount === "number" && template.usageCount > 0 ? Math.floor(template.usageCount) : 0,
       createdAt: template.createdAt || (/* @__PURE__ */ new Date()).toISOString(),
       updatedAt: template.updatedAt || (/* @__PURE__ */ new Date()).toISOString(),
       order: typeof template.order === "number" ? template.order : order
@@ -11038,6 +11156,47 @@
       createdAt: variable.createdAt || (/* @__PURE__ */ new Date()).toISOString(),
       updatedAt: variable.updatedAt || (/* @__PURE__ */ new Date()).toISOString()
     })).filter((variable) => variable.name);
+  }
+  function normalizeRecentInsertions(items = []) {
+    return items.map((item, index) => ({
+      id: item.id || `${Date.now()}-${index}`,
+      templateId: item.templateId ? String(item.templateId) : null,
+      title: String(item.title || "").trim() || "\u0428\u0430\u0431\u043B\u043E\u043D",
+      text: String(item.text || ""),
+      tag: item.tag ? String(item.tag) : null,
+      usedAt: item.usedAt || new Date(Date.now() - index).toISOString(),
+      host: item.host ? String(item.host) : null
+    })).filter((item) => item.text).sort((a, b) => new Date(b.usedAt).getTime() - new Date(a.usedAt).getTime()).slice(0, 10);
+  }
+  function normalizePanelPlacement(value) {
+    return value === "above" || value === "below" || value === "top-right" || value === "bottom-right" ? value : "auto";
+  }
+  function normalizeSafeSendDelay(value) {
+    const numeric = typeof value === "number" ? value : parseInt(String(value || ""), 10);
+    if (Number.isNaN(numeric)) return 5;
+    return Math.min(15, Math.max(3, numeric));
+  }
+  function normalizeSendMethod(value) {
+    return value === "button" || value === "enter" || value === "ctrl-enter" || value === "shift-enter" || value === "alt-enter" ? value : "auto";
+  }
+  function normalizeSendButtonSelector(value) {
+    const selector = typeof value === "string" ? value.trim() : "";
+    return selector || null;
+  }
+  function normalizeSiteSettings(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+    return Object.entries(value).reduce((acc, [host, settings]) => {
+      if (!host || !settings || typeof settings !== "object") return acc;
+      const next = {};
+      if (settings.uiScale) next.uiScale = normalizeUiScale(settings.uiScale);
+      if (settings.panelScale) next.panelScale = normalizeUiScale(settings.panelScale);
+      if (settings.panelPlacement) next.panelPlacement = normalizePanelPlacement(settings.panelPlacement);
+      if (typeof settings.panelCompactMode === "boolean") next.panelCompactMode = settings.panelCompactMode;
+      if (settings.sendMethod) next.sendMethod = normalizeSendMethod(settings.sendMethod);
+      if ("sendButtonSelector" in settings) next.sendButtonSelector = normalizeSendButtonSelector(settings.sendButtonSelector);
+      if (Object.keys(next).length > 0) acc[host] = next;
+      return acc;
+    }, {});
   }
   function bindingsFromMap(map = {}) {
     return Object.entries(map).map(([domain, binding]) => ({
@@ -11148,15 +11307,118 @@
     }
     return document.querySelector('button[type="submit"], input[type="submit"]');
   }
+  function readAutoSendSettings() {
+    if (!hasChromeStorage()) {
+      return Promise.resolve({
+        enabled: false,
+        delaySeconds: 5,
+        sendMethod: "auto",
+        sendButtonSelector: null
+      });
+    }
+    return new Promise((resolve) => {
+      chrome.storage.sync.get({
+        safeSendEnabled: false,
+        safeSendDelay: 5,
+        sendMethod: "auto",
+        sendButtonSelector: null,
+        siteSettings: {}
+      }, (items) => {
+        const siteSettings = normalizeSiteSettings(items.siteSettings);
+        const currentSiteSettings = siteSettings[window.location.hostname] || {};
+        resolve({
+          enabled: Boolean(items.safeSendEnabled),
+          delaySeconds: normalizeSafeSendDelay(items.safeSendDelay),
+          sendMethod: currentSiteSettings.sendMethod || normalizeSendMethod(items.sendMethod),
+          sendButtonSelector: currentSiteSettings.sendButtonSelector ?? normalizeSendButtonSelector(items.sendButtonSelector)
+        });
+      });
+    });
+  }
+  function clickSendButton(button) {
+    if (!button || "disabled" in button && button.disabled) return false;
+    button.click();
+    return true;
+  }
+  function findConfiguredSendButton(selector) {
+    if (!selector) return null;
+    try {
+      return document.querySelector(selector);
+    } catch {
+      return null;
+    }
+  }
+  function dispatchEnterSend(target, method) {
+    target.focus();
+    const init2 = {
+      key: "Enter",
+      code: "Enter",
+      bubbles: true,
+      cancelable: true,
+      ctrlKey: method === "ctrl-enter",
+      shiftKey: method === "shift-enter",
+      altKey: method === "alt-enter",
+      keyCode: 13,
+      which: 13
+    };
+    target.dispatchEvent(new KeyboardEvent("keydown", init2));
+    target.dispatchEvent(new KeyboardEvent("keypress", init2));
+    target.dispatchEvent(new KeyboardEvent("keyup", init2));
+  }
+  function runConfiguredSend(target, crm, settings) {
+    if (settings.sendMethod === "button") {
+      if (clickSendButton(findConfiguredSendButton(settings.sendButtonSelector))) return;
+      clickSendButton(crm?.sendBtn() || findLikelySendButton(target));
+      return;
+    }
+    if (settings.sendMethod !== "auto") {
+      dispatchEnterSend(target, settings.sendMethod);
+      return;
+    }
+    if (!clickSendButton(crm?.sendBtn() || findLikelySendButton(target))) {
+      dispatchEnterSend(target, "enter");
+    }
+  }
+  function scheduleAutoSend(target, crm) {
+    void readAutoSendSettings().then((settings) => {
+      const send = () => runConfiguredSend(target, crm, settings);
+      if (!settings.enabled) {
+        window.setTimeout(send, 150);
+        return;
+      }
+      const detail = { delaySeconds: settings.delaySeconds, send, handled: false };
+      window.dispatchEvent(new CustomEvent("blobnote:safe-send", { detail }));
+      if (!detail.handled) window.setTimeout(send, settings.delaySeconds * 1e3);
+    });
+  }
+  function recordTemplateUse(template) {
+    if (!template.id || !template.title || !hasChromeStorage()) return;
+    chrome.storage.sync.get({ templates: [], recentInsertions: [] }, (items) => {
+      const now = (/* @__PURE__ */ new Date()).toISOString();
+      const templates = normalizeTemplates(items.templates || []).map(
+        (item) => item.id === template.id ? { ...item, usageCount: (item.usageCount || 0) + 1, updatedAt: now } : item
+      );
+      const recentInsertions = normalizeRecentInsertions([
+        {
+          id: `${Date.now()}-${template.id}`,
+          templateId: template.id,
+          title: template.title,
+          text: template.text,
+          tag: template.tag || null,
+          usedAt: now,
+          host: window.location.hostname || null
+        },
+        ...(items.recentInsertions || []).filter((item) => item.templateId !== template.id)
+      ]);
+      chrome.storage.sync.set({ templates, recentInsertions });
+    });
+  }
   function insertTextToActiveField(text, autoSend = false) {
     const target = getActiveEditableElement();
     if (!target) return false;
     insertTextIntoEditable(target, text);
     if (autoSend) {
-      window.setTimeout(() => {
-        const button = findLikelySendButton(target);
-        if (button && !("disabled" in button && button.disabled)) button.click();
-      }, 150);
+      scheduleAutoSend(target);
     }
     return true;
   }
@@ -11166,11 +11428,9 @@
     const target = options.crm?.textarea() || getActiveEditableElement();
     if (!target) return false;
     insertTextIntoEditable(target, resolvedText);
+    recordTemplateUse(template);
     if (options.autoSend) {
-      window.setTimeout(() => {
-        const button = options.crm?.sendBtn() || findLikelySendButton(target);
-        if (button && !("disabled" in button && button.disabled)) button.click();
-      }, 150);
+      scheduleAutoSend(target, options.crm);
     }
     return true;
   }
@@ -11185,13 +11445,25 @@
   }
   function FloatingPanel({ uiScale, onOpenBase }) {
     const [visible, setVisible] = import_react3.default.useState(false);
+    const [templates, setTemplates] = import_react3.default.useState([]);
     const [favorites, setFavorites] = import_react3.default.useState([]);
+    const [recentInsertions, setRecentInsertions] = import_react3.default.useState([]);
     const [clipboardItems, setClipboardItems] = import_react3.default.useState([]);
     const [position, setPosition] = import_react3.default.useState({ top: 0, left: 0, width: 300 });
     const [enabled, setEnabled] = import_react3.default.useState(true);
     const [clipboardEnabled, setClipboardEnabled] = import_react3.default.useState(false);
     const [language, setLanguage] = import_react3.default.useState("ru");
     const [collapsed, setCollapsed] = import_react3.default.useState(false);
+    const [settingsOpen, setSettingsOpen] = import_react3.default.useState(false);
+    const [placement, setPlacement] = import_react3.default.useState("auto");
+    const [compactMode, setCompactMode] = import_react3.default.useState(false);
+    const [safeSendEnabled, setSafeSendEnabled] = import_react3.default.useState(false);
+    const [safeSendDelay, setSafeSendDelay] = import_react3.default.useState(5);
+    const [sendMethod, setSendMethod] = import_react3.default.useState("auto");
+    const [sendButtonSelector, setSendButtonSelector] = import_react3.default.useState("");
+    const [editingTemplate, setEditingTemplate] = import_react3.default.useState(null);
+    const [draftTitle, setDraftTitle] = import_react3.default.useState("");
+    const [draftText, setDraftText] = import_react3.default.useState("");
     const panelRef = import_react3.default.useRef(null);
     const targetRef = import_react3.default.useRef(null);
     const t = import_react3.default.useCallback((key) => translate(language, key), [language]);
@@ -11201,14 +11473,22 @@
       const loadSnapshot = async () => {
         const snapshot = await readRuntimeSnapshot();
         if (!mounted) return;
+        setTemplates(snapshot.templates);
         setFavorites(snapshot.templates.filter((template) => template.favorite));
+        setRecentInsertions(snapshot.recentInsertions);
         setEnabled(snapshot.floatingPanelEnabled);
         setClipboardEnabled(snapshot.clipboardPanelEnabled);
         setLanguage(snapshot.uiLanguage);
+        setPlacement(snapshot.panelPlacement);
+        setCompactMode(snapshot.panelCompactMode);
+        setSafeSendEnabled(snapshot.safeSendEnabled);
+        setSafeSendDelay(snapshot.safeSendDelay);
+        setSendMethod(snapshot.sendMethod);
+        setSendButtonSelector(snapshot.sendButtonSelector || "");
       };
       void loadSnapshot();
       const handleStorage = (changes, area) => {
-        if (area === "sync" && (changes.templates || changes.theme || changes.floatingPanelEnabled || changes.clipboardPanelEnabled || changes.uiLanguage)) {
+        if (area === "sync" && (changes.templates || changes.recentInsertions || changes.floatingPanelEnabled || changes.clipboardPanelEnabled || changes.uiLanguage || changes.panelPlacement || changes.panelCompactMode || changes.safeSendEnabled || changes.safeSendDelay || changes.sendMethod || changes.sendButtonSelector || changes.siteSettings)) {
           void loadSnapshot();
         }
       };
@@ -11240,13 +11520,13 @@
           const rect = target2.getBoundingClientRect();
           const layoutHeight = panelRef.current?.offsetHeight || (favorites.length > 0 || clipboardItems.length > 0 ? 168 : 78);
           const visualHeight = layoutHeight * scale;
-          const visualWidth = Math.min(Math.max(320, rect.width), window.innerWidth - 16);
+          const visualWidth = compactMode ? Math.min(Math.max(260, rect.width), window.innerWidth - 16) : Math.min(Math.max(320, rect.width), window.innerWidth - 16);
           const layoutWidth = visualWidth / scale;
           const availableAbove = rect.top - 8;
           const availableBelow = window.innerHeight - rect.bottom - 8;
-          const placeAbove = availableAbove >= visualHeight + 8 && availableAbove > availableBelow;
-          const top = placeAbove ? rect.top - visualHeight - 8 : rect.bottom + 8;
-          const left = clamp(rect.left, 8, window.innerWidth - visualWidth - 8);
+          const placeAbove = placement === "above" || placement === "auto" && availableAbove >= visualHeight + 8 && availableAbove > availableBelow;
+          const top = placement === "top-right" ? 16 : placement === "bottom-right" ? window.innerHeight - visualHeight - 16 : placeAbove ? rect.top - visualHeight - 8 : rect.bottom + 8;
+          const left = placement === "top-right" || placement === "bottom-right" ? window.innerWidth - visualWidth - 16 : clamp(rect.left, 8, window.innerWidth - visualWidth - 8);
           setPosition({
             top: clamp(top, 8, window.innerHeight - visualHeight - 8),
             left,
@@ -11269,7 +11549,7 @@
         document.removeEventListener("input", checkFocus, true);
         window.clearInterval(interval);
       };
-    }, [enabled, favorites.length, clipboardItems.length, scale]);
+    }, [clipboardItems.length, compactMode, enabled, favorites.length, placement, scale]);
     import_react3.default.useEffect(() => {
       if (!enabled || !clipboardEnabled) {
         setClipboardItems([]);
@@ -11295,6 +11575,48 @@
     }, [clipboardEnabled, enabled]);
     if (!enabled || !visible) return null;
     const target = getActiveEditableElement();
+    const updateSiteSettings = (patch) => {
+      const host = window.location.hostname;
+      if (!host || typeof chrome === "undefined" || !chrome.storage?.sync) return;
+      chrome.storage.sync.get({ siteSettings: {} }, (items) => {
+        const siteSettings = items.siteSettings || {};
+        chrome.storage.sync.set({
+          siteSettings: {
+            ...siteSettings,
+            [host]: {
+              ...siteSettings[host] || {},
+              ...patch
+            }
+          }
+        });
+      });
+    };
+    const startEditing = (template) => {
+      setEditingTemplate(template);
+      setDraftTitle(template.title);
+      setDraftText(template.text);
+      setSettingsOpen(false);
+    };
+    const saveEditing = () => {
+      if (!editingTemplate || !draftTitle.trim() || !draftText.trim() || typeof chrome === "undefined" || !chrome.storage?.sync) return;
+      chrome.storage.sync.get({ templates: [] }, (items) => {
+        const updated = (items.templates || []).map(
+          (template) => template.id === editingTemplate.id ? { ...template, title: draftTitle.trim(), text: draftText.trim(), updatedAt: (/* @__PURE__ */ new Date()).toISOString() } : template
+        );
+        chrome.storage.sync.set({ templates: updated }, () => {
+          setEditingTemplate(null);
+          showToast(t("noteUpdated"), "success");
+        });
+      });
+    };
+    const insertRecent = (item, autoSend = false) => {
+      const template = item.templateId ? templates.find((candidate) => candidate.id === item.templateId) : null;
+      if (template) {
+        insertTemplate(template, { autoSend });
+        return;
+      }
+      insertTextToActiveField(item.text, autoSend);
+    };
     if (collapsed) {
       return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
         "button",
@@ -11337,23 +11659,16 @@
           /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
             /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: t("quickReplies") }),
             /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex gap-1", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
                 Button,
                 {
-                  size: "sm",
+                  size: "icon",
                   variant: "ghost",
-                  className: "h-6 text-xs text-destructive",
+                  className: "h-6 w-6",
+                  title: t("panelSettings"),
                   onMouseDown: (event) => event.preventDefault(),
-                  onClick: () => {
-                    if (target) {
-                      setNativeValue(target, "");
-                      target.focus();
-                    }
-                  },
-                  children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Eraser, { className: "mr-1 h-3 w-3" }),
-                    t("clear")
-                  ]
+                  onClick: () => setSettingsOpen((value) => !value),
+                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Settings2, { className: "h-3 w-3" })
                 }
               ),
               /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
@@ -11384,6 +11699,157 @@
               )
             ] })
           ] }),
+          settingsOpen && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-2 grid gap-2 rounded-md border bg-muted/30 p-2 text-[10px]", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid grid-cols-2 gap-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center justify-between gap-2", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("panelScale") }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                  "select",
+                  {
+                    className: "h-6 rounded border bg-background px-1",
+                    value: uiScale,
+                    onChange: (event) => updateSiteSettings({ panelScale: event.target.value }),
+                    children: UI_SCALE_OPTIONS.map((option) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: option.value, children: option.label }, option.value))
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center justify-between gap-2", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("panelPosition") }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+                  "select",
+                  {
+                    className: "h-6 rounded border bg-background px-1",
+                    value: placement,
+                    onChange: (event) => updateSiteSettings({ panelPlacement: event.target.value }),
+                    children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "auto", children: t("auto") }),
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "above", children: t("aboveField") }),
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "below", children: t("belowField") }),
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "top-right", children: t("topRight") }),
+                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "bottom-right", children: t("bottomRight") })
+                    ]
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid grid-cols-2 gap-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center gap-1.5", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("input", { type: "checkbox", checked: compactMode, onChange: (event) => updateSiteSettings({ panelCompactMode: event.target.checked }) }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("compactPanel") })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center gap-1.5", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: safeSendEnabled,
+                    onChange: (event) => chrome.storage?.sync?.set({ safeSendEnabled: event.target.checked })
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("safeSend") })
+              ] })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center justify-between gap-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("safeSendDelay") }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                "select",
+                {
+                  className: "h-6 rounded border bg-background px-1",
+                  value: safeSendDelay,
+                  onChange: (event) => chrome.storage?.sync?.set({ safeSendDelay: parseInt(event.target.value, 10) }),
+                  children: Array.from({ length: 13 }, (_, index) => index + 3).map((value) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("option", { value, children: [
+                    value,
+                    " c"
+                  ] }, value))
+                }
+              )
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "flex items-center justify-between gap-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("sendMethod") }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+                "select",
+                {
+                  className: "h-6 rounded border bg-background px-1",
+                  value: sendMethod,
+                  onChange: (event) => {
+                    const value = event.target.value;
+                    setSendMethod(value);
+                    updateSiteSettings({ sendMethod: value });
+                  },
+                  children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "auto", children: t("sendAuto") }),
+                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "button", children: t("sendButton") }),
+                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "enter", children: t("sendEnter") }),
+                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "ctrl-enter", children: t("sendCtrlEnter") }),
+                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "shift-enter", children: t("sendShiftEnter") }),
+                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "alt-enter", children: t("sendAltEnter") })
+                  ]
+                }
+              )
+            ] }),
+            sendMethod === "button" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: t("sendButtonSelector") }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                "input",
+                {
+                  className: "h-7 min-w-0 rounded border bg-background px-2 text-[10px]",
+                  value: sendButtonSelector,
+                  onChange: (event) => {
+                    setSendButtonSelector(event.target.value);
+                    updateSiteSettings({ sendButtonSelector: event.target.value.trim() || null });
+                  },
+                  placeholder: "button[type='submit']"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+              Button,
+              {
+                size: "sm",
+                variant: "ghost",
+                className: "h-6 justify-start text-[10px] text-destructive",
+                onMouseDown: (event) => event.preventDefault(),
+                onClick: () => {
+                  if (target) {
+                    setNativeValue(target, "");
+                    target.focus();
+                  }
+                },
+                children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Eraser, { className: "mr-1 h-3 w-3" }),
+                  t("clear")
+                ]
+              }
+            )
+          ] }),
+          editingTemplate && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-2 rounded-md border bg-muted/30 p-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+              "input",
+              {
+                className: "mb-1 h-7 w-full rounded border bg-background px-2 text-xs",
+                value: draftTitle,
+                onChange: (event) => setDraftTitle(event.target.value)
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+              "textarea",
+              {
+                className: "max-h-32 min-h-20 w-full resize-y rounded border bg-background px-2 py-1 text-xs",
+                value: draftText,
+                onChange: (event) => setDraftText(event.target.value)
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mt-1 flex gap-1", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(Button, { size: "sm", className: "h-6 flex-1 text-[10px]", onClick: saveEditing, children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Save, { className: "mr-1 h-3 w-3" }),
+                t("save")
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(Button, { size: "sm", variant: "outline", className: "h-6 flex-1 text-[10px]", onClick: () => setEditingTemplate(null), children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(X, { className: "mr-1 h-3 w-3" }),
+                t("cancel")
+              ] })
+            ] })
+          ] }),
           /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex max-h-[96px] flex-wrap gap-1 overflow-y-auto overflow-x-hidden pr-1", children: favorites.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-[10px] italic text-muted-foreground", children: t("noFavorites") }) : favorites.map((template) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex gap-1", children: [
             /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
               Button,
@@ -11395,6 +11861,18 @@
                 onClick: () => insertTemplate(template),
                 title: template.title,
                 children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "block min-w-0 truncate", children: template.title })
+              }
+            ),
+            !compactMode && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+              Button,
+              {
+                size: "icon",
+                variant: "ghost",
+                className: "h-6 w-6 rounded-md",
+                title: t("editNote"),
+                onMouseDown: (event) => event.preventDefault(),
+                onClick: () => startEditing(template),
+                children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Pencil, { className: "h-3 w-3" })
               }
             ),
             /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
@@ -11410,6 +11888,38 @@
               }
             )
           ] }, template.id)) }),
+          recentInsertions.length > 0 && !compactMode && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mt-2 border-t pt-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Clock3, { className: "h-3 w-3" }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "min-w-0 flex-1 truncate", children: t("recentInsertions") })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex max-h-[84px] flex-col gap-1 overflow-y-auto overflow-x-hidden pr-1", children: recentInsertions.slice(0, 5).map((item) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex gap-1", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                Button,
+                {
+                  size: "sm",
+                  variant: "outline",
+                  className: "h-7 min-w-0 flex-1 justify-start rounded-md px-2 text-left text-[10px]",
+                  title: item.title,
+                  onMouseDown: (event) => event.preventDefault(),
+                  onClick: () => insertRecent(item),
+                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "block min-w-0 truncate", children: item.title })
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                Button,
+                {
+                  size: "icon",
+                  variant: "secondary",
+                  className: "h-7 w-7 rounded-md",
+                  title: t("insertAndSend"),
+                  onMouseDown: (event) => event.preventDefault(),
+                  onClick: () => insertRecent(item, true),
+                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Send, { className: "h-3 w-3" })
+                }
+              )
+            ] }, item.id)) })
+          ] }),
           clipboardEnabled && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mt-2 border-t pt-2", children: [
             /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground", children: [
               /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ClipboardList, { className: "h-3 w-3" }),
@@ -11925,24 +12435,33 @@
     theme: "light",
     uiLanguage: "ru",
     uiScale: "100",
-    atMenuEnabled: true,
+    panelScale: "100",
+    panelPlacement: "auto",
+    panelCompactMode: false,
+    safeSendEnabled: false,
+    safeSendDelay: 5,
+    sendMethod: "auto",
+    sendButtonSelector: null,
+    atMenuEnabled: false,
     floatingPanelEnabled: true,
     clipboardPanelEnabled: false,
     searchTrigger: "/",
     activationMode: "all",
     enabledHosts: [],
     ...cardPresetFor("light", "lagoon"),
-    showVariablesTab: true,
-    showTodoTab: true,
+    showVariablesTab: false,
+    showTodoTab: false,
     lastBaseTab: "templates",
     gridCols: 3,
     gridHeight: "240px",
-    onboardingCompleted: false
+    onboardingCompleted: false,
+    siteSettings: {}
   };
   var defaultSnapshot = {
     templates: [],
     variables: [],
     todos: [],
+    recentInsertions: [],
     customBindings: {},
     ...defaultSettings
   };
@@ -11972,6 +12491,7 @@
       tag: template.tag ? String(template.tag) : null,
       color: template.color ? String(template.color) : null,
       favorite: Boolean(template.favorite),
+      usageCount: typeof template.usageCount === "number" && template.usageCount > 0 ? Math.floor(template.usageCount) : 0,
       createdAt: template.createdAt || now,
       updatedAt: template.updatedAt || now,
       order: typeof template.order === "number" ? template.order : index
@@ -12007,6 +12527,50 @@
   function normalizeTodos(todos = []) {
     return todos.map(normalizeTodo).filter((todo) => todo.text);
   }
+  function normalizeRecentInsertion(item, index) {
+    return {
+      id: item.id || generateId(),
+      templateId: item.templateId ? String(item.templateId) : null,
+      title: String(item.title || "").trim() || "\u0428\u0430\u0431\u043B\u043E\u043D",
+      text: String(item.text || ""),
+      tag: item.tag ? String(item.tag) : null,
+      usedAt: item.usedAt || new Date(Date.now() - index).toISOString(),
+      host: item.host ? String(item.host) : null
+    };
+  }
+  function normalizeRecentInsertions2(items = []) {
+    return items.map(normalizeRecentInsertion).filter((item) => item.text).sort((a, b) => new Date(b.usedAt).getTime() - new Date(a.usedAt).getTime()).slice(0, 10);
+  }
+  function normalizePanelPlacement2(value) {
+    return value === "above" || value === "below" || value === "top-right" || value === "bottom-right" ? value : "auto";
+  }
+  function normalizeSafeSendDelay2(value) {
+    const numeric = typeof value === "number" ? value : parseInt(String(value || ""), 10);
+    if (Number.isNaN(numeric)) return defaultSettings.safeSendDelay;
+    return Math.min(15, Math.max(3, numeric));
+  }
+  function normalizeSendMethod2(value) {
+    return value === "button" || value === "enter" || value === "ctrl-enter" || value === "shift-enter" || value === "alt-enter" ? value : "auto";
+  }
+  function normalizeSendButtonSelector2(value) {
+    const selector = typeof value === "string" ? value.trim() : "";
+    return selector || null;
+  }
+  function normalizeSiteSettings2(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+    return Object.entries(value).reduce((acc, [host, settings]) => {
+      if (!host || !settings || typeof settings !== "object") return acc;
+      const next = {};
+      if (settings.uiScale) next.uiScale = normalizeUiScale(settings.uiScale);
+      if (settings.panelScale) next.panelScale = normalizeUiScale(settings.panelScale);
+      if (settings.panelPlacement) next.panelPlacement = normalizePanelPlacement2(settings.panelPlacement);
+      if (typeof settings.panelCompactMode === "boolean") next.panelCompactMode = settings.panelCompactMode;
+      if (settings.sendMethod) next.sendMethod = normalizeSendMethod2(settings.sendMethod);
+      if ("sendButtonSelector" in settings) next.sendButtonSelector = normalizeSendButtonSelector2(settings.sendButtonSelector);
+      if (Object.keys(next).length > 0) acc[host] = next;
+      return acc;
+    }, {});
+  }
   function bindingsFromMap2(map = {}) {
     return Object.entries(map).map(([domain, binding]) => ({
       id: domain,
@@ -12033,11 +12597,19 @@
       templates: normalizeTemplates2(snapshot.templates),
       variables: normalizeVariables2(snapshot.variables),
       todos: normalizeTodos(snapshot.todos),
+      recentInsertions: normalizeRecentInsertions2(snapshot.recentInsertions),
       bindings: bindingsFromMap2(snapshot.customBindings),
       settings: {
         theme,
         uiLanguage: isLanguage(snapshot.uiLanguage) ? snapshot.uiLanguage : defaultSettings.uiLanguage,
         uiScale: normalizeUiScale(snapshot.uiScale),
+        panelScale: normalizeUiScale(snapshot.panelScale),
+        panelPlacement: normalizePanelPlacement2(snapshot.panelPlacement),
+        panelCompactMode: snapshot.panelCompactMode ?? defaultSettings.panelCompactMode,
+        safeSendEnabled: snapshot.safeSendEnabled ?? defaultSettings.safeSendEnabled,
+        safeSendDelay: normalizeSafeSendDelay2(snapshot.safeSendDelay),
+        sendMethod: normalizeSendMethod2(snapshot.sendMethod),
+        sendButtonSelector: normalizeSendButtonSelector2(snapshot.sendButtonSelector),
         atMenuEnabled: snapshot.atMenuEnabled ?? defaultSettings.atMenuEnabled,
         floatingPanelEnabled: snapshot.floatingPanelEnabled ?? defaultSettings.floatingPanelEnabled,
         clipboardPanelEnabled: snapshot.clipboardPanelEnabled ?? defaultSettings.clipboardPanelEnabled,
@@ -12050,7 +12622,8 @@
         lastBaseTab: snapshot.lastBaseTab || defaultSettings.lastBaseTab,
         gridCols: snapshot.gridCols || defaultSettings.gridCols,
         gridHeight: snapshot.gridHeight || defaultSettings.gridHeight,
-        onboardingCompleted: snapshot.onboardingCompleted ?? defaultSettings.onboardingCompleted
+        onboardingCompleted: snapshot.onboardingCompleted ?? defaultSettings.onboardingCompleted,
+        siteSettings: normalizeSiteSettings2(snapshot.siteSettings)
       },
       hydrated: true
     };
@@ -12067,6 +12640,7 @@
       if (changes.templates) patch.templates = normalizeTemplates2(changes.templates.newValue || []);
       if (changes.variables) patch.variables = normalizeVariables2(changes.variables.newValue || []);
       if (changes.todos) patch.todos = normalizeTodos(changes.todos.newValue || []);
+      if (changes.recentInsertions) patch.recentInsertions = normalizeRecentInsertions2(changes.recentInsertions.newValue || []);
       if (changes.customBindings) patch.bindings = bindingsFromMap2(changes.customBindings.newValue || {});
       let cardPresetChanged = false;
       if (changes.theme) {
@@ -12080,6 +12654,34 @@
       }
       if (changes.uiScale) {
         nextSettings.uiScale = normalizeUiScale(changes.uiScale.newValue);
+        settingsChanged = true;
+      }
+      if (changes.panelScale) {
+        nextSettings.panelScale = normalizeUiScale(changes.panelScale.newValue);
+        settingsChanged = true;
+      }
+      if (changes.panelPlacement) {
+        nextSettings.panelPlacement = normalizePanelPlacement2(changes.panelPlacement.newValue);
+        settingsChanged = true;
+      }
+      if (changes.panelCompactMode) {
+        nextSettings.panelCompactMode = Boolean(changes.panelCompactMode.newValue);
+        settingsChanged = true;
+      }
+      if (changes.safeSendEnabled) {
+        nextSettings.safeSendEnabled = Boolean(changes.safeSendEnabled.newValue);
+        settingsChanged = true;
+      }
+      if (changes.safeSendDelay) {
+        nextSettings.safeSendDelay = normalizeSafeSendDelay2(changes.safeSendDelay.newValue);
+        settingsChanged = true;
+      }
+      if (changes.sendMethod) {
+        nextSettings.sendMethod = normalizeSendMethod2(changes.sendMethod.newValue);
+        settingsChanged = true;
+      }
+      if (changes.sendButtonSelector) {
+        nextSettings.sendButtonSelector = normalizeSendButtonSelector2(changes.sendButtonSelector.newValue);
         settingsChanged = true;
       }
       if (changes.atMenuEnabled) {
@@ -12151,6 +12753,10 @@
         nextSettings.onboardingCompleted = Boolean(changes.onboardingCompleted.newValue);
         settingsChanged = true;
       }
+      if (changes.siteSettings) {
+        nextSettings.siteSettings = normalizeSiteSettings2(changes.siteSettings.newValue);
+        settingsChanged = true;
+      }
       if (cardPresetChanged) Object.assign(nextSettings, cardPresetFor(nextSettings.theme, nextSettings.cardPreset));
       if (settingsChanged) patch.settings = nextSettings;
       if (Object.keys(patch).length > 0) useAppStore.setState(patch);
@@ -12166,6 +12772,7 @@
     bindings: [],
     variables: [],
     todos: [],
+    recentInsertions: [],
     settings: defaultSettings,
     toasts: [],
     hydrated: false,
@@ -12178,7 +12785,8 @@
         id: generateId(),
         createdAt: (/* @__PURE__ */ new Date()).toISOString(),
         updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        order: state.templates.length
+        order: state.templates.length,
+        usageCount: 0
       }];
       chromeSet({ templates });
       return { templates };
@@ -12211,6 +12819,27 @@
       );
       chromeSet({ templates });
       return { templates };
+    }),
+    recordTemplateUse: (template) => set((state) => {
+      const now = (/* @__PURE__ */ new Date()).toISOString();
+      const host = typeof window !== "undefined" && window.location?.hostname ? window.location.hostname : null;
+      const templates = state.templates.map(
+        (item) => item.id === template.id ? { ...item, usageCount: (item.usageCount || 0) + 1, updatedAt: now } : item
+      );
+      const recentInsertions = [
+        {
+          id: generateId(),
+          templateId: template.id || null,
+          title: template.title,
+          text: template.text,
+          tag: template.tag,
+          usedAt: now,
+          host
+        },
+        ...state.recentInsertions.filter((item) => item.templateId !== template.id)
+      ].slice(0, 10);
+      chromeSet({ templates, recentInsertions });
+      return { templates, recentInsertions };
     }),
     addVariable: (variable) => set((state) => {
       const now = (/* @__PURE__ */ new Date()).toISOString();
@@ -12296,6 +12925,14 @@
         theme,
         uiLanguage: isLanguage(settings.uiLanguage) ? settings.uiLanguage : state.settings.uiLanguage,
         uiScale: normalizeUiScale(settings.uiScale ?? state.settings.uiScale),
+        panelScale: normalizeUiScale(settings.panelScale ?? state.settings.panelScale),
+        panelPlacement: normalizePanelPlacement2(settings.panelPlacement ?? state.settings.panelPlacement),
+        panelCompactMode: settings.panelCompactMode ?? state.settings.panelCompactMode,
+        safeSendEnabled: settings.safeSendEnabled ?? state.settings.safeSendEnabled,
+        safeSendDelay: normalizeSafeSendDelay2(settings.safeSendDelay ?? state.settings.safeSendDelay),
+        sendMethod: normalizeSendMethod2(settings.sendMethod ?? state.settings.sendMethod),
+        sendButtonSelector: normalizeSendButtonSelector2(settings.sendButtonSelector ?? state.settings.sendButtonSelector),
+        siteSettings: normalizeSiteSettings2(settings.siteSettings ?? state.settings.siteSettings),
         searchTrigger: settings.searchTrigger === "@" ? "@" : settings.searchTrigger === "/" ? "/" : state.settings.searchTrigger,
         ...cardPresetFor(theme, cardPreset)
       };
@@ -12303,6 +12940,13 @@
         theme: nextSettings.theme,
         uiLanguage: nextSettings.uiLanguage,
         uiScale: nextSettings.uiScale,
+        panelScale: nextSettings.panelScale,
+        panelPlacement: nextSettings.panelPlacement,
+        panelCompactMode: nextSettings.panelCompactMode,
+        safeSendEnabled: nextSettings.safeSendEnabled,
+        safeSendDelay: nextSettings.safeSendDelay,
+        sendMethod: nextSettings.sendMethod,
+        sendButtonSelector: nextSettings.sendButtonSelector,
         atMenuEnabled: nextSettings.atMenuEnabled,
         floatingPanelEnabled: nextSettings.floatingPanelEnabled,
         clipboardPanelEnabled: nextSettings.clipboardPanelEnabled,
@@ -12319,7 +12963,8 @@
         lastBaseTab: nextSettings.lastBaseTab,
         gridCols: nextSettings.gridCols,
         gridHeight: nextSettings.gridHeight,
-        onboardingCompleted: nextSettings.onboardingCompleted
+        onboardingCompleted: nextSettings.onboardingCompleted,
+        siteSettings: nextSettings.siteSettings
       });
       return { settings: nextSettings };
     }),
@@ -13559,7 +14204,8 @@
     draggable,
     onDragStart,
     onDragOver,
-    onDrop
+    onDrop,
+    usageLabel
   }) {
     const paletteColor = {
       amber: "#fffbeb",
@@ -13595,7 +14241,11 @@
           /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex justify-between gap-2 mb-2 shrink-0 pl-1.5", children: [
             /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex items-center gap-1.5 min-w-0 opacity-80", children: [
               /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FileText, { className: "h-3.5 w-3.5 shrink-0" }),
-              /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "text-[10px] uppercase tracking-wide truncate", children: template.tag || "\u0417\u0430\u043C\u0435\u0442\u043A\u0430" })
+              /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "text-[10px] uppercase tracking-wide truncate", children: template.tag || "\u0417\u0430\u043C\u0435\u0442\u043A\u0430" }),
+              usageLabel && /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("span", { className: "inline-flex shrink-0 items-center gap-1 rounded-full bg-black/5 px-1.5 py-0.5 text-[10px] normal-case tracking-normal dark:bg-white/10", title: usageLabel, children: [
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(BarChart3, { className: "h-3 w-3" }),
+                usageLabel
+              ] })
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex gap-1", children: [
               /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Button, { size: "icon", variant: "ghost", className: "h-6 w-6", onClick: (event) => {
@@ -13695,6 +14345,7 @@
     const [text, setText] = import_react7.default.useState(template?.text || "");
     const [tag, setTag] = import_react7.default.useState(template?.tag || "");
     const [showTagDropdown, setShowTagDropdown] = import_react7.default.useState(false);
+    const [errors, setErrors] = import_react7.default.useState({});
     const titleRef = import_react7.default.useRef(null);
     const textRef = import_react7.default.useRef(null);
     const t = import_react7.default.useCallback((key) => translate(language, key), [language]);
@@ -13703,6 +14354,7 @@
         setTitle(template?.title || "");
         setText(template?.text || "");
         setTag(template?.tag || "");
+        setErrors({});
         window.setTimeout(() => titleRef.current?.focus(), 100);
       }
     }, [template, isNew]);
@@ -13710,8 +14362,14 @@
       return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "py-6 text-center text-xs text-muted-foreground", children: t("selectedNoteHint") });
     }
     const handleSubmit = () => {
-      if (!title.trim() || !text.trim()) {
-        alert(t("fillNoteFields"));
+      const nextErrors = {
+        title: title.trim() ? void 0 : t("titleRequired"),
+        text: text.trim() ? void 0 : t("textRequired")
+      };
+      setErrors(nextErrors);
+      if (nextErrors.title || nextErrors.text) {
+        const ref = nextErrors.title ? titleRef.current : textRef.current;
+        ref?.focus();
         return;
       }
       onSave({
@@ -13753,15 +14411,22 @@
               ref: titleRef,
               placeholder: t("noteTitlePlaceholder"),
               value: title,
-              onChange: (event) => setTitle(event.target.value),
+              onChange: (event) => {
+                setTitle(event.target.value);
+                if (errors.title) setErrors((current) => ({ ...current, title: void 0 }));
+              },
               maxLength: 50,
-              className: "h-10 text-base"
+              "aria-invalid": Boolean(errors.title),
+              className: `h-10 text-base ${errors.title ? "border-destructive ring-1 ring-destructive/40" : ""}`
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "mt-0.5 text-right text-[10px] text-muted-foreground", children: [
-            50 - title.length,
-            " ",
-            t("charsShort")
+          /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "mt-0.5 flex items-center justify-between gap-2 text-[10px]", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: errors.title ? "text-destructive" : "text-muted-foreground", children: errors.title || t("requiredField") }),
+            /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("span", { className: "text-muted-foreground", children: [
+              50 - title.length,
+              " ",
+              t("charsShort")
+            ] })
           ] })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "relative", children: [
@@ -13798,11 +14463,16 @@
             ref: textRef,
             placeholder: t("noteTextPlaceholder"),
             value: text,
-            onChange: (event) => setText(event.target.value),
+            onChange: (event) => {
+              setText(event.target.value);
+              if (errors.text) setErrors((current) => ({ ...current, text: void 0 }));
+            },
             rows: 14,
-            className: "min-h-[300px] resize-y text-base leading-relaxed"
+            "aria-invalid": Boolean(errors.text),
+            className: `min-h-[300px] resize-y text-base leading-relaxed ${errors.text ? "border-destructive ring-1 ring-destructive/40" : ""}`
           }
         ),
+        errors.text && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "text-[10px] text-destructive", children: errors.text }),
         variables.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "rounded-md border bg-muted/30 p-2", children: [
           /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "mb-2 text-[10px] uppercase tracking-wide text-muted-foreground", children: t("insertVariable") }),
           /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "flex flex-wrap gap-1", children: variables.map((variable) => /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
@@ -13920,6 +14590,7 @@
         showToast(t("inputNotFound"), "error");
         return;
       }
+      recordTemplateUse({ id: template.id, title: template.title, text, tag: template.tag });
       onClose();
       onInserted?.(autoSend);
     };
@@ -13971,6 +14642,8 @@
     const [reminderAt, setReminderAt] = import_react10.default.useState("");
     const [priority, setPriority] = import_react10.default.useState("normal");
     const [filter, setFilter] = import_react10.default.useState("all");
+    const [textError, setTextError] = import_react10.default.useState("");
+    const textRef = import_react10.default.useRef(null);
     const t = import_react10.default.useCallback((key) => translate(language, key), [language]);
     const now = Date.now();
     const doneCount = todos.filter((todo) => todo.done).length;
@@ -13994,6 +14667,11 @@
       return true;
     });
     const handleAdd = () => {
+      if (!text.trim()) {
+        setTextError(t("textRequired"));
+        textRef.current?.focus();
+        return;
+      }
       addTodo({
         text,
         dueAt: dueAt || null,
@@ -14004,6 +14682,7 @@
       setDueAt("");
       setReminderAt("");
       setPriority("normal");
+      setTextError("");
     };
     return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "bg-background p-5", children: /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "flex w-full flex-col gap-4", children: [
       /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("section", { className: "rounded-lg border bg-card p-4 shadow-sm", children: [
@@ -14017,19 +14696,27 @@
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Button, { size: "sm", variant: "outline", onClick: clearDoneTodos, disabled: doneCount === 0, children: t("clearDone") })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "mt-4 flex flex-wrap gap-2", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
-            Input,
-            {
-              placeholder: t("todoPlaceholder"),
-              value: text,
-              onChange: (event) => setText(event.target.value),
-              onKeyDown: (event) => {
-                if (event.key === "Enter") handleAdd();
-              },
-              className: "min-w-[240px] flex-1"
-            }
-          ),
+        /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "mt-4 flex flex-wrap items-start gap-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "min-w-[240px] flex-1", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
+              Input,
+              {
+                ref: textRef,
+                placeholder: t("todoPlaceholder"),
+                value: text,
+                onChange: (event) => {
+                  setText(event.target.value);
+                  if (textError) setTextError("");
+                },
+                onKeyDown: (event) => {
+                  if (event.key === "Enter") handleAdd();
+                },
+                "aria-invalid": Boolean(textError),
+                className: cn(textError && "border-destructive ring-1 ring-destructive/40")
+              }
+            ),
+            textError && /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "mt-1 text-xs text-destructive", children: textError })
+          ] }),
           /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Input, { className: "w-[180px]", type: "datetime-local", value: dueAt, onChange: (event) => setDueAt(event.target.value), title: t("deadline") }),
           /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Input, { className: "w-[180px]", type: "datetime-local", value: reminderAt, onChange: (event) => setReminderAt(event.target.value), title: t("remind") }),
           /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(
@@ -14307,6 +14994,119 @@
     ] }) });
   }
 
+  // src/lib/scenarioPresets.ts
+  var SCENARIO_PRESETS = [
+    {
+      id: "support",
+      labelKey: "supportPreset",
+      templates: [
+        {
+          title: "\u041F\u0440\u0438\u0432\u0435\u0442\u0441\u0442\u0432\u0438\u0435",
+          tag: "\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
+          favorite: true,
+          color: "blue",
+          text: "\u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435! \u041C\u0435\u043D\u044F \u0437\u043E\u0432\u0443\u0442 {{agent_name}}. \u0423\u0436\u0435 \u0441\u043C\u043E\u0442\u0440\u044E \u0432\u0430\u0448 \u0432\u043E\u043F\u0440\u043E\u0441 \u0438 \u0441\u043A\u043E\u0440\u043E \u0432\u0435\u0440\u043D\u0443\u0441\u044C \u0441 \u043E\u0442\u0432\u0435\u0442\u043E\u043C."
+        },
+        {
+          title: "\u0423\u0442\u043E\u0447\u043D\u0435\u043D\u0438\u0435 \u0434\u0430\u043D\u043D\u044B\u0445",
+          tag: "\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
+          favorite: true,
+          color: "amber",
+          text: "\u041F\u043E\u0434\u0441\u043A\u0430\u0436\u0438\u0442\u0435, \u043F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430, \u043D\u043E\u043C\u0435\u0440 \u0437\u0430\u043A\u0430\u0437\u0430 \u0438 \u0442\u0435\u043B\u0435\u0444\u043E\u043D, \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u0431\u044B\u043B \u0443\u043A\u0430\u0437\u0430\u043D \u043F\u0440\u0438 \u043E\u0444\u043E\u0440\u043C\u043B\u0435\u043D\u0438\u0438. \u0422\u0430\u043A \u044F \u0431\u044B\u0441\u0442\u0440\u0435\u0435 \u043D\u0430\u0439\u0434\u0443 \u0438\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u044E."
+        },
+        {
+          title: "\u041F\u0430\u0443\u0437\u0430 \u043D\u0430 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0443",
+          tag: "\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
+          favorite: false,
+          color: "slate",
+          text: "\u0421\u043F\u0430\u0441\u0438\u0431\u043E, \u0432\u0437\u044F\u043B(\u0430) \u0432 \u0440\u0430\u0431\u043E\u0442\u0443. \u041C\u043D\u0435 \u043F\u043E\u043D\u0430\u0434\u043E\u0431\u0438\u0442\u0441\u044F \u043D\u0435\u0441\u043A\u043E\u043B\u044C\u043A\u043E \u043C\u0438\u043D\u0443\u0442, \u0447\u0442\u043E\u0431\u044B \u0432\u0441\u0435 \u043F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C."
+        },
+        {
+          title: "\u0420\u0435\u0448\u0435\u043D\u0438\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u043E",
+          tag: "\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
+          favorite: false,
+          color: "green",
+          text: "\u041D\u0430\u0448\u0435\u043B(\u043B\u0430) \u0440\u0435\u0448\u0435\u043D\u0438\u0435. \u0421\u0435\u0439\u0447\u0430\u0441 \u043A\u0440\u0430\u0442\u043A\u043E \u043E\u043F\u0438\u0448\u0443, \u0447\u0442\u043E \u043D\u0443\u0436\u043D\u043E \u0441\u0434\u0435\u043B\u0430\u0442\u044C \u0434\u0430\u043B\u044C\u0448\u0435: "
+        },
+        {
+          title: "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435",
+          tag: "\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
+          favorite: false,
+          color: "green",
+          text: "\u0420\u0430\u0434(\u0430), \u0447\u0442\u043E \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043F\u043E\u043C\u043E\u0447\u044C. \u0415\u0441\u043B\u0438 \u043F\u043E\u044F\u0432\u044F\u0442\u0441\u044F \u0435\u0449\u0435 \u0432\u043E\u043F\u0440\u043E\u0441\u044B, \u043D\u0430\u043F\u0438\u0448\u0438\u0442\u0435 \u043D\u0430\u043C \u0432 \u043B\u044E\u0431\u043E\u0435 \u0432\u0440\u0435\u043C\u044F."
+        }
+      ]
+    },
+    {
+      id: "accounting",
+      labelKey: "accountingPreset",
+      templates: [
+        {
+          title: "\u0417\u0430\u043F\u0440\u043E\u0441 \u0440\u0435\u043A\u0432\u0438\u0437\u0438\u0442\u043E\u0432",
+          tag: "\u0411\u0443\u0445\u0433\u0430\u043B\u0442\u0435\u0440\u0438\u044F",
+          favorite: true,
+          color: "amber",
+          text: "\u041F\u0440\u0438\u0448\u043B\u0438\u0442\u0435, \u043F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430, \u0440\u0435\u043A\u0432\u0438\u0437\u0438\u0442\u044B \u043E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u0438: \u0418\u041D\u041D, \u041A\u041F\u041F, \u044E\u0440\u0438\u0434\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0430\u0434\u0440\u0435\u0441 \u0438 \u044D\u043B\u0435\u043A\u0442\u0440\u043E\u043D\u043D\u0443\u044E \u043F\u043E\u0447\u0442\u0443 \u0434\u043B\u044F \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u043E\u0432."
+        },
+        {
+          title: "\u0421\u0447\u0435\u0442 \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u0435\u043D",
+          tag: "\u0411\u0443\u0445\u0433\u0430\u043B\u0442\u0435\u0440\u0438\u044F",
+          favorite: true,
+          color: "blue",
+          text: "\u0421\u0447\u0435\u0442 \u043E\u0442\u043F\u0440\u0430\u0432\u0438\u043B\u0438. \u041F\u0440\u043E\u0432\u0435\u0440\u044C\u0442\u0435, \u043F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430, \u0434\u0430\u043D\u043D\u044B\u0435 \u0438 \u043D\u0430\u043F\u0438\u0448\u0438\u0442\u0435, \u0435\u0441\u043B\u0438 \u043D\u0443\u0436\u043D\u043E \u0447\u0442\u043E-\u0442\u043E \u0438\u0441\u043F\u0440\u0430\u0432\u0438\u0442\u044C."
+        },
+        {
+          title: "\u041E\u043F\u043B\u0430\u0442\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0430",
+          tag: "\u0411\u0443\u0445\u0433\u0430\u043B\u0442\u0435\u0440\u0438\u044F",
+          favorite: false,
+          color: "green",
+          text: "\u041E\u043F\u043B\u0430\u0442\u0443 \u043F\u043E\u043B\u0443\u0447\u0438\u043B\u0438, \u0441\u043F\u0430\u0441\u0438\u0431\u043E. \u041F\u0435\u0440\u0435\u0434\u0430\u0435\u043C \u0437\u0430\u043A\u0430\u0437 \u0432 \u0434\u0430\u043B\u044C\u043D\u0435\u0439\u0448\u0443\u044E \u0440\u0430\u0431\u043E\u0442\u0443."
+        },
+        {
+          title: "\u0417\u0430\u043A\u0440\u044B\u0432\u0430\u044E\u0449\u0438\u0435 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B",
+          tag: "\u0411\u0443\u0445\u0433\u0430\u043B\u0442\u0435\u0440\u0438\u044F",
+          favorite: false,
+          color: "slate",
+          text: "\u0417\u0430\u043A\u0440\u044B\u0432\u0430\u044E\u0449\u0438\u0435 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B \u043F\u043E\u0434\u0433\u043E\u0442\u043E\u0432\u0438\u043C \u0438 \u043E\u0442\u043F\u0440\u0430\u0432\u0438\u043C \u043F\u043E\u0441\u043B\u0435 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u044F \u0443\u0441\u043B\u0443\u0433\u0438."
+        }
+      ]
+    },
+    {
+      id: "sales",
+      labelKey: "salesPreset",
+      templates: [
+        {
+          title: "\u0423\u0442\u043E\u0447\u043D\u0435\u043D\u0438\u0435 \u043F\u043E\u0442\u0440\u0435\u0431\u043D\u043E\u0441\u0442\u0438",
+          tag: "\u041F\u0440\u043E\u0434\u0430\u0436\u0438",
+          favorite: true,
+          color: "blue",
+          text: "\u041F\u043E\u0434\u0441\u043A\u0430\u0436\u0438\u0442\u0435, \u043F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430, \u043A\u0430\u043A\u0443\u044E \u0437\u0430\u0434\u0430\u0447\u0443 \u0445\u043E\u0442\u0438\u0442\u0435 \u0440\u0435\u0448\u0438\u0442\u044C \u0438 \u043A\u0430\u043A\u043E\u0439 \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442 \u0434\u043B\u044F \u0432\u0430\u0441 \u0441\u0430\u043C\u044B\u0439 \u0432\u0430\u0436\u043D\u044B\u0439?"
+        },
+        {
+          title: "\u041F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435",
+          tag: "\u041F\u0440\u043E\u0434\u0430\u0436\u0438",
+          favorite: true,
+          color: "green",
+          text: "\u041F\u043E \u0432\u0430\u0448\u0435\u043C\u0443 \u0437\u0430\u043F\u0440\u043E\u0441\u0443 \u043F\u043E\u0434\u043E\u0439\u0434\u0435\u0442 \u0442\u0430\u043A\u043E\u0439 \u0432\u0430\u0440\u0438\u0430\u043D\u0442: "
+        },
+        {
+          title: "Follow-up",
+          tag: "\u041F\u0440\u043E\u0434\u0430\u0436\u0438",
+          favorite: false,
+          color: "amber",
+          text: "\u0412\u043E\u0437\u0432\u0440\u0430\u0449\u0430\u044E\u0441\u044C \u043A \u043D\u0430\u0448\u0435\u043C\u0443 \u043E\u0431\u0441\u0443\u0436\u0434\u0435\u043D\u0438\u044E. \u0410\u043A\u0442\u0443\u0430\u043B\u044C\u043D\u043E \u043B\u0438 \u0435\u0449\u0435 \u0440\u0430\u0441\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435?"
+        },
+        {
+          title: "\u041F\u0435\u0440\u0435\u0434\u0430\u0447\u0430 \u043C\u0435\u043D\u0435\u0434\u0436\u0435\u0440\u0443",
+          tag: "\u041F\u0440\u043E\u0434\u0430\u0436\u0438",
+          favorite: false,
+          color: "slate",
+          text: "\u041F\u0435\u0440\u0435\u0434\u0430\u043C \u0438\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u044E \u043C\u0435\u043D\u0435\u0434\u0436\u0435\u0440\u0443. \u041E\u043D \u0441\u0432\u044F\u0436\u0435\u0442\u0441\u044F \u0441 \u0432\u0430\u043C\u0438 \u0438 \u043F\u043E\u043C\u043E\u0436\u0435\u0442 \u0441 \u0434\u0435\u0442\u0430\u043B\u044F\u043C\u0438."
+        }
+      ]
+    }
+  ];
+
   // src/base/KnowledgeBase.tsx
   var import_jsx_runtime25 = __toESM(require_jsx_runtime());
   var CARD_PRESET_NAMES = {
@@ -14334,6 +15134,7 @@
     const [isCreating, setIsCreating] = import_react12.default.useState(false);
     const [draggingTemplateId, setDraggingTemplateId] = import_react12.default.useState(null);
     const [previewTemplate, setPreviewTemplate] = import_react12.default.useState(null);
+    const [scenarioPresetId, setScenarioPresetId] = import_react12.default.useState("support");
     const fileInputRef = import_react12.default.useRef(null);
     const t = import_react12.default.useCallback(
       (key, params) => translate(settings.uiLanguage, key, params),
@@ -14341,6 +15142,9 @@
     );
     const activeTab = getVisibleTab(settings);
     const editorOpen = isCreating || Boolean(editingTemplate);
+    const currentHost = embedded && typeof window !== "undefined" ? window.location.hostname : "";
+    const currentSiteSettings = currentHost ? settings.siteSettings[currentHost] : void 0;
+    const effectiveUiScale = currentSiteSettings?.uiScale || settings.uiScale;
     import_react12.default.useEffect(() => {
       if (embedded) return;
       document.documentElement.classList.toggle("dark", settings.theme === "dark");
@@ -14456,6 +15260,27 @@
       ].forEach((template) => addTemplate(template));
       showToast(t("starterAdded"), "success");
     };
+    const addScenarioPreset = () => {
+      const preset = SCENARIO_PRESETS.find((item) => item.id === scenarioPresetId);
+      if (!preset) return;
+      preset.templates.forEach((template) => addTemplate(template));
+      showToast(t("scenarioPresetAdded"), "success");
+    };
+    const updateInterfaceScale = (value) => {
+      if (!currentHost) {
+        updateSettings({ uiScale: value });
+        return;
+      }
+      updateSettings({
+        siteSettings: {
+          ...settings.siteSettings,
+          [currentHost]: {
+            ...currentSiteSettings || {},
+            uiScale: value
+          }
+        }
+      });
+    };
     const applyPreset = (preset) => {
       updateSettings({
         cardPreset: preset.cardPreset,
@@ -14470,7 +15295,7 @@
       "div",
       {
         className: `${embedded ? "h-full" : "h-screen"} ${settings.theme === "dark" ? "dark" : ""} flex flex-col overflow-hidden bg-background text-foreground`,
-        style: uiScaleStyle(settings.uiScale),
+        style: uiScaleStyle(effectiveUiScale),
         children: [
           /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("header", { className: `z-30 flex shrink-0 flex-wrap items-center justify-between gap-4 border-b bg-background px-4 py-2 shadow-sm ${embedded ? "pr-16" : ""}`, children: [
             /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("h1", { className: "flex shrink-0 items-center gap-3 text-sm font-semibold", children: [
@@ -14495,8 +15320,8 @@
                 {
                   icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ZoomIn, { className: "h-3.5 w-3.5" }),
                   label: t("interfaceScale"),
-                  value: settings.uiScale,
-                  onChange: (value) => updateSettings({ uiScale: value }),
+                  value: effectiveUiScale,
+                  onChange: (value) => updateInterfaceScale(value),
                   options: UI_SCALE_OPTIONS
                 }
               ),
@@ -14567,6 +15392,22 @@
                     /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Input, { placeholder: t("searchNotesPlaceholder"), className: "pl-9", value: searchQuery, onChange: (event) => setSearchQuery(event.target.value) })
                   ] }),
                   /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TagFilter, { tags: allTags, selected: selectedTags, language: settings.uiLanguage, onChange: setSelectedTags }),
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex h-8 items-center gap-1 rounded-md border bg-background px-1.5 text-xs shadow-sm", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                      "select",
+                      {
+                        className: "h-6 rounded border bg-background px-1 text-xs",
+                        value: scenarioPresetId,
+                        onChange: (event) => setScenarioPresetId(event.target.value),
+                        title: t("scenarioPresets"),
+                        children: SCENARIO_PRESETS.map((preset) => /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: preset.id, children: t(preset.labelKey) }, preset.id))
+                      }
+                    ),
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: "ghost", className: "h-6 px-2 text-xs", onClick: addScenarioPreset, title: t("addScenarioPreset"), children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Plus, { className: "mr-1 h-3 w-3" }),
+                      t("addScenarioPreset")
+                    ] })
+                  ] }),
                   /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: showFavorites ? "accent" : "outline", onClick: () => setShowFavorites(!showFavorites), children: [
                     /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Star, { className: `mr-1.5 h-3.5 w-3.5 ${showFavorites ? "fill-current" : ""}` }),
                     t("favorites")
@@ -14657,6 +15498,7 @@
             navigator.clipboard.writeText(template.text);
             showToast(t("textCopied"), "success");
           },
+          usageLabel: template.usageCount > 0 ? t("usageCount", { count: template.usageCount }) : void 0,
           cardStyle: showFullText ? void 0 : { height: settings.gridHeight },
           draggable: !showFullText,
           onDragStart: () => setDraggingTemplateId(template.id),
@@ -14926,18 +15768,33 @@
     const [showBase, setShowBase] = import_react14.default.useState(false);
     const [enabledForHost, setEnabledForHost] = import_react14.default.useState(true);
     const [theme, setTheme] = import_react14.default.useState("light");
-    const [uiScale, setUiScale] = import_react14.default.useState("100");
+    const [language, setLanguage] = import_react14.default.useState("ru");
+    const [panelScale, setPanelScale] = import_react14.default.useState("100");
+    const [pendingSend, setPendingSend] = import_react14.default.useState(null);
     import_react14.default.useEffect(() => {
       const uninstallTracker = installEditableTracker();
       const loadActivation = async () => {
         const snapshot = await readRuntimeSnapshot();
         setEnabledForHost(isHostEnabled(snapshot));
         setTheme(snapshot.theme);
-        setUiScale(snapshot.uiScale);
+        setLanguage(snapshot.uiLanguage);
+        setPanelScale(snapshot.panelScale);
       };
       void loadActivation();
       const handleStorage = (changes, area) => {
-        if (area === "sync" && (changes.activationMode || changes.enabledHosts || changes.theme || changes.uiScale)) void loadActivation();
+        if (area === "sync" && (changes.activationMode || changes.enabledHosts || changes.theme || changes.uiLanguage || changes.panelScale || changes.siteSettings)) {
+          void loadActivation();
+        }
+      };
+      const handleSafeSend = (event) => {
+        const detail = event.detail;
+        if (!detail?.send) return;
+        detail.handled = true;
+        setPendingSend({
+          id: Date.now(),
+          delaySeconds: detail.delaySeconds,
+          send: detail.send
+        });
       };
       const handleKeydown = (event) => {
         if (event.ctrlKey && event.shiftKey && event.code === "Space") {
@@ -14970,22 +15827,75 @@
         return false;
       };
       document.addEventListener("keydown", handleKeydown);
+      window.addEventListener("blobnote:safe-send", handleSafeSend);
       chrome.storage?.onChanged?.addListener(handleStorage);
       chrome.runtime?.onMessage?.addListener(handleMessage);
       return () => {
         uninstallTracker();
         document.removeEventListener("keydown", handleKeydown);
+        window.removeEventListener("blobnote:safe-send", handleSafeSend);
         chrome.storage?.onChanged?.removeListener(handleStorage);
         chrome.runtime?.onMessage?.removeListener(handleMessage);
       };
     }, [enabledForHost]);
     return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_react14.default.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: theme === "dark" ? "dark" : "", children: [
-      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(FloatingPanel, { uiScale, onOpenBase: () => setShowBase(true) }),
-      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(AtMenu, { uiScale }),
-      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(SmartSearch, { uiScale, open: showSmartSearch, onOpenChange: setShowSmartSearch }),
+      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(FloatingPanel, { uiScale: panelScale, onOpenBase: () => setShowBase(true) }),
+      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(AtMenu, { uiScale: panelScale }),
+      enabledForHost && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(SmartSearch, { uiScale: panelScale, open: showSmartSearch, onOpenChange: setShowSmartSearch }),
       /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(BaseModal, { open: showBase, onOpenChange: setShowBase }),
+      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(SafeSendPrompt, { language, pending: pendingSend, onClose: () => setPendingSend(null) }),
       /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(ToastContainer, {})
     ] }) });
+  }
+  function SafeSendPrompt({
+    language,
+    pending,
+    onClose
+  }) {
+    const [left, setLeft] = import_react14.default.useState(0);
+    const t = import_react14.default.useCallback((key, params) => translate(language, key, params), [language]);
+    import_react14.default.useEffect(() => {
+      if (!pending) return;
+      setLeft(pending.delaySeconds);
+      const startedAt = Date.now();
+      const interval = window.setInterval(() => {
+        const nextLeft = Math.max(0, pending.delaySeconds - Math.floor((Date.now() - startedAt) / 1e3));
+        setLeft(nextLeft);
+      }, 250);
+      const timeout = window.setTimeout(() => {
+        pending.send();
+        onClose();
+      }, pending.delaySeconds * 1e3);
+      return () => {
+        window.clearInterval(interval);
+        window.clearTimeout(timeout);
+      };
+    }, [onClose, pending]);
+    if (!pending) return null;
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "fixed bottom-4 left-1/2 z-[2147483647] w-[min(420px,calc(100vw-32px))] -translate-x-1/2 rounded-lg border border-border bg-popover p-3 text-popover-foreground shadow-2xl", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "mb-2 flex items-center justify-between gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "min-w-0", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "text-sm font-semibold", children: t("safeSendTitle") }),
+          /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "text-xs text-muted-foreground", children: t("safeSendCountdown", { seconds: left }) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "text-lg font-semibold tabular-nums text-primary", children: left })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: "flex gap-2", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
+          Button,
+          {
+            size: "sm",
+            className: "flex-1",
+            onClick: () => {
+              pending.send();
+              onClose();
+            },
+            children: t("sendNow")
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(Button, { size: "sm", variant: "outline", className: "flex-1", onClick: onClose, children: t("cancelSend") })
+      ] })
+    ] });
   }
   function init() {
     const root = createRootContainer("opspost-content-host");
@@ -15115,6 +16025,14 @@ lucide-react/dist/esm/icons/at-sign.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 
+lucide-react/dist/esm/icons/bar-chart-3.js:
+  (**
+   * @license lucide-react v0.378.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
 lucide-react/dist/esm/icons/book-open.js:
   (**
    * @license lucide-react v0.378.0 - ISC
@@ -15172,6 +16090,14 @@ lucide-react/dist/esm/icons/circle.js:
    *)
 
 lucide-react/dist/esm/icons/clipboard-list.js:
+  (**
+   * @license lucide-react v0.378.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/clock-3.js:
   (**
    * @license lucide-react v0.378.0 - ISC
    *
@@ -15340,6 +16266,14 @@ lucide-react/dist/esm/icons/search.js:
    *)
 
 lucide-react/dist/esm/icons/send.js:
+  (**
+   * @license lucide-react v0.378.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/settings-2.js:
   (**
    * @license lucide-react v0.378.0 - ISC
    *
