@@ -11597,6 +11597,15 @@
       /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M27 42.5H37", stroke: "url(#blobnote-panel-lines)", strokeWidth: "3.2", strokeLinecap: "round" })
     ] });
   }
+  var PANEL_SCALE_VALUES = ["70", "80", "90", "100", "110", "120", "130"];
+  function stepPanelScale(value, direction) {
+    const index = Math.max(0, PANEL_SCALE_VALUES.indexOf(value));
+    return PANEL_SCALE_VALUES[clamp(index + direction, 0, PANEL_SCALE_VALUES.length - 1)];
+  }
+  function stepDelay(value, direction) {
+    if (direction > 0) return value <= 0 ? 3 : Math.min(15, value + 1);
+    return value <= 3 ? 0 : Math.max(0, value - 1);
+  }
   function FloatingPanel({ uiScale, onOpenBase }) {
     const [visible, setVisible] = import_react3.default.useState(false);
     const [templates, setTemplates] = import_react3.default.useState([]);
@@ -11898,38 +11907,40 @@
                 /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-muted-foreground", children: t("panelScale") }),
                   /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-                    "select",
+                    PanelStepper,
                     {
-                      className: "h-8 rounded-md border bg-background px-2 text-xs",
-                      value: panelScale,
-                      onChange: (event) => {
-                        const value = event.target.value;
+                      value: `${panelScale}%`,
+                      onDecrease: () => {
+                        const value = stepPanelScale(panelScale, -1);
                         setPanelScale(value);
                         updateSiteSettings({ panelScale: value });
                       },
-                      children: UI_SCALE_OPTIONS.map((option) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: option.value, children: option.label }, option.value))
+                      onIncrease: () => {
+                        const value = stepPanelScale(panelScale, 1);
+                        setPanelScale(value);
+                        updateSiteSettings({ panelScale: value });
+                      }
                     }
                   )
                 ] }),
                 /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-muted-foreground", children: t("panelPosition") }),
-                  /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
-                    "select",
+                  /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                    PanelChoiceGrid,
                     {
-                      className: "h-8 rounded-md border bg-background px-2 text-xs",
                       value: placement,
-                      onChange: (event) => {
-                        const value = event.target.value;
-                        setPlacement(value);
-                        updateSiteSettings({ panelPlacement: value });
-                      },
-                      children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "auto", children: t("auto") }),
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "above", children: t("aboveField") }),
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "below", children: t("belowField") }),
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "top-right", children: t("topRight") }),
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "bottom-right", children: t("bottomRight") })
-                      ]
+                      options: [
+                        { value: "auto", label: t("auto") },
+                        { value: "above", label: t("aboveField") },
+                        { value: "below", label: t("belowField") },
+                        { value: "top-right", label: t("topRight") },
+                        { value: "bottom-right", label: t("bottomRight") }
+                      ],
+                      onChange: (value) => {
+                        const nextValue = value;
+                        setPlacement(nextValue);
+                        updateSiteSettings({ panelPlacement: nextValue });
+                      }
                     }
                   )
                 ] })
@@ -11955,42 +11966,41 @@
               /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-muted-foreground", children: t("safeSendDelay") }),
                 /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-                  "select",
+                  PanelStepper,
                   {
-                    className: "h-8 rounded-md border bg-background px-2 text-xs",
-                    value: safeSendDelay,
-                    onChange: (event) => {
-                      const value = parseInt(event.target.value, 10);
+                    value: `${safeSendDelay} ${t("secondsShort")}`,
+                    onDecrease: () => {
+                      const value = stepDelay(safeSendDelay, -1);
                       setSafeSendDelay(value);
                       chrome.storage?.sync?.set({ safeSendDelay: value, safeSendEnabled: value > 0 });
                     },
-                    children: [0, ...Array.from({ length: 13 }, (_, index) => index + 3)].map((value) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("option", { value, children: [
-                      value,
-                      " c"
-                    ] }, value))
+                    onIncrease: () => {
+                      const value = stepDelay(safeSendDelay, 1);
+                      setSafeSendDelay(value);
+                      chrome.storage?.sync?.set({ safeSendDelay: value, safeSendEnabled: value > 0 });
+                    }
                   }
                 )
               ] }),
               /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("label", { className: "grid gap-1", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-muted-foreground", children: t("sendMethod") }),
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
-                  "select",
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                  PanelChoiceGrid,
                   {
-                    className: "h-8 rounded-md border bg-background px-2 text-xs",
                     value: sendMethod,
-                    onChange: (event) => {
-                      const value = event.target.value;
-                      setSendMethod(value);
-                      updateSiteSettings({ sendMethod: value });
-                    },
-                    children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "auto", children: t("sendAuto") }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "button", children: t("sendButton") }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "enter", children: t("sendEnter") }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "ctrl-enter", children: t("sendCtrlEnter") }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "shift-enter", children: t("sendShiftEnter") }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("option", { value: "alt-enter", children: t("sendAltEnter") })
-                    ]
+                    options: [
+                      { value: "auto", label: t("sendAuto") },
+                      { value: "button", label: t("sendButton") },
+                      { value: "enter", label: t("sendEnter") },
+                      { value: "ctrl-enter", label: t("sendCtrlEnter") },
+                      { value: "shift-enter", label: t("sendShiftEnter") },
+                      { value: "alt-enter", label: t("sendAltEnter") }
+                    ],
+                    onChange: (value) => {
+                      const nextValue = value;
+                      setSendMethod(nextValue);
+                      updateSiteSettings({ sendMethod: nextValue });
+                    }
                   }
                 )
               ] }),
@@ -12150,6 +12160,53 @@
         ]
       }
     );
+  }
+  function PanelStepper({
+    value,
+    onDecrease,
+    onIncrease
+  }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex h-8 overflow-hidden rounded-md border bg-background text-xs shadow-sm", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        "button",
+        {
+          type: "button",
+          className: "w-8 border-r text-muted-foreground hover:bg-muted hover:text-foreground",
+          onMouseDown: (event) => event.preventDefault(),
+          onClick: onDecrease,
+          children: "-"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "flex min-w-0 flex-1 items-center justify-center px-2 font-semibold text-foreground", children: value }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        "button",
+        {
+          type: "button",
+          className: "w-8 border-l text-muted-foreground hover:bg-muted hover:text-foreground",
+          onMouseDown: (event) => event.preventDefault(),
+          onClick: onIncrease,
+          children: "+"
+        }
+      )
+    ] });
+  }
+  function PanelChoiceGrid({
+    value,
+    options,
+    onChange
+  }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "grid grid-cols-2 gap-1", children: options.map((option) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      "button",
+      {
+        type: "button",
+        className: `min-w-0 rounded-md border px-2 py-1 text-[10px] font-medium transition-colors ${option.value === value ? "border-primary bg-primary text-white shadow-sm" : "bg-background text-muted-foreground hover:bg-muted hover:text-foreground"}`,
+        title: option.label,
+        onMouseDown: (event) => event.preventDefault(),
+        onClick: () => onChange(option.value),
+        children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "block truncate", children: option.label })
+      },
+      option.value
+    )) });
   }
 
   // src/content/AtMenu.tsx

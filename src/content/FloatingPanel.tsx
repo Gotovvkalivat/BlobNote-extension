@@ -4,7 +4,7 @@ import { ClipboardList, Clock3, Database, Eraser, Minimize2, Pencil, Save, Send,
 import type { AppSettings, RecentInsertion, SendMethod, SiteSettings, Template } from '@/types'
 import { translate } from '@/lib/i18n'
 import { showToast } from '@/components/ui/toast'
-import { UI_SCALE_OPTIONS, uiScaleFactor } from '@/lib/uiScale'
+import { uiScaleFactor } from '@/lib/uiScale'
 import {
   getActiveEditableElement,
   insertTextIntoEditable,
@@ -47,6 +47,18 @@ function BlobNoteMark({ className = 'h-5 w-5' }: { className?: string }) {
       <path d="M27 42.5H37" stroke="url(#blobnote-panel-lines)" strokeWidth="3.2" strokeLinecap="round" />
     </svg>
   )
+}
+
+const PANEL_SCALE_VALUES: AppSettings['panelScale'][] = ['70', '80', '90', '100', '110', '120', '130']
+
+function stepPanelScale(value: AppSettings['panelScale'], direction: -1 | 1): AppSettings['panelScale'] {
+  const index = Math.max(0, PANEL_SCALE_VALUES.indexOf(value))
+  return PANEL_SCALE_VALUES[clamp(index + direction, 0, PANEL_SCALE_VALUES.length - 1)]
+}
+
+function stepDelay(value: number, direction: -1 | 1) {
+  if (direction > 0) return value <= 0 ? 3 : Math.min(15, value + 1)
+  return value <= 3 ? 0 : Math.max(0, value - 1)
 }
 
 export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
@@ -403,35 +415,37 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
             <div className="grid grid-cols-2 gap-2">
               <label className="grid gap-1">
                 <span className="text-muted-foreground">{t('panelScale')}</span>
-                <select
-                  className="h-8 rounded-md border bg-background px-2 text-xs"
-                  value={panelScale}
-                  onChange={(event) => {
-                    const value = event.target.value as AppSettings['panelScale']
+                <PanelStepper
+                  value={`${panelScale}%`}
+                  onDecrease={() => {
+                    const value = stepPanelScale(panelScale, -1)
                     setPanelScale(value)
                     updateSiteSettings({ panelScale: value })
                   }}
-                >
-                  {UI_SCALE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-                </select>
+                  onIncrease={() => {
+                    const value = stepPanelScale(panelScale, 1)
+                    setPanelScale(value)
+                    updateSiteSettings({ panelScale: value })
+                  }}
+                />
               </label>
               <label className="grid gap-1">
                 <span className="text-muted-foreground">{t('panelPosition')}</span>
-                <select
-                  className="h-8 rounded-md border bg-background px-2 text-xs"
+                <PanelChoiceGrid
                   value={placement}
-                  onChange={(event) => {
-                    const value = event.target.value as AppSettings['panelPlacement']
-                    setPlacement(value)
-                    updateSiteSettings({ panelPlacement: value })
+                  options={[
+                    { value: 'auto', label: t('auto') },
+                    { value: 'above', label: t('aboveField') },
+                    { value: 'below', label: t('belowField') },
+                    { value: 'top-right', label: t('topRight') },
+                    { value: 'bottom-right', label: t('bottomRight') },
+                  ]}
+                  onChange={(value) => {
+                    const nextValue = value as AppSettings['panelPlacement']
+                    setPlacement(nextValue)
+                    updateSiteSettings({ panelPlacement: nextValue })
                   }}
-                >
-                  <option value="auto">{t('auto')}</option>
-                  <option value="above">{t('aboveField')}</option>
-                  <option value="below">{t('belowField')}</option>
-                  <option value="top-right">{t('topRight')}</option>
-                  <option value="bottom-right">{t('bottomRight')}</option>
-                </select>
+                />
               </label>
             </div>
             <label className="flex items-center gap-2 rounded-md border bg-muted/30 px-2 py-1.5">
@@ -452,36 +466,38 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
             <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{t('sendSettings')}</div>
             <label className="grid gap-1">
               <span className="text-muted-foreground">{t('safeSendDelay')}</span>
-              <select
-                className="h-8 rounded-md border bg-background px-2 text-xs"
-                value={safeSendDelay}
-                onChange={(event) => {
-                  const value = parseInt(event.target.value, 10)
+              <PanelStepper
+                value={`${safeSendDelay} ${t('secondsShort')}`}
+                onDecrease={() => {
+                  const value = stepDelay(safeSendDelay, -1)
                   setSafeSendDelay(value)
                   chrome.storage?.sync?.set({ safeSendDelay: value, safeSendEnabled: value > 0 })
                 }}
-              >
-                {[0, ...Array.from({ length: 13 }, (_, index) => index + 3)].map((value) => <option key={value} value={value}>{value} c</option>)}
-              </select>
+                onIncrease={() => {
+                  const value = stepDelay(safeSendDelay, 1)
+                  setSafeSendDelay(value)
+                  chrome.storage?.sync?.set({ safeSendDelay: value, safeSendEnabled: value > 0 })
+                }}
+              />
             </label>
             <label className="grid gap-1">
               <span className="text-muted-foreground">{t('sendMethod')}</span>
-              <select
-                className="h-8 rounded-md border bg-background px-2 text-xs"
+              <PanelChoiceGrid
                 value={sendMethod}
-                onChange={(event) => {
-                  const value = event.target.value as SendMethod
-                  setSendMethod(value)
-                  updateSiteSettings({ sendMethod: value })
+                options={[
+                  { value: 'auto', label: t('sendAuto') },
+                  { value: 'button', label: t('sendButton') },
+                  { value: 'enter', label: t('sendEnter') },
+                  { value: 'ctrl-enter', label: t('sendCtrlEnter') },
+                  { value: 'shift-enter', label: t('sendShiftEnter') },
+                  { value: 'alt-enter', label: t('sendAltEnter') },
+                ]}
+                onChange={(value) => {
+                  const nextValue = value as SendMethod
+                  setSendMethod(nextValue)
+                  updateSiteSettings({ sendMethod: nextValue })
                 }}
-              >
-                <option value="auto">{t('sendAuto')}</option>
-                <option value="button">{t('sendButton')}</option>
-                <option value="enter">{t('sendEnter')}</option>
-                <option value="ctrl-enter">{t('sendCtrlEnter')}</option>
-                <option value="shift-enter">{t('sendShiftEnter')}</option>
-                <option value="alt-enter">{t('sendAltEnter')}</option>
-              </select>
+              />
             </label>
             {sendMethod === 'button' && (
               <label className="grid gap-1">
@@ -650,6 +666,69 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function PanelStepper({
+  value,
+  onDecrease,
+  onIncrease,
+}: {
+  value: string
+  onDecrease: () => void
+  onIncrease: () => void
+}) {
+  return (
+    <div className="flex h-8 overflow-hidden rounded-md border bg-background text-xs shadow-sm">
+      <button
+        type="button"
+        className="w-8 border-r text-muted-foreground hover:bg-muted hover:text-foreground"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={onDecrease}
+      >
+        -
+      </button>
+      <span className="flex min-w-0 flex-1 items-center justify-center px-2 font-semibold text-foreground">{value}</span>
+      <button
+        type="button"
+        className="w-8 border-l text-muted-foreground hover:bg-muted hover:text-foreground"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={onIncrease}
+      >
+        +
+      </button>
+    </div>
+  )
+}
+
+function PanelChoiceGrid({
+  value,
+  options,
+  onChange,
+}: {
+  value: string
+  options: Array<{ value: string; label: string }>
+  onChange: (value: string) => void
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-1">
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          className={`min-w-0 rounded-md border px-2 py-1 text-[10px] font-medium transition-colors ${
+            option.value === value
+              ? 'border-primary bg-primary text-white shadow-sm'
+              : 'bg-background text-muted-foreground hover:bg-muted hover:text-foreground'
+          }`}
+          title={option.label}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => onChange(option.value)}
+        >
+          <span className="block truncate">{option.label}</span>
+        </button>
+      ))}
     </div>
   )
 }
