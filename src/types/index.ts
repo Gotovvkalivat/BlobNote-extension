@@ -21,6 +21,8 @@ export interface CRMBinding {
 }
 
 export type SendMethod = 'auto' | 'button' | 'enter' | 'ctrl-enter' | 'shift-enter' | 'alt-enter'
+export type NoteFontSize = '12' | '13' | '14' | '15' | '16' | '18'
+export type NoteFontFamily = 'system' | 'arial' | 'georgia' | 'mono'
 
 export interface AppSettings {
   theme: 'light' | 'dark'
@@ -44,9 +46,12 @@ export interface AppSettings {
   favoriteCardColor: string
   cardTextColor: string
   cardFontFamily: string
+  noteFontSize: NoteFontSize
+  noteFontFamily: NoteFontFamily
+  showHeaderControls: boolean
   showVariablesTab: boolean
   showTodoTab: boolean
-  lastBaseTab: 'templates' | 'variables' | 'todo'
+  lastBaseTab: 'templates' | 'variables' | 'todo' | 'settings'
   gridCols: number
   gridHeight: string
   onboardingCompleted: boolean

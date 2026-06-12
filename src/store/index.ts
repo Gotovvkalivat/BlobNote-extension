@@ -82,6 +82,9 @@ type SyncSnapshot = {
   favoriteCardColor: string
   cardTextColor: string
   cardFontFamily: string
+  noteFontSize: AppSettings['noteFontSize']
+  noteFontFamily: AppSettings['noteFontFamily']
+  showHeaderControls: boolean
   showVariablesTab: boolean
   showTodoTab: boolean
   lastBaseTab: AppSettings['lastBaseTab']
@@ -109,6 +112,9 @@ const defaultSettings: AppSettings = {
   activationMode: 'all',
   enabledHosts: [],
   ...cardPresetFor('light', 'lagoon'),
+  noteFontSize: '14',
+  noteFontFamily: 'system',
+  showHeaderControls: true,
   showVariablesTab: false,
   showTodoTab: false,
   lastBaseTab: 'templates',
@@ -245,6 +251,18 @@ function normalizeSendButtonSelector(value: unknown) {
   return selector || null
 }
 
+function normalizeNoteFontSize(value: unknown): AppSettings['noteFontSize'] {
+  return value === '12' || value === '13' || value === '14' || value === '15' || value === '16' || value === '18'
+    ? value
+    : defaultSettings.noteFontSize
+}
+
+function normalizeNoteFontFamily(value: unknown): AppSettings['noteFontFamily'] {
+  return value === 'arial' || value === 'georgia' || value === 'mono' || value === 'system'
+    ? value
+    : defaultSettings.noteFontFamily
+}
+
 function normalizeSiteSettings(value: unknown): Record<string, SiteSettings> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
 
@@ -311,6 +329,9 @@ function snapshotToState(snapshot: SyncSnapshot) {
       activationMode: snapshot.activationMode || defaultSettings.activationMode,
       enabledHosts: Array.isArray(snapshot.enabledHosts) ? snapshot.enabledHosts : defaultSettings.enabledHosts,
       ...cardPresetFor(theme, cardPreset),
+      noteFontSize: normalizeNoteFontSize(snapshot.noteFontSize),
+      noteFontFamily: normalizeNoteFontFamily(snapshot.noteFontFamily),
+      showHeaderControls: snapshot.showHeaderControls ?? defaultSettings.showHeaderControls,
       showVariablesTab: snapshot.showVariablesTab ?? defaultSettings.showVariablesTab,
       showTodoTab: snapshot.showTodoTab ?? defaultSettings.showTodoTab,
       lastBaseTab: snapshot.lastBaseTab || defaultSettings.lastBaseTab,
@@ -447,6 +468,21 @@ function attachStorageListener() {
 
     if (changes.cardFontFamily) {
       nextSettings.cardFontFamily = changes.cardFontFamily.newValue || defaultSettings.cardFontFamily
+      settingsChanged = true
+    }
+
+    if (changes.noteFontSize) {
+      nextSettings.noteFontSize = normalizeNoteFontSize(changes.noteFontSize.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.noteFontFamily) {
+      nextSettings.noteFontFamily = normalizeNoteFontFamily(changes.noteFontFamily.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.showHeaderControls) {
+      nextSettings.showHeaderControls = changes.showHeaderControls.newValue ?? defaultSettings.showHeaderControls
       settingsChanged = true
     }
 
@@ -690,6 +726,9 @@ export const useAppStore = create<AppState>()((set, get) => ({
       sendButtonSelector: normalizeSendButtonSelector(settings.sendButtonSelector ?? state.settings.sendButtonSelector),
       siteSettings: normalizeSiteSettings(settings.siteSettings ?? state.settings.siteSettings),
       searchTrigger: settings.searchTrigger === '@' ? '@' : settings.searchTrigger === '/' ? '/' : state.settings.searchTrigger,
+      noteFontSize: normalizeNoteFontSize(settings.noteFontSize ?? state.settings.noteFontSize),
+      noteFontFamily: normalizeNoteFontFamily(settings.noteFontFamily ?? state.settings.noteFontFamily),
+      showHeaderControls: settings.showHeaderControls ?? state.settings.showHeaderControls,
       ...cardPresetFor(theme, cardPreset),
     }
 
@@ -715,6 +754,9 @@ export const useAppStore = create<AppState>()((set, get) => ({
       favoriteCardColor: nextSettings.favoriteCardColor,
       cardTextColor: nextSettings.cardTextColor,
       cardFontFamily: nextSettings.cardFontFamily,
+      noteFontSize: nextSettings.noteFontSize,
+      noteFontFamily: nextSettings.noteFontFamily,
+      showHeaderControls: nextSettings.showHeaderControls,
       showVariablesTab: nextSettings.showVariablesTab,
       showTodoTab: nextSettings.showTodoTab,
       lastBaseTab: nextSettings.lastBaseTab,

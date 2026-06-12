@@ -76,10 +76,6 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
   const scale = uiScaleFactor(panelScale)
 
   React.useEffect(() => {
-    setPanelScale(uiScale)
-  }, [uiScale])
-
-  React.useEffect(() => {
     let mounted = true
 
     const loadSnapshot = async () => {
@@ -311,13 +307,13 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           transformOrigin: 'top left',
           zIndex: 2147483640,
         }}
-        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-semibold text-slate-950 shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+        className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/20 bg-slate-950 px-2 text-[10px] font-semibold text-white shadow-[0_18px_42px_rgba(2,6,23,.42),0_0_0_1px_rgba(255,255,255,.12)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_rgba(2,6,23,.52),0_0_0_1px_rgba(255,255,255,.18)] active:scale-95"
         title={t('showPanel')}
         onMouseDown={(event) => event.preventDefault()}
         onClick={() => setCollapsed(false)}
       >
         <BlobNoteMark className="h-5 w-5 shrink-0" />
-        <span className="max-w-[80px] truncate">BlobNote</span>
+        <span className="max-w-[80px] truncate [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">BlobNote</span>
       </button>
     )
   }

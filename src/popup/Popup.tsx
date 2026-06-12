@@ -48,9 +48,11 @@ export function Popup() {
   }, [])
 
   const currentSiteEnabled = currentHost ? settings.enabledHosts.includes(currentHost) : false
+  const currentSiteActive = !currentHost || settings.activationMode === 'all' || currentSiteEnabled
+  const siteButtonEnabled = settings.activationMode === 'allowlist'
 
   return (
-    <div className="h-[590px] w-[460px] overflow-hidden bg-background p-4 text-foreground" style={uiScaleStyle(settings.uiScale)}>
+    <div className="h-[640px] w-[520px] overflow-y-auto overflow-x-hidden bg-background p-4 text-foreground" style={uiScaleStyle(settings.uiScale)}>
       <header className="mb-3 flex items-center justify-between border-b pb-2">
         <h1 className="flex items-center gap-2 text-sm font-semibold">
           {settings.theme === 'dark' ? (
@@ -79,29 +81,6 @@ export function Popup() {
         </TabsList>
 
         <TabsContent value="open" className="space-y-3">
-          {!settings.onboardingCompleted && (
-            <section className="rounded-lg border border-primary/30 bg-primary/10 p-3 text-xs shadow-sm">
-              <div className="mb-2 flex items-start justify-between gap-3">
-                <div>
-                  <h2 className="font-semibold text-foreground">{t('onboardingTitle')}</h2>
-                  <p className="mt-1 leading-relaxed text-muted-foreground">{t('onboardingSubtitle')}</p>
-                </div>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="h-7 shrink-0 px-2 text-[11px]"
-                  onClick={() => updateSettings({ onboardingCompleted: true })}
-                >
-                  {t('gotIt')}
-                </Button>
-              </div>
-              <div className="grid gap-1.5 leading-relaxed text-muted-foreground">
-                <span>{t('onboardingStepBase')}</span>
-                {settings.atMenuEnabled && <OnboardingSearchStep language={settings.uiLanguage} trigger={settings.searchTrigger} />}
-                <span>{t('onboardingStepPanel')}</span>
-              </div>
-            </section>
-          )}
           <Button className="h-12 w-full" onClick={() => openBaseOnCurrentPage(settings.uiLanguage)}>
             <PanelTopOpen className="mr-2 h-4 w-4" />
             {t('openBaseCurrent')}
@@ -172,14 +151,24 @@ export function Popup() {
               label={t('allowlistOnly')}
               checked={settings.activationMode === 'allowlist'}
               onCheckedChange={(checked) => updateSettings({ activationMode: checked ? 'allowlist' : 'all' })}
+              hint={t('allowlistHint')}
             />
             {currentHost && (
-              <div className="space-y-2 rounded-md border bg-muted/30 p-2">
-                <div className="truncate text-[11px] text-muted-foreground">{currentHost}</div>
+              <div className={`space-y-2 rounded-lg border p-2.5 shadow-sm ${currentSiteActive ? 'border-emerald-400/40 bg-emerald-500/10' : 'border-destructive/40 bg-destructive/10'}`}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="truncate text-[11px] font-medium text-foreground">{currentHost}</div>
+                    <div className={`mt-0.5 text-[11px] ${currentSiteActive ? 'text-emerald-700 dark:text-emerald-300' : 'text-destructive'}`}>
+                      {currentSiteActive ? t('siteActive') : t('siteInactive')}
+                    </div>
+                  </div>
+                  <InfoTip text={settings.activationMode === 'allowlist' ? t('siteAllowlistHint') : t('siteGlobalModeHint')} />
+                </div>
                 <Button
                   size="sm"
                   variant={currentSiteEnabled ? 'outline' : 'default'}
                   className="w-full"
+                  disabled={!siteButtonEnabled}
                   onClick={() => {
                     updateSettings({
                       enabledHosts: currentSiteEnabled
@@ -188,7 +177,9 @@ export function Popup() {
                     })
                   }}
                 >
-                  {currentSiteEnabled ? t('disableForSite') : t('enableForSite')}
+                  {settings.activationMode === 'allowlist'
+                    ? (currentSiteEnabled ? t('disableForSite') : t('enableForSite'))
+                    : t('siteButtonOnlyAllowlist')}
                 </Button>
               </div>
             )}
@@ -203,24 +194,28 @@ export function Popup() {
               label={t('atSearchInInput', { trigger: settings.searchTrigger })}
               checked={settings.atMenuEnabled}
               onCheckedChange={(checked) => updateSettings({ atMenuEnabled: checked })}
+              hint={t('atSearchHint')}
             />
             <SwitchRow
               icon={<PanelTopOpen className="h-3.5 w-3.5" />}
               label={t('floatingPanelNearField')}
               checked={settings.floatingPanelEnabled}
               onCheckedChange={(checked) => updateSettings({ floatingPanelEnabled: checked })}
+              hint={t('floatingPanelHint')}
             />
             <SwitchRow
               icon={<ClipboardList className="h-3.5 w-3.5" />}
               label={t('clipboardInPanel')}
               checked={settings.clipboardPanelEnabled}
               onCheckedChange={(checked) => updateSettings({ clipboardPanelEnabled: checked })}
+              hint={t('clipboardHint')}
             />
             <SwitchRow
               icon={<BookOpen className="h-3.5 w-3.5" />}
               label={t('variablesTab')}
               checked={settings.showVariablesTab}
               onCheckedChange={(checked) => updateSettings({ showVariablesTab: checked })}
+              hint={t('variablesHint')}
             />
             <SwitchRow
               icon={<ListTodo className="h-3.5 w-3.5" />}
@@ -260,15 +255,21 @@ function SwitchRow({
   label,
   checked,
   onCheckedChange,
+  hint,
 }: {
   icon?: React.ReactNode
   label: string
   checked: boolean
   onCheckedChange: (checked: boolean) => void
+  hint?: string
 }) {
   return (
     <label className="flex cursor-pointer items-center justify-between gap-3">
-      <span className="flex items-center gap-1.5 text-xs">{icon}{label}</span>
+      <span className="flex min-w-0 items-center gap-1.5 text-xs">
+        {icon}
+        <span className="min-w-0 truncate">{label}</span>
+        {hint && <InfoTip text={hint} />}
+      </span>
       <Switch checked={checked} onCheckedChange={onCheckedChange} />
     </label>
   )
@@ -294,6 +295,17 @@ function SelectRow({
         {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
       </select>
     </label>
+  )
+}
+
+function InfoTip({ text }: { text: string }) {
+  return (
+    <span className="group relative inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border bg-background text-[10px] font-bold text-muted-foreground shadow-sm">
+      ?
+      <span className="pointer-events-none absolute right-0 top-5 z-50 w-56 rounded-lg border bg-popover px-3 py-2 text-left text-[11px] font-normal leading-relaxed text-popover-foreground opacity-0 shadow-xl transition-opacity duration-150 group-hover:opacity-100">
+        {text}
+      </span>
+    </span>
   )
 }
 
@@ -388,12 +400,4 @@ function TriggerMenuHelp({ language, trigger }: { language: AppSettings['uiLangu
   }
 
   return <>Введите <Kbd>{trigger}</Kbd> в поле ввода и начните печатать название заметки.</>
-}
-
-function OnboardingSearchStep({ language, trigger }: { language: AppSettings['uiLanguage']; trigger: AppSettings['searchTrigger'] }) {
-  if (language === 'en') {
-    return <span>2. Type <Kbd>{trigger}</Kbd> in a message field to find a note without changing tabs.</span>
-  }
-
-  return <span>2. Введите <Kbd>{trigger}</Kbd> в поле сообщения, чтобы найти заметку без переключения вкладок.</span>
 }

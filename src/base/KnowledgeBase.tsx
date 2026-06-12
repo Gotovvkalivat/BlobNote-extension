@@ -27,24 +27,37 @@ import {
   Plus,
   RotateCcw,
   Search,
+  Send,
+  Settings2,
   Star,
   Tags,
+  Type,
   Upload,
   X,
   ZoomIn,
 } from 'lucide-react'
-import type { AppSettings, Template } from '@/types'
+import type { AppSettings, SendMethod, SiteSettings, Template } from '@/types'
 import { CARD_PRESETS, type CardPreset } from '@/lib/cardPresets'
 import { LANGUAGE_OPTIONS, translate } from '@/lib/i18n'
 import { SCENARIO_PRESETS, type ScenarioPresetId } from '@/lib/scenarioPresets'
 import { tagColorStyle } from '@/lib/tagColors'
 import { UI_SCALE_OPTIONS, uiScaleStyle } from '@/lib/uiScale'
+import { cn } from '@/lib/utils'
 
 const CARD_PRESET_NAMES: Record<AppSettings['cardPreset'], string> = {
   lagoon: 'presetLagoon',
   orchid: 'presetOrchid',
   graphite: 'presetGraphite',
 }
+
+const NOTE_FONT_SIZE_OPTIONS: Array<{ value: AppSettings['noteFontSize']; label: string }> = [
+  { value: '12', label: '12px' },
+  { value: '13', label: '13px' },
+  { value: '14', label: '14px' },
+  { value: '15', label: '15px' },
+  { value: '16', label: '16px' },
+  { value: '18', label: '18px' },
+]
 
 type KnowledgeBaseProps = {
   embedded?: boolean
@@ -84,6 +97,11 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
   const currentHost = embedded && typeof window !== 'undefined' ? window.location.hostname : ''
   const currentSiteSettings = currentHost ? settings.siteSettings[currentHost] : undefined
   const effectiveUiScale = currentSiteSettings?.uiScale || settings.uiScale
+  const effectivePanelScale = currentSiteSettings?.panelScale || settings.panelScale
+  const effectivePanelPlacement = currentSiteSettings?.panelPlacement || settings.panelPlacement
+  const effectivePanelCompactMode = currentSiteSettings?.panelCompactMode ?? settings.panelCompactMode
+  const effectiveSendMethod = currentSiteSettings?.sendMethod || settings.sendMethod
+  const effectiveSendButtonSelector = currentSiteSettings?.sendButtonSelector ?? settings.sendButtonSelector ?? ''
 
   React.useEffect(() => {
     if (embedded) return
@@ -252,6 +270,31 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
     })
   }
 
+  const updatePanelSiteSettings = (patch: SiteSettings) => {
+    const globalPatch: Partial<AppSettings> = {}
+    if (patch.panelScale) globalPatch.panelScale = patch.panelScale
+    if (patch.panelPlacement) globalPatch.panelPlacement = patch.panelPlacement
+    if (typeof patch.panelCompactMode === 'boolean') globalPatch.panelCompactMode = patch.panelCompactMode
+    if (patch.sendMethod) globalPatch.sendMethod = patch.sendMethod
+    if ('sendButtonSelector' in patch) globalPatch.sendButtonSelector = patch.sendButtonSelector ?? null
+
+    if (!currentHost) {
+      updateSettings(globalPatch)
+      return
+    }
+
+    updateSettings({
+      ...globalPatch,
+      siteSettings: {
+        ...settings.siteSettings,
+        [currentHost]: {
+          ...(currentSiteSettings || {}),
+          ...patch,
+        },
+      },
+    })
+  }
+
   const applyPreset = (preset: CardPreset) => {
     updateSettings({
       cardPreset: preset.cardPreset,
@@ -263,6 +306,25 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
   }
 
   const resetAppearance = () => applyPreset(CARD_PRESETS[settings.theme].lagoon)
+
+  const noteFontOptions: Array<{ value: AppSettings['noteFontFamily']; label: string }> = [
+    { value: 'system', label: t('fontSystem') },
+    { value: 'arial', label: 'Arial' },
+    { value: 'georgia', label: 'Georgia' },
+    { value: 'mono', label: t('fontMono') },
+  ]
+  const safeSendDelayOptions = [0, ...Array.from({ length: 13 }, (_, index) => index + 3)].map((value) => ({
+    value: String(value),
+    label: `${value} ${t('secondsShort')}`,
+  }))
+  const sendMethodOptions: Array<{ value: SendMethod; label: string }> = [
+    { value: 'auto', label: t('sendAuto') },
+    { value: 'button', label: t('sendButton') },
+    { value: 'enter', label: t('sendEnter') },
+    { value: 'ctrl-enter', label: t('sendCtrlEnter') },
+    { value: 'shift-enter', label: t('sendShiftEnter') },
+    { value: 'alt-enter', label: t('sendAltEnter') },
+  ]
 
   return (
     <div
@@ -276,6 +338,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
           <span className="hidden whitespace-nowrap text-muted-foreground sm:inline">{t('baseSubtitle')}</span>
         </h1>
 
+        {settings.showHeaderControls && (
         <div className="flex flex-wrap items-center justify-end gap-2">
           <SettingSelect
             icon={<Languages className="h-3.5 w-3.5" />}
@@ -321,8 +384,9 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
 
           <Button size="icon" variant="outline" onClick={handleExport} title={t('export')}><Download className="h-3.5 w-3.5" /></Button>
           <Button size="icon" variant="outline" onClick={() => fileInputRef.current?.click()} title={t('import')}><Upload className="h-3.5 w-3.5" /></Button>
-          <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) handleImport(file) }} />
         </div>
+        )}
+        <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) handleImport(file) }} />
       </header>
 
       <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -333,6 +397,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
                 <TabsTrigger value="templates"><FileText className="mr-1.5 h-3.5 w-3.5" />{t('notesAndTemplates')}</TabsTrigger>
                 {settings.showVariablesTab && <TabsTrigger value="variables"><BookOpen className="mr-1.5 h-3.5 w-3.5" />{t('variables')}</TabsTrigger>}
                 {settings.showTodoTab && <TabsTrigger value="todo"><LayoutGrid className="mr-1.5 h-3.5 w-3.5" />{t('tasks')}</TabsTrigger>}
+                <TabsTrigger value="settings"><Settings2 className="mr-1.5 h-3.5 w-3.5" />{t('settings')}</TabsTrigger>
               </TabsList>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -354,23 +419,6 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
                 </div>
 
                 <TagFilter tags={allTags} selected={selectedTags} tagColors={tagColorByTag} language={settings.uiLanguage} onChange={setSelectedTags} />
-
-                <div className="flex h-8 items-center gap-1 rounded-md border bg-background px-1.5 text-xs shadow-sm">
-                  <select
-                    className="h-6 rounded border bg-background px-1 text-xs"
-                    value={scenarioPresetId}
-                    onChange={(event) => setScenarioPresetId(event.target.value as ScenarioPresetId)}
-                    title={t('scenarioPresets')}
-                  >
-                    {SCENARIO_PRESETS.map((preset) => (
-                      <option key={preset.id} value={preset.id}>{t(preset.labelKey)}</option>
-                    ))}
-                  </select>
-                  <Button size="sm" variant="ghost" className="h-6 px-2 text-xs" onClick={addScenarioPreset} title={t('addScenarioPreset')}>
-                    <Plus className="mr-1 h-3 w-3" />
-                    {t('addScenarioPreset')}
-                  </Button>
-                </div>
 
                 <Button size="sm" variant={showFavorites ? 'accent' : 'outline'} onClick={() => setShowFavorites(!showFavorites)}>
                   <Star className={`mr-1.5 h-3.5 w-3.5 ${showFavorites ? 'fill-current' : ''}`} />
@@ -440,6 +488,221 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
               <TodoPanel />
             </TabsContent>
           )}
+
+          <TabsContent value="settings" className="m-0 min-h-0 flex-1 overflow-y-auto bg-background p-5">
+            <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-2">
+              <SettingsSection title={t('readability')} description={t('readabilityHelp')}>
+                <SettingSwitch
+                  icon={<Moon className="h-3.5 w-3.5" />}
+                  label={t('darkTheme')}
+                  checked={settings.theme === 'dark'}
+                  onCheckedChange={(checked) => updateSettings({ theme: checked ? 'dark' : 'light' })}
+                  hint={t('darkThemeHint')}
+                />
+                <SettingSelect
+                  icon={<ZoomIn className="h-3.5 w-3.5" />}
+                  label={t('interfaceScale')}
+                  value={effectiveUiScale}
+                  onChange={(value) => updateInterfaceScale(value as AppSettings['uiScale'])}
+                  options={UI_SCALE_OPTIONS}
+                  hint={currentHost ? t('siteScaleHint') : t('interfaceScaleHint')}
+                />
+                <SettingSelect
+                  icon={<Type className="h-3.5 w-3.5" />}
+                  label={t('noteTextSize')}
+                  value={settings.noteFontSize}
+                  onChange={(value) => updateSettings({ noteFontSize: value as AppSettings['noteFontSize'] })}
+                  options={NOTE_FONT_SIZE_OPTIONS}
+                  hint={t('noteTextSizeHint')}
+                />
+                <SettingSelect
+                  icon={<Type className="h-3.5 w-3.5" />}
+                  label={t('noteFont')}
+                  value={settings.noteFontFamily}
+                  onChange={(value) => updateSettings({ noteFontFamily: value as AppSettings['noteFontFamily'] })}
+                  options={noteFontOptions}
+                  hint={t('noteFontHint')}
+                />
+                <SettingSwitch
+                  icon={<Settings2 className="h-3.5 w-3.5" />}
+                  label={t('headerControls')}
+                  checked={settings.showHeaderControls}
+                  onCheckedChange={(checked) => updateSettings({ showHeaderControls: checked })}
+                  hint={t('headerControlsHint')}
+                />
+              </SettingsSection>
+
+              <SettingsSection title={t('floatingPanel')} description={t('floatingPanelSettingsHelp')}>
+                <SettingSwitch
+                  icon={<PanelTopOpen className="h-3.5 w-3.5" />}
+                  label={t('floatingPanelNearField')}
+                  checked={settings.floatingPanelEnabled}
+                  onCheckedChange={(checked) => updateSettings({ floatingPanelEnabled: checked })}
+                  hint={t('floatingPanelHint')}
+                />
+                <SettingSelect
+                  icon={<ZoomIn className="h-3.5 w-3.5" />}
+                  label={t('panelScale')}
+                  value={effectivePanelScale}
+                  onChange={(value) => updatePanelSiteSettings({ panelScale: value as AppSettings['panelScale'] })}
+                  options={UI_SCALE_OPTIONS}
+                  hint={currentHost ? t('sitePanelScaleHint') : t('panelScaleHint')}
+                />
+                <SettingSelect
+                  icon={<PanelTopOpen className="h-3.5 w-3.5" />}
+                  label={t('panelPosition')}
+                  value={effectivePanelPlacement}
+                  onChange={(value) => updatePanelSiteSettings({ panelPlacement: value as AppSettings['panelPlacement'] })}
+                  options={[
+                    { value: 'auto', label: t('auto') },
+                    { value: 'above', label: t('aboveField') },
+                    { value: 'below', label: t('belowField') },
+                    { value: 'top-right', label: t('topRight') },
+                    { value: 'bottom-right', label: t('bottomRight') },
+                  ]}
+                  hint={t('panelPositionHint')}
+                />
+                <SettingSwitch
+                  icon={<ClipboardList className="h-3.5 w-3.5" />}
+                  label={t('compactPanel')}
+                  checked={!effectivePanelCompactMode}
+                  onCheckedChange={(checked) => updatePanelSiteSettings({ panelCompactMode: !checked })}
+                  hint={t('recentInsertionsHint')}
+                />
+                <SettingSwitch
+                  icon={<ClipboardList className="h-3.5 w-3.5" />}
+                  label={t('clipboardInPanel')}
+                  checked={settings.clipboardPanelEnabled}
+                  onCheckedChange={(checked) => updateSettings({ clipboardPanelEnabled: checked })}
+                  hint={t('clipboardHint')}
+                />
+              </SettingsSection>
+
+              <SettingsSection title={t('sendSettings')} description={t('sendSettingsHelp')}>
+                <SettingSelect
+                  icon={<Send className="h-3.5 w-3.5" />}
+                  label={t('safeSendDelay')}
+                  value={String(settings.safeSendDelay)}
+                  onChange={(value) => {
+                    const delay = parseInt(value, 10)
+                    updateSettings({ safeSendDelay: delay, safeSendEnabled: delay > 0 })
+                  }}
+                  options={safeSendDelayOptions}
+                  hint={t('safeSendDelayHint')}
+                />
+                <SettingSelect
+                  icon={<Send className="h-3.5 w-3.5" />}
+                  label={t('sendMethod')}
+                  value={effectiveSendMethod}
+                  onChange={(value) => updatePanelSiteSettings({ sendMethod: value as SendMethod })}
+                  options={sendMethodOptions}
+                  hint={t('sendMethodHint')}
+                />
+                {effectiveSendMethod === 'button' && (
+                  <label className="grid w-full gap-1 rounded-lg border bg-background p-3 text-xs shadow-sm">
+                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                      {t('sendButtonSelector')}
+                      <InfoTip text={t('sendButtonSelectorHint')} />
+                    </span>
+                    <input
+                      className="h-8 rounded-md border bg-background px-2 text-xs text-foreground"
+                      value={effectiveSendButtonSelector}
+                      onChange={(event) => updatePanelSiteSettings({ sendButtonSelector: event.target.value.trim() || null })}
+                      placeholder="button[type='submit']"
+                    />
+                  </label>
+                )}
+              </SettingsSection>
+
+              <SettingsSection title={t('searchAndModules')} description={t('searchAndModulesHelp')}>
+                <SettingSelect
+                  icon={<AtSign className="h-3.5 w-3.5" />}
+                  label={t('trigger')}
+                  value={settings.searchTrigger}
+                  onChange={(value) => updateSettings({ searchTrigger: value as AppSettings['searchTrigger'] })}
+                  options={[{ value: '/', label: '/' }, { value: '@', label: '@' }]}
+                  hint={t('triggerHint')}
+                />
+                <SettingSwitch
+                  icon={<AtSign className="h-3.5 w-3.5" />}
+                  label={t('atSearchInInput', { trigger: settings.searchTrigger })}
+                  checked={settings.atMenuEnabled}
+                  onCheckedChange={(checked) => updateSettings({ atMenuEnabled: checked })}
+                  hint={t('atSearchHint')}
+                />
+                <SettingSwitch
+                  icon={<BookOpen className="h-3.5 w-3.5" />}
+                  label={t('variablesTab')}
+                  checked={settings.showVariablesTab}
+                  onCheckedChange={(checked) => updateSettings({ showVariablesTab: checked })}
+                  hint={t('variablesHint')}
+                />
+                <SettingSwitch
+                  icon={<FileText className="h-3.5 w-3.5" />}
+                  label={t('tasksTab')}
+                  checked={settings.showTodoTab}
+                  onCheckedChange={(checked) => updateSettings({ showTodoTab: checked })}
+                  hint={t('tasksHint')}
+                />
+              </SettingsSection>
+
+              <SettingsSection title={t('cardsAndPacks')} description={t('cardsAndPacksHelp')}>
+                <div className="w-full rounded-lg border bg-background p-3 shadow-sm">
+                  <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <Palette className="h-3.5 w-3.5" />
+                    {t('cardPresets')}
+                    <InfoTip text={t('cardPresetsHint')} />
+                  </div>
+                  <PresetStrip theme={settings.theme} language={settings.uiLanguage} onApply={applyPreset} />
+                  <Button size="sm" variant="outline" className="mt-2 w-full" onClick={resetAppearance}>
+                    <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                    {t('resetCards')}
+                  </Button>
+                </div>
+
+                <div className="w-full rounded-lg border bg-background p-3 shadow-sm">
+                  <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <Plus className="h-3.5 w-3.5" />
+                    {t('scenarioPresets')}
+                    <InfoTip text={t('scenarioPresetsHint')} />
+                  </div>
+                  <div className="flex gap-2">
+                    <select
+                      className="h-8 min-w-0 flex-1 rounded-md border bg-background px-2 text-xs text-foreground"
+                      value={scenarioPresetId}
+                      onChange={(event) => setScenarioPresetId(event.target.value as ScenarioPresetId)}
+                    >
+                      {SCENARIO_PRESETS.map((preset) => (
+                        <option key={preset.id} value={preset.id}>{t(preset.labelKey)}</option>
+                      ))}
+                    </select>
+                    <Button size="sm" onClick={addScenarioPreset}>
+                      <Plus className="mr-1 h-3 w-3" />
+                      {t('addScenarioPreset')}
+                    </Button>
+                  </div>
+                </div>
+              </SettingsSection>
+
+              <SettingsSection title={t('dataManagement')} description={t('dataManagementHelp')}>
+                <div className="grid w-full grid-cols-2 gap-2">
+                  <Button size="sm" variant="outline" onClick={handleExport}><Download className="mr-1 h-3.5 w-3.5" />{t('export')}</Button>
+                  <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()}><Upload className="mr-1 h-3.5 w-3.5" />{t('import')}</Button>
+                </div>
+              </SettingsSection>
+
+              <SettingsSection title={t('featureGuide')} description={t('featureGuideHelp')} className="lg:col-span-2">
+                <div className="grid w-full gap-3 md:grid-cols-2">
+                  <GuideItem title={t('floatingPanel')} text={t('floatingPanelGuide')} />
+                  <GuideItem title={t('triggerMenuTitle', { trigger: settings.searchTrigger })} text={t('searchGuide')} />
+                  <GuideItem title={t('safeSendDelay')} text={t('safeSendGuide')} />
+                  <GuideItem title={t('sendMethod')} text={t('sendMethodGuide')} />
+                  <GuideItem title={t('variables')} text={t('variablesGuide')} />
+                  <GuideItem title={t('tasks')} text={t('tasksGuide')} />
+                </div>
+              </SettingsSection>
+            </div>
+          </TabsContent>
         </Tabs>
       </main>
 
@@ -489,6 +752,8 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
         color={template.favorite ? settings.favoriteCardColor : settings.defaultCardColor}
         textColor={settings.cardTextColor}
         fontFamily={settings.cardFontFamily}
+        noteFontSize={settings.noteFontSize}
+        noteFontFamily={settings.noteFontFamily}
         showFullText={showFullText}
         onOpen={() => setPreviewTemplate(template)}
         onEdit={() => { setEditingTemplate(template); setIsCreating(false) }}
@@ -553,16 +818,19 @@ function SettingSwitch({
   label,
   checked,
   onCheckedChange,
+  hint,
 }: {
   icon: React.ReactNode
   label: string
   checked: boolean
   onCheckedChange: (checked: boolean) => void
+  hint?: string
 }) {
   return (
     <label className="flex h-8 min-w-[150px] shrink-0 items-center justify-between gap-2 rounded-md border bg-background px-2.5 py-1 text-xs text-muted-foreground shadow-sm">
       {icon}
       <span className="min-w-0 truncate">{label}</span>
+      {hint && <InfoTip text={hint} />}
       <Switch checked={checked} onCheckedChange={onCheckedChange} />
     </label>
   )
@@ -574,21 +842,66 @@ function SettingSelect({
   value,
   options,
   onChange,
+  hint,
 }: {
   icon: React.ReactNode
   label: string
   value: string
   options: Array<{ value: string; label: string }>
   onChange: (value: string) => void
+  hint?: string
 }) {
   return (
     <label className="flex h-8 min-w-[170px] shrink-0 items-center justify-between gap-2 rounded-md border bg-background px-2.5 py-1 text-xs text-muted-foreground shadow-sm">
       {icon}
       <span className="min-w-0 truncate">{label}</span>
+      {hint && <InfoTip text={hint} />}
       <select className="h-6 min-w-[48px] rounded border bg-background px-1 text-xs text-foreground" value={value} onChange={(event) => onChange(event.target.value)}>
         {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
       </select>
     </label>
+  )
+}
+
+function SettingsSection({
+  title,
+  description,
+  children,
+  className,
+}: {
+  title: string
+  description: string
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <section className={cn('rounded-xl border bg-card p-4 text-card-foreground shadow-sm', className)}>
+      <div className="mb-3">
+        <h2 className="text-sm font-semibold">{title}</h2>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{description}</p>
+      </div>
+      <div className="flex flex-wrap gap-2">{children}</div>
+    </section>
+  )
+}
+
+function InfoTip({ text }: { text: string }) {
+  return (
+    <span className="group relative inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border bg-background text-[10px] font-bold text-muted-foreground shadow-sm">
+      ?
+      <span className="pointer-events-none absolute right-0 top-5 z-50 w-64 rounded-lg border bg-popover px-3 py-2 text-left text-[11px] font-normal leading-relaxed text-popover-foreground opacity-0 shadow-xl transition-opacity duration-150 group-hover:opacity-100">
+        {text}
+      </span>
+    </span>
+  )
+}
+
+function GuideItem({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-lg border bg-background p-3 shadow-sm">
+      <div className="mb-1 text-xs font-semibold">{title}</div>
+      <p className="text-xs leading-relaxed text-muted-foreground">{text}</p>
+    </div>
   )
 }
 

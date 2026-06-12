@@ -18,6 +18,8 @@ interface TemplateCardProps {
   color?: string
   textColor?: string
   fontFamily?: string
+  noteFontSize?: string
+  noteFontFamily?: string
   cardStyle?: React.CSSProperties
   draggable?: boolean
   onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void
@@ -38,6 +40,8 @@ export function TemplateCard({
   color,
   textColor,
   fontFamily,
+  noteFontSize,
+  noteFontFamily,
   cardStyle,
   draggable,
   onDragStart,
@@ -112,19 +116,38 @@ export function TemplateCard({
       </div>
 
       <div className="flex-1 overflow-hidden pl-1.5" onClick={onOpen}>
-        <div className="font-semibold text-sm mb-1 truncate">{template.title}</div>
+        <div
+          className="mb-1 truncate font-semibold"
+          style={{
+            fontSize: noteFontSize ? `${Math.max(12, Number(noteFontSize)) + 1}px` : undefined,
+            fontFamily: resolveNoteFontFamily(noteFontFamily),
+          }}
+        >
+          {template.title}
+        </div>
         {template.tag && <Badge variant="secondary" className="mb-2 border py-0 text-[10px]" style={tagStyle}>{template.tag}</Badge>}
         <div
           className={cn(
             'text-xs whitespace-pre-wrap leading-relaxed opacity-90',
             showFullText ? '' : 'line-clamp-4'
           )}
+          style={{
+            fontSize: noteFontSize ? `${noteFontSize}px` : undefined,
+            fontFamily: resolveNoteFontFamily(noteFontFamily),
+          }}
         >
           {template.text}
         </div>
       </div>
     </div>
   )
+}
+
+function resolveNoteFontFamily(value?: string) {
+  if (value === 'arial') return 'Arial, Helvetica, sans-serif'
+  if (value === 'georgia') return 'Georgia, "Times New Roman", serif'
+  if (value === 'mono') return '"SFMono-Regular", Consolas, "Liberation Mono", monospace'
+  return undefined
 }
 
 function deriveCardAccent(color?: string) {

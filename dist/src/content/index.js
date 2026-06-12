@@ -10142,13 +10142,13 @@
     {
       variants: {
         variant: {
-          default: "bg-primary text-white shadow hover:bg-primary/90 hover:text-white",
+          default: "bg-primary !text-white shadow hover:bg-primary/90 hover:!text-white",
           destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
           outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
           secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
           ghost: "hover:bg-accent hover:text-accent-foreground",
           link: "text-primary underline-offset-4 hover:underline",
-          accent: "bg-amber-500 text-white shadow hover:bg-amber-600"
+          accent: "bg-amber-500 !text-white shadow hover:bg-amber-600 hover:!text-white"
         },
         size: {
           default: "h-8 px-3 py-1.5",
@@ -10546,6 +10546,13 @@
     ["line", { x1: "14", x2: "14", y1: "11", y2: "17", key: "xtxkd" }]
   ]);
 
+  // node_modules/lucide-react/dist/esm/icons/type.js
+  var Type = createLucideIcon("Type", [
+    ["polyline", { points: "4 7 4 4 20 4 20 7", key: "1nosan" }],
+    ["line", { x1: "9", x2: "15", y1: "20", y2: "20", key: "swin9y" }],
+    ["line", { x1: "12", x2: "12", y1: "4", y2: "20", key: "1tx1rr" }]
+  ]);
+
   // node_modules/lucide-react/dist/esm/icons/upload.js
   var Upload = createLucideIcon("Upload", [
     ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
@@ -10609,17 +10616,41 @@
     dataManagement: "\u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u0434\u0430\u043D\u043D\u044B\u043C\u0438",
     language: "\u042F\u0437\u044B\u043A",
     interfaceScale: "\u041C\u0430\u0441\u0448\u0442\u0430\u0431 \u0438\u043D\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430",
+    interfaceScaleHint: "\u041C\u0435\u043D\u044F\u0435\u0442 \u0440\u0430\u0437\u043C\u0435\u0440 \u043E\u0441\u043D\u043E\u0432\u043D\u043E\u0433\u043E \u0438\u043D\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430 BlobNote.",
+    siteScaleHint: "\u0414\u043B\u044F \u044D\u0442\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u044B \u043C\u0430\u0441\u0448\u0442\u0430\u0431 \u0441\u043E\u0445\u0440\u0430\u043D\u044F\u0435\u0442\u0441\u044F \u043E\u0442\u0434\u0435\u043B\u044C\u043D\u043E, \u0447\u0442\u043E\u0431\u044B \u0441\u0442\u0430\u0440\u044B\u0435 \u0441\u0430\u0439\u0442\u044B \u043C\u043E\u0436\u043D\u043E \u0431\u044B\u043B\u043E \u043D\u0430\u0441\u0442\u0440\u043E\u0438\u0442\u044C \u043F\u043E\u0434 \u0441\u0435\u0431\u044F.",
+    secondsShort: "\u0441",
+    readability: "\u0427\u0438\u0442\u0430\u0435\u043C\u043E\u0441\u0442\u044C",
+    readabilityHelp: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u0442\u0435 \u0440\u0430\u0437\u043C\u0435\u0440 \u0438\u043D\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430, \u0442\u0435\u043A\u0441\u0442 \u0437\u0430\u043C\u0435\u0442\u043E\u043A \u0438 \u0432\u0438\u0434 \u0432\u0435\u0440\u0445\u043D\u0435\u0439 \u043F\u0430\u043D\u0435\u043B\u0438.",
+    darkThemeHint: "\u041F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0430\u0435\u0442 \u0441\u0432\u0435\u0442\u043B\u0443\u044E \u0438 \u0442\u0451\u043C\u043D\u0443\u044E \u0442\u0435\u043C\u0443 BlobNote.",
+    noteTextSize: "\u0420\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u043A\u0441\u0442\u0430 \u0437\u0430\u043C\u0435\u0442\u043E\u043A",
+    noteTextSizeHint: "\u041C\u0435\u043D\u044F\u0435\u0442 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u043A\u0441\u0442\u0430 \u0432\u043D\u0443\u0442\u0440\u0438 \u043A\u0430\u0440\u0442\u043E\u0447\u0435\u043A \u0437\u0430\u043C\u0435\u0442\u043E\u043A.",
+    noteFont: "\u0428\u0440\u0438\u0444\u0442 \u0437\u0430\u043C\u0435\u0442\u043E\u043A",
+    noteFontHint: "\u041F\u043E\u043C\u043E\u0433\u0430\u0435\u0442 \u043F\u043E\u0434\u043E\u0431\u0440\u0430\u0442\u044C \u0431\u043E\u043B\u0435\u0435 \u0447\u0438\u0442\u0430\u0435\u043C\u044B\u0439 \u0448\u0440\u0438\u0444\u0442 \u0434\u043B\u044F \u043A\u0430\u0440\u0442\u043E\u0447\u0435\u043A.",
+    fontSystem: "\u0421\u0438\u0441\u0442\u0435\u043C\u043D\u044B\u0439",
+    fontMono: "\u041C\u043E\u043D\u043E\u0448\u0438\u0440\u0438\u043D\u043D\u044B\u0439",
+    headerControls: "\u041F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0442\u044C \u043D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 \u0432 \u0448\u0430\u043F\u043A\u0435",
+    headerControlsHint: "\u0415\u0441\u043B\u0438 \u0432\u044B\u043A\u043B\u044E\u0447\u0438\u0442\u044C, \u0432\u0435\u0440\u0445\u043D\u044F\u044F \u043F\u0430\u043D\u0435\u043B\u044C \u0441\u0442\u0430\u043D\u0435\u0442 \u0447\u0438\u0449\u0435, \u0430 \u0432\u0441\u0435 \u043D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 \u043E\u0441\u0442\u0430\u043D\u0443\u0442\u0441\u044F \u0432 \u044D\u0442\u043E\u0439 \u0432\u043A\u043B\u0430\u0434\u043A\u0435.",
     trigger: "\u0421\u0438\u043C\u0432\u043E\u043B \u043F\u043E\u0438\u0441\u043A\u0430",
     openBaseCurrent: "\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u0431\u0430\u0437\u0443 \u043D\u0430 \u0442\u0435\u043A\u0443\u0449\u0435\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435",
     openBaseTab: "\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u043E\u0442\u0434\u0435\u043B\u044C\u043D\u043E\u0439 \u0432\u043A\u043B\u0430\u0434\u043A\u043E\u0439",
     quickInsertHint: "\u0414\u043B\u044F \u0431\u044B\u0441\u0442\u0440\u043E\u0439 \u0432\u0441\u0442\u0430\u0432\u043A\u0438 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 \u043F\u043B\u0430\u0432\u0430\u044E\u0449\u0443\u044E \u043F\u0430\u043D\u0435\u043B\u044C \u0443 \u043F\u043E\u043B\u044F, {{trigger}}-\u043F\u043E\u0438\u0441\u043A \u0438\u043B\u0438 Ctrl+Space. \u0411\u0430\u0437\u0430 \u043F\u043E\u0432\u0435\u0440\u0445 \u0441\u0430\u0439\u0442\u0430 \u043E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u0447\u0435\u0440\u0435\u0437 Ctrl+Shift+Space.",
     allowlistOnly: "\u0420\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u044B\u0445 \u0441\u0430\u0439\u0442\u0430\u0445",
+    allowlistHint: "\u0415\u0441\u043B\u0438 \u0432\u043A\u043B\u044E\u0447\u0435\u043D\u043E, BlobNote \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430 \u0441\u0430\u0439\u0442\u0430\u0445, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0432\u044B \u0434\u043E\u0431\u0430\u0432\u0438\u043B\u0438 \u043D\u0438\u0436\u0435.",
+    siteActive: "\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043D\u0438\u0435 \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u043D\u0430 \u044D\u0442\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435",
+    siteInactive: "\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043D\u0438\u0435 \u0432\u044B\u043A\u043B\u044E\u0447\u0435\u043D\u043E \u043D\u0430 \u044D\u0442\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435",
+    siteAllowlistHint: "\u0412 \u0440\u0435\u0436\u0438\u043C\u0435 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u044B\u0445 \u0441\u0430\u0439\u0442\u043E\u0432 \u044D\u0442\u0430 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0430 \u0434\u043E\u043B\u0436\u043D\u0430 \u0431\u044B\u0442\u044C \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u0430 \u0432 \u0441\u043F\u0438\u0441\u043E\u043A, \u0438\u043D\u0430\u0447\u0435 \u043F\u0430\u043D\u0435\u043B\u044C \u0438 \u0431\u044B\u0441\u0442\u0440\u044B\u0439 \u043F\u043E\u0438\u0441\u043A \u043D\u0435 \u043F\u043E\u044F\u0432\u044F\u0442\u0441\u044F.",
+    siteGlobalModeHint: "\u0421\u0435\u0439\u0447\u0430\u0441 BlobNote \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u043D\u0430 \u0432\u0441\u0435\u0445 \u0441\u0430\u0439\u0442\u0430\u0445. \u041A\u043D\u043E\u043F\u043A\u0430 \u0441\u0430\u0439\u0442\u0430 \u043D\u0443\u0436\u043D\u0430 \u0442\u043E\u043B\u044C\u043A\u043E \u0432 \u0440\u0435\u0436\u0438\u043C\u0435 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u044B\u0445 \u0441\u0430\u0439\u0442\u043E\u0432.",
+    siteButtonOnlyAllowlist: "\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E \u0432 \u0440\u0435\u0436\u0438\u043C\u0435 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u044B\u0445 \u0441\u0430\u0439\u0442\u043E\u0432",
     enableForSite: "\u0412\u043A\u043B\u044E\u0447\u0438\u0442\u044C \u0434\u043B\u044F \u044D\u0442\u043E\u0433\u043E \u0441\u0430\u0439\u0442\u0430",
     disableForSite: "\u0412\u044B\u043A\u043B\u044E\u0447\u0438\u0442\u044C \u0434\u043B\u044F \u044D\u0442\u043E\u0433\u043E \u0441\u0430\u0439\u0442\u0430",
     atSearchInInput: "{{trigger}}-\u043F\u043E\u0438\u0441\u043A \u0432 \u043F\u043E\u043B\u0435 \u0432\u0432\u043E\u0434\u0430",
+    atSearchHint: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0441\u0438\u043C\u0432\u043E\u043B \u043F\u043E\u0438\u0441\u043A\u0430 \u043F\u0440\u044F\u043C\u043E \u0432 \u043F\u043E\u043B\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F \u0438 \u043D\u0430\u0447\u043D\u0438\u0442\u0435 \u043F\u0435\u0447\u0430\u0442\u0430\u0442\u044C \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u0437\u0430\u043C\u0435\u0442\u043A\u0438.",
     floatingPanelNearField: "\u041F\u043B\u0430\u0432\u0430\u044E\u0449\u0430\u044F \u043F\u0430\u043D\u0435\u043B\u044C \u0443 \u043F\u043E\u043B\u044F",
+    floatingPanelHint: "\u041F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442 \u0438\u0437\u0431\u0440\u0430\u043D\u043D\u044B\u0435 \u0437\u0430\u043C\u0435\u0442\u043A\u0438 \u0440\u044F\u0434\u043E\u043C \u0441 \u0430\u043A\u0442\u0438\u0432\u043D\u044B\u043C \u043F\u043E\u043B\u0435\u043C \u0438 \u043E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u0442 \u0431\u0430\u0437\u0443 \u043F\u043E\u0432\u0435\u0440\u0445 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u044B.",
     clipboardInPanel: "\u041F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0442\u044C \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435 \u0434\u0430\u043D\u043D\u044B\u0435 \u0438\u0437 \u0431\u0443\u0444\u0435\u0440\u0430 \u043E\u0431\u043C\u0435\u043D\u0430 \u0432 \u043F\u0430\u043D\u0435\u043B\u0438",
+    clipboardHint: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u043E\u043B\u044C\u043A\u043E \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435 \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u044B, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u043F\u0430\u043D\u0435\u043B\u044C \u0441\u043C\u043E\u0433\u043B\u0430 \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u0442\u044C \u043D\u0430 \u0442\u0435\u043A\u0443\u0449\u0435\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435.",
     variablesTab: "\u0412\u043A\u043B\u0430\u0434\u043A\u0430 \u043F\u0435\u0440\u0435\u043C\u0435\u043D\u043D\u044B\u0445",
+    variablesHint: "\u041F\u0435\u0440\u0435\u043C\u0435\u043D\u043D\u044B\u0435 \u043F\u043E\u0434\u0441\u0442\u0430\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u0442\u043E\u043B\u044C\u043A\u043E \u043A\u043E\u0433\u0434\u0430 \u044D\u0442\u0430 \u0444\u0443\u043D\u043A\u0446\u0438\u044F \u0432\u043A\u043B\u044E\u0447\u0435\u043D\u0430.",
     tasksTab: "\u0412\u043A\u043B\u0430\u0434\u043A\u0430 \u0437\u0430\u0434\u0430\u0447",
     export: "\u042D\u043A\u0441\u043F\u043E\u0440\u0442",
     import: "\u0418\u043C\u043F\u043E\u0440\u0442",
@@ -10697,16 +10728,23 @@
     panelSettings: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 \u043F\u0430\u043D\u0435\u043B\u0438",
     panelDisplay: "\u0412\u0438\u0434 \u043F\u0430\u043D\u0435\u043B\u0438",
     panelScale: "\u041C\u0430\u0441\u0448\u0442\u0430\u0431 \u043F\u0430\u043D\u0435\u043B\u0438",
+    panelScaleHint: "\u041C\u0435\u043D\u044F\u0435\u0442 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u043E\u043B\u044C\u043A\u043E \u043F\u043B\u0430\u0432\u0430\u044E\u0449\u0435\u0439 \u043F\u0430\u043D\u0435\u043B\u0438 \u0438 \u0431\u044B\u0441\u0442\u0440\u043E\u0433\u043E \u043F\u043E\u0438\u0441\u043A\u0430.",
+    sitePanelScaleHint: "\u0414\u043B\u044F \u044D\u0442\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u044B \u043C\u0430\u0441\u0448\u0442\u0430\u0431 \u043F\u0430\u043D\u0435\u043B\u0438 \u0441\u043E\u0445\u0440\u0430\u043D\u044F\u0435\u0442\u0441\u044F \u043E\u0442\u0434\u0435\u043B\u044C\u043D\u043E.",
     panelPosition: "\u041F\u043E\u043B\u043E\u0436\u0435\u043D\u0438\u0435",
+    panelPositionHint: "\u0410\u0432\u0442\u043E \u0441\u0442\u0430\u0432\u0438\u0442 \u043F\u0430\u043D\u0435\u043B\u044C \u0442\u0443\u0434\u0430, \u0433\u0434\u0435 \u0431\u043E\u043B\u044C\u0448\u0435 \u043C\u0435\u0441\u0442\u0430. \u0424\u0438\u043A\u0441\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u044B \u043F\u043E\u043C\u043E\u0433\u0430\u044E\u0442 \u043D\u0430 \u0441\u043B\u043E\u0436\u043D\u044B\u0445 \u0441\u0430\u0439\u0442\u0430\u0445.",
     aboveField: "\u041D\u0430\u0434 \u043F\u043E\u043B\u0435\u043C",
     belowField: "\u041F\u043E\u0434 \u043F\u043E\u043B\u0435\u043C",
     topRight: "\u0421\u043F\u0440\u0430\u0432\u0430 \u0441\u0432\u0435\u0440\u0445\u0443",
     bottomRight: "\u0421\u043F\u0440\u0430\u0432\u0430 \u0441\u043D\u0438\u0437\u0443",
     compactPanel: "\u041F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0442\u044C \u043D\u0435\u0434\u0430\u0432\u043D\u0438\u0435 \u0432\u0441\u0442\u0430\u0432\u043A\u0438",
+    recentInsertionsHint: "\u0415\u0441\u043B\u0438 \u0432\u043A\u043B\u044E\u0447\u0435\u043D\u043E, \u043F\u0430\u043D\u0435\u043B\u044C \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442 \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435 \u0432\u0441\u0442\u0430\u0432\u043B\u0435\u043D\u043D\u044B\u0435 \u043E\u0442\u0432\u0435\u0442\u044B \u043F\u043E\u0434 \u0438\u0437\u0431\u0440\u0430\u043D\u043D\u044B\u043C.",
     sendSettings: "\u041E\u0442\u043F\u0440\u0430\u0432\u043A\u0430",
+    sendSettingsHelp: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u0442\u0435 \u0437\u0430\u0434\u0435\u0440\u0436\u043A\u0443 \u0438 \u0441\u043F\u043E\u0441\u043E\u0431 \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0438 \u0434\u043B\u044F \u0441\u0430\u0439\u0442\u043E\u0432, \u0433\u0434\u0435 \u0430\u0432\u0442\u043E\u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0430 \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u043F\u043E-\u0440\u0430\u0437\u043D\u043E\u043C\u0443.",
     safeSend: "\u0411\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u0430\u044F \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0430",
     safeSendDelay: "\u0417\u0430\u0434\u0435\u0440\u0436\u043A\u0430 \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0438",
+    safeSendDelayHint: "0 \u0441\u0435\u043A\u0443\u043D\u0434 \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u044F\u0435\u0442 \u0441\u0440\u0430\u0437\u0443. \u0415\u0441\u043B\u0438 \u043F\u043E\u0441\u0442\u0430\u0432\u0438\u0442\u044C 3-15 \u0441\u0435\u043A\u0443\u043D\u0434, \u043F\u043E\u044F\u0432\u0438\u0442\u0441\u044F \u043E\u043A\u043D\u043E \u043E\u0442\u043C\u0435\u043D\u044B \u0438\u043B\u0438 \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0438 \u0441\u0435\u0439\u0447\u0430\u0441.",
     sendMethod: "\u041A\u0430\u043A \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u044F\u0442\u044C",
+    sendMethodHint: "\u0410\u0432\u0442\u043E \u043F\u044B\u0442\u0430\u0435\u0442\u0441\u044F \u043D\u0430\u0436\u0430\u0442\u044C \u043A\u043D\u043E\u043F\u043A\u0443 \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0438, \u0430 \u0435\u0441\u043B\u0438 \u043D\u0435 \u043F\u043E\u043B\u0443\u0447\u0438\u043B\u043E\u0441\u044C, \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442 Enter.",
     sendAuto: "\u0410\u0432\u0442\u043E",
     sendButton: "\u041A\u043D\u043E\u043F\u043A\u0430",
     sendEnter: "Enter",
@@ -10714,6 +10752,7 @@
     sendShiftEnter: "Shift+Enter",
     sendAltEnter: "Alt+Enter",
     sendButtonSelector: "CSS-\u0441\u0435\u043B\u0435\u043A\u0442\u043E\u0440 \u043A\u043D\u043E\u043F\u043A\u0438",
+    sendButtonSelectorHint: "\u041D\u0443\u0436\u043D\u043E \u0442\u043E\u043B\u044C\u043A\u043E \u0435\u0441\u043B\u0438 \u0441\u0430\u0439\u0442 \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u044F\u0435\u0442 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435 \u043D\u0435\u0441\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u043D\u043E\u0439 \u043A\u043D\u043E\u043F\u043A\u043E\u0439. \u041C\u043E\u0436\u043D\u043E \u0443\u043A\u0430\u0437\u0430\u0442\u044C \u0441\u0435\u043B\u0435\u043A\u0442\u043E\u0440 \u044D\u0442\u043E\u0439 \u043A\u043D\u043E\u043F\u043A\u0438.",
     safeSendTitle: "\u041E\u0442\u043F\u0440\u0430\u0432\u043A\u0430 \u0447\u0435\u0440\u0435\u0437 \u043F\u0430\u0443\u0437\u0443",
     safeSendCountdown: "\u0421\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435 \u043E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u0441\u044F \u0447\u0435\u0440\u0435\u0437 {{seconds}} \u0441\u0435\u043A.",
     sendNow: "\u041E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u044C \u0441\u0435\u0439\u0447\u0430\u0441",
@@ -10724,12 +10763,30 @@
     titleRequired: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u0435",
     requiredField: "\u041E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0435 \u043F\u043E\u043B\u0435",
     scenarioPresets: "\u041D\u0430\u0431\u043E\u0440\u044B \u0441\u0446\u0435\u043D\u0430\u0440\u0438\u0435\u0432",
+    scenarioPresetsHint: "\u0411\u044B\u0441\u0442\u0440\u043E \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442 \u0433\u043E\u0442\u043E\u0432\u044B\u0435 \u0448\u0430\u0431\u043B\u043E\u043D\u044B \u0434\u043B\u044F \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438, \u0431\u0443\u0445\u0433\u0430\u043B\u0442\u0435\u0440\u0438\u0438 \u0438\u043B\u0438 \u043F\u0440\u043E\u0434\u0430\u0436.",
     supportPreset: "\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
     accountingPreset: "\u0411\u0443\u0445\u0433\u0430\u043B\u0442\u0435\u0440\u0438\u044F",
     salesPreset: "\u041F\u0440\u043E\u0434\u0430\u0436\u0438",
     addScenarioPreset: "\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u043D\u0430\u0431\u043E\u0440",
     scenarioPresetAdded: "\u041D\u0430\u0431\u043E\u0440 \u0441\u0446\u0435\u043D\u0430\u0440\u0438\u0435\u0432 \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D",
     clipboardEmpty: "\u0411\u0443\u0444\u0435\u0440 \u043F\u043E\u043A\u0430 \u043F\u0443\u0441\u0442",
+    searchAndModules: "\u041F\u043E\u0438\u0441\u043A \u0438 \u043C\u043E\u0434\u0443\u043B\u0438",
+    searchAndModulesHelp: "\u0412\u043A\u043B\u044E\u0447\u0430\u0439\u0442\u0435 \u0442\u043E\u043B\u044C\u043A\u043E \u0442\u0435 \u0444\u0443\u043D\u043A\u0446\u0438\u0438, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0440\u0435\u0430\u043B\u044C\u043D\u043E \u043D\u0443\u0436\u043D\u044B \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u043A\u0443.",
+    triggerHint: "\u0421\u043B\u044D\u0448 \u0443\u0434\u043E\u0431\u0435\u043D \u0432 \u043B\u044E\u0431\u043E\u0439 \u0440\u0430\u0441\u043A\u043B\u0430\u0434\u043A\u0435, @ \u043E\u0441\u0442\u0430\u0432\u043B\u0435\u043D \u0434\u043B\u044F \u0442\u0435\u0445, \u043A\u043E\u043C\u0443 \u043F\u0440\u0438\u0432\u044B\u0447\u043D\u0435\u0435 \u0441\u0442\u0430\u0440\u044B\u0439 \u0432\u0430\u0440\u0438\u0430\u043D\u0442.",
+    tasksHint: "\u0417\u0430\u0434\u0430\u0447\u0438 \u043F\u043E\u044F\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u043E\u0442\u0434\u0435\u043B\u044C\u043D\u043E\u0439 \u0432\u043A\u043B\u0430\u0434\u043A\u043E\u0439 \u0432 \u0431\u0430\u0437\u0435 \u0438 \u043D\u0435 \u043C\u0435\u0448\u0430\u044E\u0442 \u0442\u0435\u043C, \u043A\u043E\u043C\u0443 \u043E\u043D\u0438 \u043D\u0435 \u043D\u0443\u0436\u043D\u044B.",
+    cardsAndPacks: "\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0438 \u0438 \u043D\u0430\u0431\u043E\u0440\u044B",
+    cardsAndPacksHelp: "\u0426\u0432\u0435\u0442\u043E\u0432\u044B\u0435 \u043F\u0440\u0435\u0441\u0435\u0442\u044B \u0438 \u0433\u043E\u0442\u043E\u0432\u044B\u0435 \u043D\u0430\u0431\u043E\u0440\u044B \u0448\u0430\u0431\u043B\u043E\u043D\u043E\u0432 \u0434\u043B\u044F \u0431\u044B\u0441\u0442\u0440\u043E\u0433\u043E \u0441\u0442\u0430\u0440\u0442\u0430.",
+    cardPresetsHint: "\u041F\u0440\u0435\u0441\u0435\u0442\u044B \u043F\u043E\u0434\u043E\u0431\u0440\u0430\u043D\u044B \u043E\u0442\u0434\u0435\u043B\u044C\u043D\u043E \u0434\u043B\u044F \u0441\u0432\u0435\u0442\u043B\u043E\u0439 \u0438 \u0442\u0451\u043C\u043D\u043E\u0439 \u0442\u0435\u043C\u044B, \u0447\u0442\u043E\u0431\u044B \u0442\u0435\u043A\u0441\u0442 \u043E\u0441\u0442\u0430\u0432\u0430\u043B\u0441\u044F \u0447\u0438\u0442\u0430\u0435\u043C\u044B\u043C.",
+    dataManagementHelp: "\u042D\u043A\u0441\u043F\u043E\u0440\u0442\u0438\u0440\u0443\u0439\u0442\u0435 \u0431\u0430\u0437\u0443 \u0432 JSON \u0438\u043B\u0438 \u0438\u043C\u043F\u043E\u0440\u0442\u0438\u0440\u0443\u0439\u0442\u0435 \u0433\u043E\u0442\u043E\u0432\u044B\u0439 \u0444\u0430\u0439\u043B \u0441 \u0437\u0430\u043C\u0435\u0442\u043A\u0430\u043C\u0438.",
+    featureGuide: "\u0418\u043D\u0441\u0442\u0440\u0443\u043A\u0446\u0438\u044F \u043F\u043E \u0444\u0443\u043D\u043A\u0446\u0438\u044F\u043C",
+    featureGuideHelp: "\u041A\u043E\u0440\u043E\u0442\u043A\u0438\u0435 \u043F\u043E\u044F\u0441\u043D\u0435\u043D\u0438\u044F, \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043F\u043E\u043D\u0438\u043C\u0430\u043B, \u0447\u0442\u043E \u0432\u043A\u043B\u044E\u0447\u0430\u0435\u0442 \u043A\u0430\u0436\u0434\u0430\u044F \u043D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0430.",
+    floatingPanelSettingsHelp: "\u041F\u0430\u043D\u0435\u043B\u044C \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0440\u044F\u0434\u043E\u043C \u0441 \u0430\u043A\u0442\u0438\u0432\u043D\u044B\u043C \u043F\u043E\u043B\u0435\u043C \u0438 \u043F\u043E\u043C\u043E\u0433\u0430\u0435\u0442 \u0432\u0441\u0442\u0430\u0432\u043B\u044F\u0442\u044C \u043E\u0442\u0432\u0435\u0442\u044B \u0431\u0435\u0437 \u043E\u0442\u043A\u0440\u044B\u0442\u0438\u044F \u0431\u0430\u0437\u044B.",
+    floatingPanelGuide: "\u041F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442 \u0438\u0437\u0431\u0440\u0430\u043D\u043D\u044B\u0435 \u0437\u0430\u043C\u0435\u0442\u043A\u0438, \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435 \u0432\u0441\u0442\u0430\u0432\u043A\u0438 \u0438 \u0431\u0443\u0444\u0435\u0440 \u043E\u0431\u043C\u0435\u043D\u0430 \u0440\u044F\u0434\u043E\u043C \u0441 \u043F\u043E\u043B\u0435\u043C \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F.",
+    searchGuide: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0441\u0438\u043C\u0432\u043E\u043B \u043F\u043E\u0438\u0441\u043A\u0430 \u0432 \u043F\u043E\u043B\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F, \u0437\u0430\u0442\u0435\u043C \u043D\u0430\u0447\u043D\u0438\u0442\u0435 \u043F\u0438\u0441\u0430\u0442\u044C \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u0435, \u0442\u0435\u0433 \u0438\u043B\u0438 \u0442\u0435\u043A\u0441\u0442 \u0437\u0430\u043C\u0435\u0442\u043A\u0438.",
+    safeSendGuide: "\u041F\u0440\u0438 \u0437\u0430\u0434\u0435\u0440\u0436\u043A\u0435 \u0431\u043E\u043B\u044C\u0448\u0435 0 \u0441\u0435\u043A\u0443\u043D\u0434 BlobNote \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442 \u043E\u043A\u043D\u043E, \u0433\u0434\u0435 \u043C\u043E\u0436\u043D\u043E \u043E\u0442\u043C\u0435\u043D\u0438\u0442\u044C \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0443 \u0438\u043B\u0438 \u043E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u044C \u0441\u0440\u0430\u0437\u0443.",
+    sendMethodGuide: "\u0415\u0441\u043B\u0438 \u043D\u0430 \u0441\u0430\u0439\u0442\u0435 \u0432\u0441\u0442\u0430\u0432\u043A\u0430 \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442, \u043D\u043E \u043E\u0442\u043F\u0440\u0430\u0432\u043A\u0430 \u043D\u0435\u0442, \u0432\u044B\u0431\u0435\u0440\u0438\u0442\u0435 Enter, Ctrl+Enter, Shift+Enter \u0438\u043B\u0438 \u043A\u043D\u043E\u043F\u043A\u0443.",
+    variablesGuide: "\u041F\u0435\u0440\u0435\u043C\u0435\u043D\u043D\u044B\u0435 \u0432\u0438\u0434\u0430 {{agent_name}} \u043F\u043E\u0434\u0441\u0442\u0430\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u0442\u043E\u043B\u044C\u043A\u043E \u043A\u043E\u0433\u0434\u0430 \u0432\u043A\u043B\u0430\u0434\u043A\u0430 \u043F\u0435\u0440\u0435\u043C\u0435\u043D\u043D\u044B\u0445 \u0432\u043A\u043B\u044E\u0447\u0435\u043D\u0430.",
+    tasksGuide: "\u0417\u0430\u0434\u0430\u0447\u0438 \u043D\u0443\u0436\u043D\u044B \u043A\u0430\u043A \u043D\u0435\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u0441\u043F\u0438\u0441\u043E\u043A \u0434\u0435\u043B \u0440\u044F\u0434\u043E\u043C \u0441 \u0431\u0430\u0437\u043E\u0439. \u041F\u043E \u0443\u043C\u043E\u043B\u0447\u0430\u043D\u0438\u044E \u043C\u043E\u0434\u0443\u043B\u044C \u0432\u044B\u043A\u043B\u044E\u0447\u0435\u043D.",
     smartSearchTitle: "\u0423\u043C\u043D\u044B\u0439 \u043F\u043E\u0438\u0441\u043A \u0437\u0430\u043C\u0435\u0442\u043E\u043A",
     smartSearchPlaceholder: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u0435, \u0442\u0435\u0433 \u0438\u043B\u0438 \u0442\u0435\u043A\u0441\u0442...",
     nothingFound: "\u041D\u0438\u0447\u0435\u0433\u043E \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u043E",
@@ -10785,17 +10842,41 @@
     dataManagement: "Data",
     language: "Language",
     interfaceScale: "Interface scale",
+    interfaceScaleHint: "Changes the size of the main BlobNote interface.",
+    siteScaleHint: "On this page the scale is saved separately, which helps tune older sites.",
+    secondsShort: "s",
+    readability: "Readability",
+    readabilityHelp: "Tune interface size, note text, and the top toolbar.",
+    darkThemeHint: "Switches BlobNote between light and dark theme.",
+    noteTextSize: "Note text size",
+    noteTextSizeHint: "Changes the text size inside note cards.",
+    noteFont: "Note font",
+    noteFontHint: "Helps choose a more readable font for note cards.",
+    fontSystem: "System",
+    fontMono: "Monospace",
+    headerControls: "Show settings in header",
+    headerControlsHint: "Turn off to keep the top bar cleaner. All controls stay available in this tab.",
     trigger: "Search trigger",
     openBaseCurrent: "Open base on this page",
     openBaseTab: "Open in a separate tab",
     quickInsertHint: "For quick insert, use the floating panel near the field, {{trigger}} search, or Ctrl+Space. Open the base over the site with Ctrl+Shift+Space.",
     allowlistOnly: "Work only on selected sites",
+    allowlistHint: "When enabled, BlobNote works only on sites you add below.",
+    siteActive: "Extension is active on this page",
+    siteInactive: "Extension is disabled on this page",
+    siteAllowlistHint: "In selected-sites mode, this page must be added to the list, otherwise the panel and quick search will not appear.",
+    siteGlobalModeHint: "BlobNote currently works on every site. The site button is only used in selected-sites mode.",
+    siteButtonOnlyAllowlist: "Available in selected-sites mode",
     enableForSite: "Enable for this site",
     disableForSite: "Disable for this site",
     atSearchInInput: "{{trigger}} search in input fields",
+    atSearchHint: "Type the search trigger directly in a message field and start typing a note title.",
     floatingPanelNearField: "Floating panel near fields",
+    floatingPanelHint: "Shows favorite notes next to the active field and can open the full base over the page.",
     clipboardInPanel: "Show recent clipboard entries in the panel",
+    clipboardHint: "Keeps only the latest entries the panel can read on the current page.",
     variablesTab: "Variables tab",
+    variablesHint: "Variables are substituted only while this feature is enabled.",
     tasksTab: "Tasks tab",
     export: "Export",
     import: "Import",
@@ -10873,16 +10954,23 @@
     panelSettings: "Panel settings",
     panelDisplay: "Panel view",
     panelScale: "Panel scale",
+    panelScaleHint: "Changes only the floating panel and quick search size.",
+    sitePanelScaleHint: "On this page the panel scale is saved separately.",
     panelPosition: "Position",
+    panelPositionHint: "Auto places the panel where there is more room. Fixed positions help on tricky sites.",
     aboveField: "Above field",
     belowField: "Below field",
     topRight: "Top right",
     bottomRight: "Bottom right",
     compactPanel: "Show recent inserts",
+    recentInsertionsHint: "When enabled, the panel shows recently inserted replies below favorites.",
     sendSettings: "Sending",
+    sendSettingsHelp: "Tune delay and send method for sites where auto-send behaves differently.",
     safeSend: "Safe send",
     safeSendDelay: "Send delay",
+    safeSendDelayHint: "0 seconds sends immediately. With 3-15 seconds, BlobNote shows a cancel/send-now prompt.",
     sendMethod: "Send with",
+    sendMethodHint: "Auto tries to click a send button, then falls back to Enter.",
     sendAuto: "Auto",
     sendButton: "Button",
     sendEnter: "Enter",
@@ -10890,6 +10978,7 @@
     sendShiftEnter: "Shift+Enter",
     sendAltEnter: "Alt+Enter",
     sendButtonSelector: "Button CSS selector",
+    sendButtonSelectorHint: "Use only when a site sends through a non-standard button. Enter that button selector here.",
     safeSendTitle: "Sending after pause",
     safeSendCountdown: "Message will be sent in {{seconds}} sec.",
     sendNow: "Send now",
@@ -10900,12 +10989,30 @@
     titleRequired: "Enter a title",
     requiredField: "Required field",
     scenarioPresets: "Scenario packs",
+    scenarioPresetsHint: "Quickly adds ready-made templates for support, accounting, or sales.",
     supportPreset: "Support",
     accountingPreset: "Accounting",
     salesPreset: "Sales",
     addScenarioPreset: "Add pack",
     scenarioPresetAdded: "Scenario pack added",
     clipboardEmpty: "Clipboard is empty",
+    searchAndModules: "Search and modules",
+    searchAndModulesHelp: "Enable only the features an employee really needs.",
+    triggerHint: "Slash works in any keyboard layout; @ remains for teams used to the old trigger.",
+    tasksHint: "Tasks appear as a separate base tab and stay out of the way when disabled.",
+    cardsAndPacks: "Cards and packs",
+    cardsAndPacksHelp: "Color presets and ready-made template packs for quick setup.",
+    cardPresetsHint: "Presets are tuned separately for light and dark themes so text stays readable.",
+    dataManagementHelp: "Export the base to JSON or import a prepared notes file.",
+    featureGuide: "Feature guide",
+    featureGuideHelp: "Short explanations so users understand what each setting does.",
+    floatingPanelSettingsHelp: "The panel appears next to the active field and helps insert replies without opening the base.",
+    floatingPanelGuide: "Shows favorite notes, recent inserts, and clipboard entries next to the message field.",
+    searchGuide: "Type the search trigger in a message field, then start typing a note title, tag, or text.",
+    safeSendGuide: "With a delay above 0 seconds, BlobNote shows a prompt where you can cancel or send now.",
+    sendMethodGuide: "If insertion works but sending does not, choose Enter, Ctrl+Enter, Shift+Enter, or a button.",
+    variablesGuide: "Variables like {{agent_name}} are substituted only while the variables tab is enabled.",
+    tasksGuide: "Tasks are a small to-do list next to the base. The module is off by default.",
     smartSearchTitle: "Smart note search",
     smartSearchPlaceholder: "Type a title, tag, or text...",
     nothingFound: "Nothing found",
@@ -11516,9 +11623,6 @@
     const t = import_react3.default.useCallback((key) => translate(language, key), [language]);
     const scale = uiScaleFactor(panelScale);
     import_react3.default.useEffect(() => {
-      setPanelScale(uiScale);
-    }, [uiScale]);
-    import_react3.default.useEffect(() => {
       let mounted = true;
       const loadSnapshot = async () => {
         const snapshot = await readRuntimeSnapshot();
@@ -11696,13 +11800,13 @@
             transformOrigin: "top left",
             zIndex: 2147483640
           },
-          className: "inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-semibold text-slate-950 shadow-2xl transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 dark:border-slate-700 dark:bg-slate-950 dark:text-white",
+          className: "inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/20 bg-slate-950 px-2 text-[10px] font-semibold text-white shadow-[0_18px_42px_rgba(2,6,23,.42),0_0_0_1px_rgba(255,255,255,.12)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_rgba(2,6,23,.52),0_0_0_1px_rgba(255,255,255,.18)] active:scale-95",
           title: t("showPanel"),
           onMouseDown: (event) => event.preventDefault(),
           onClick: () => setCollapsed(false),
           children: [
             /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(BlobNoteMark, { className: "h-5 w-5 shrink-0" }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "max-w-[80px] truncate", children: "BlobNote" })
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "max-w-[80px] truncate [text-shadow:0_1px_2px_rgba(0,0,0,.8)]", children: "BlobNote" })
           ]
         }
       );
@@ -12524,6 +12628,9 @@
     activationMode: "all",
     enabledHosts: [],
     ...cardPresetFor("light", "lagoon"),
+    noteFontSize: "14",
+    noteFontFamily: "system",
+    showHeaderControls: true,
     showVariablesTab: false,
     showTodoTab: false,
     lastBaseTab: "templates",
@@ -12633,6 +12740,12 @@
     const selector = typeof value === "string" ? value.trim() : "";
     return selector || null;
   }
+  function normalizeNoteFontSize(value) {
+    return value === "12" || value === "13" || value === "14" || value === "15" || value === "16" || value === "18" ? value : defaultSettings.noteFontSize;
+  }
+  function normalizeNoteFontFamily(value) {
+    return value === "arial" || value === "georgia" || value === "mono" || value === "system" ? value : defaultSettings.noteFontFamily;
+  }
   function normalizeSiteSettings2(value) {
     if (!value || typeof value !== "object" || Array.isArray(value)) return {};
     return Object.entries(value).reduce((acc, [host, settings]) => {
@@ -12694,6 +12807,9 @@
         activationMode: snapshot.activationMode || defaultSettings.activationMode,
         enabledHosts: Array.isArray(snapshot.enabledHosts) ? snapshot.enabledHosts : defaultSettings.enabledHosts,
         ...cardPresetFor(theme, cardPreset),
+        noteFontSize: normalizeNoteFontSize(snapshot.noteFontSize),
+        noteFontFamily: normalizeNoteFontFamily(snapshot.noteFontFamily),
+        showHeaderControls: snapshot.showHeaderControls ?? defaultSettings.showHeaderControls,
         showVariablesTab: snapshot.showVariablesTab ?? defaultSettings.showVariablesTab,
         showTodoTab: snapshot.showTodoTab ?? defaultSettings.showTodoTab,
         lastBaseTab: snapshot.lastBaseTab || defaultSettings.lastBaseTab,
@@ -12804,6 +12920,18 @@
       }
       if (changes.cardFontFamily) {
         nextSettings.cardFontFamily = changes.cardFontFamily.newValue || defaultSettings.cardFontFamily;
+        settingsChanged = true;
+      }
+      if (changes.noteFontSize) {
+        nextSettings.noteFontSize = normalizeNoteFontSize(changes.noteFontSize.newValue);
+        settingsChanged = true;
+      }
+      if (changes.noteFontFamily) {
+        nextSettings.noteFontFamily = normalizeNoteFontFamily(changes.noteFontFamily.newValue);
+        settingsChanged = true;
+      }
+      if (changes.showHeaderControls) {
+        nextSettings.showHeaderControls = changes.showHeaderControls.newValue ?? defaultSettings.showHeaderControls;
         settingsChanged = true;
       }
       if (changes.showVariablesTab) {
@@ -13012,6 +13140,9 @@
         sendButtonSelector: normalizeSendButtonSelector2(settings.sendButtonSelector ?? state.settings.sendButtonSelector),
         siteSettings: normalizeSiteSettings2(settings.siteSettings ?? state.settings.siteSettings),
         searchTrigger: settings.searchTrigger === "@" ? "@" : settings.searchTrigger === "/" ? "/" : state.settings.searchTrigger,
+        noteFontSize: normalizeNoteFontSize(settings.noteFontSize ?? state.settings.noteFontSize),
+        noteFontFamily: normalizeNoteFontFamily(settings.noteFontFamily ?? state.settings.noteFontFamily),
+        showHeaderControls: settings.showHeaderControls ?? state.settings.showHeaderControls,
         ...cardPresetFor(theme, cardPreset)
       };
       chromeSet({
@@ -13036,6 +13167,9 @@
         favoriteCardColor: nextSettings.favoriteCardColor,
         cardTextColor: nextSettings.cardTextColor,
         cardFontFamily: nextSettings.cardFontFamily,
+        noteFontSize: nextSettings.noteFontSize,
+        noteFontFamily: nextSettings.noteFontFamily,
+        showHeaderControls: nextSettings.showHeaderControls,
         showVariablesTab: nextSettings.showVariablesTab,
         showTodoTab: nextSettings.showTodoTab,
         lastBaseTab: nextSettings.lastBaseTab,
@@ -14278,6 +14412,8 @@
     color,
     textColor,
     fontFamily,
+    noteFontSize,
+    noteFontFamily,
     cardStyle,
     draggable,
     onDragStart,
@@ -14355,7 +14491,17 @@
             ] })
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex-1 overflow-hidden pl-1.5", onClick: onOpen, children: [
-            /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "font-semibold text-sm mb-1 truncate", children: template.title }),
+            /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+              "div",
+              {
+                className: "mb-1 truncate font-semibold",
+                style: {
+                  fontSize: noteFontSize ? `${Math.max(12, Number(noteFontSize)) + 1}px` : void 0,
+                  fontFamily: resolveNoteFontFamily(noteFontFamily)
+                },
+                children: template.title
+              }
+            ),
             template.tag && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Badge, { variant: "secondary", className: "mb-2 border py-0 text-[10px]", style: tagStyle, children: template.tag }),
             /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
               "div",
@@ -14364,6 +14510,10 @@
                   "text-xs whitespace-pre-wrap leading-relaxed opacity-90",
                   showFullText ? "" : "line-clamp-4"
                 ),
+                style: {
+                  fontSize: noteFontSize ? `${noteFontSize}px` : void 0,
+                  fontFamily: resolveNoteFontFamily(noteFontFamily)
+                },
                 children: template.text
               }
             )
@@ -14371,6 +14521,12 @@
         ]
       }
     );
+  }
+  function resolveNoteFontFamily(value) {
+    if (value === "arial") return "Arial, Helvetica, sans-serif";
+    if (value === "georgia") return 'Georgia, "Times New Roman", serif';
+    if (value === "mono") return '"SFMono-Regular", Consolas, "Liberation Mono", monospace';
+    return void 0;
   }
   function deriveCardAccent(color) {
     if (!color || !color.startsWith("#")) return void 0;
@@ -15225,6 +15381,14 @@
     orchid: "presetOrchid",
     graphite: "presetGraphite"
   };
+  var NOTE_FONT_SIZE_OPTIONS = [
+    { value: "12", label: "12px" },
+    { value: "13", label: "13px" },
+    { value: "14", label: "14px" },
+    { value: "15", label: "15px" },
+    { value: "16", label: "16px" },
+    { value: "18", label: "18px" }
+  ];
   function KnowledgeBase({ embedded = false, onAfterInsert } = {}) {
     const {
       templates,
@@ -15256,6 +15420,11 @@
     const currentHost = embedded && typeof window !== "undefined" ? window.location.hostname : "";
     const currentSiteSettings = currentHost ? settings.siteSettings[currentHost] : void 0;
     const effectiveUiScale = currentSiteSettings?.uiScale || settings.uiScale;
+    const effectivePanelScale = currentSiteSettings?.panelScale || settings.panelScale;
+    const effectivePanelPlacement = currentSiteSettings?.panelPlacement || settings.panelPlacement;
+    const effectivePanelCompactMode = currentSiteSettings?.panelCompactMode ?? settings.panelCompactMode;
+    const effectiveSendMethod = currentSiteSettings?.sendMethod || settings.sendMethod;
+    const effectiveSendButtonSelector = currentSiteSettings?.sendButtonSelector ?? settings.sendButtonSelector ?? "";
     import_react12.default.useEffect(() => {
       if (embedded) return;
       document.documentElement.classList.toggle("dark", settings.theme === "dark");
@@ -15398,6 +15567,28 @@
         }
       });
     };
+    const updatePanelSiteSettings = (patch) => {
+      const globalPatch = {};
+      if (patch.panelScale) globalPatch.panelScale = patch.panelScale;
+      if (patch.panelPlacement) globalPatch.panelPlacement = patch.panelPlacement;
+      if (typeof patch.panelCompactMode === "boolean") globalPatch.panelCompactMode = patch.panelCompactMode;
+      if (patch.sendMethod) globalPatch.sendMethod = patch.sendMethod;
+      if ("sendButtonSelector" in patch) globalPatch.sendButtonSelector = patch.sendButtonSelector ?? null;
+      if (!currentHost) {
+        updateSettings(globalPatch);
+        return;
+      }
+      updateSettings({
+        ...globalPatch,
+        siteSettings: {
+          ...settings.siteSettings,
+          [currentHost]: {
+            ...currentSiteSettings || {},
+            ...patch
+          }
+        }
+      });
+    };
     const applyPreset = (preset) => {
       updateSettings({
         cardPreset: preset.cardPreset,
@@ -15408,6 +15599,24 @@
       });
     };
     const resetAppearance = () => applyPreset(CARD_PRESETS[settings.theme].lagoon);
+    const noteFontOptions = [
+      { value: "system", label: t("fontSystem") },
+      { value: "arial", label: "Arial" },
+      { value: "georgia", label: "Georgia" },
+      { value: "mono", label: t("fontMono") }
+    ];
+    const safeSendDelayOptions = [0, ...Array.from({ length: 13 }, (_, index) => index + 3)].map((value) => ({
+      value: String(value),
+      label: `${value} ${t("secondsShort")}`
+    }));
+    const sendMethodOptions = [
+      { value: "auto", label: t("sendAuto") },
+      { value: "button", label: t("sendButton") },
+      { value: "enter", label: t("sendEnter") },
+      { value: "ctrl-enter", label: t("sendCtrlEnter") },
+      { value: "shift-enter", label: t("sendShiftEnter") },
+      { value: "alt-enter", label: t("sendAltEnter") }
+    ];
     return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(
       "div",
       {
@@ -15420,7 +15629,7 @@
               /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "sr-only", children: t("appName") }),
               /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "hidden whitespace-nowrap text-muted-foreground sm:inline", children: t("baseSubtitle") })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center justify-end gap-2", children: [
+            settings.showHeaderControls && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center justify-end gap-2", children: [
               /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
                 SettingSelect,
                 {
@@ -15470,12 +15679,12 @@
                 /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: "max-content", children: t("auto") })
               ] }),
               /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "icon", variant: "outline", onClick: handleExport, title: t("export"), children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Download, { className: "h-3.5 w-3.5" }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "icon", variant: "outline", onClick: () => fileInputRef.current?.click(), title: t("import"), children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Upload, { className: "h-3.5 w-3.5" }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("input", { ref: fileInputRef, type: "file", accept: ".json", className: "hidden", onChange: (event) => {
-                const file = event.target.files?.[0];
-                if (file) handleImport(file);
-              } })
-            ] })
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "icon", variant: "outline", onClick: () => fileInputRef.current?.click(), title: t("import"), children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Upload, { className: "h-3.5 w-3.5" }) })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("input", { ref: fileInputRef, type: "file", accept: ".json", className: "hidden", onChange: (event) => {
+              const file = event.target.files?.[0];
+              if (file) handleImport(file);
+            } })
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("main", { className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Tabs2, { value: activeTab, onValueChange: (value) => updateSettings({ lastBaseTab: value }), className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: [
             /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "z-20 shrink-0 border-b bg-background px-5 py-3 shadow-sm", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
@@ -15491,6 +15700,10 @@
                 settings.showTodoTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsTrigger2, { value: "todo", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(LayoutGrid, { className: "mr-1.5 h-3.5 w-3.5" }),
                   t("tasks")
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(TabsTrigger2, { value: "settings", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Settings2, { className: "mr-1.5 h-3.5 w-3.5" }),
+                  t("settings")
                 ] })
               ] }),
               /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex flex-wrap items-center gap-2", children: [
@@ -15509,22 +15722,6 @@
                     /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Input, { placeholder: t("searchNotesPlaceholder"), className: "pl-9", value: searchQuery, onChange: (event) => setSearchQuery(event.target.value) })
                   ] }),
                   /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TagFilter, { tags: allTags, selected: selectedTags, tagColors: tagColorByTag, language: settings.uiLanguage, onChange: setSelectedTags }),
-                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex h-8 items-center gap-1 rounded-md border bg-background px-1.5 text-xs shadow-sm", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
-                      "select",
-                      {
-                        className: "h-6 rounded border bg-background px-1 text-xs",
-                        value: scenarioPresetId,
-                        onChange: (event) => setScenarioPresetId(event.target.value),
-                        title: t("scenarioPresets"),
-                        children: SCENARIO_PRESETS.map((preset) => /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: preset.id, children: t(preset.labelKey) }, preset.id))
-                      }
-                    ),
-                    /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: "ghost", className: "h-6 px-2 text-xs", onClick: addScenarioPreset, title: t("addScenarioPreset"), children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Plus, { className: "mr-1 h-3 w-3" }),
-                      t("addScenarioPreset")
-                    ] })
-                  ] }),
                   /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: showFavorites ? "accent" : "outline", onClick: () => setShowFavorites(!showFavorites), children: [
                     /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Star, { className: `mr-1.5 h-3.5 w-3.5 ${showFavorites ? "fill-current" : ""}` }),
                     t("favorites")
@@ -15562,7 +15759,263 @@
               ] }) : settings.gridHeight === "max-content" ? /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "grid gap-4", style: { gridTemplateColumns: `repeat(${settings.gridCols}, minmax(0, 1fr))` }, children: masonryColumns.map((column, columnIndex) => /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "flex min-w-0 flex-col gap-4", children: column.map((template) => renderTemplateCard(template, true)) }, columnIndex)) }) : /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "grid gap-4", style: { gridTemplateColumns: `repeat(${settings.gridCols}, minmax(0, 1fr))` }, children: filteredTemplates.map((template) => renderTemplateCard(template, false)) }) })
             ] }),
             settings.showVariablesTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TabsContent2, { value: "variables", className: "m-0 min-h-0 flex-1 overflow-y-auto bg-background", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(VariablesPanel, {}) }),
-            settings.showTodoTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TabsContent2, { value: "todo", className: "m-0 min-h-0 flex-1 overflow-y-auto bg-background", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TodoPanel, {}) })
+            settings.showTodoTab && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TabsContent2, { value: "todo", className: "m-0 min-h-0 flex-1 overflow-y-auto bg-background", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TodoPanel, {}) }),
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TabsContent2, { value: "settings", className: "m-0 min-h-0 flex-1 overflow-y-auto bg-background p-5", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mx-auto grid max-w-6xl gap-4 lg:grid-cols-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(SettingsSection, { title: t("readability"), description: t("readabilityHelp"), children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSwitch,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Moon, { className: "h-3.5 w-3.5" }),
+                    label: t("darkTheme"),
+                    checked: settings.theme === "dark",
+                    onCheckedChange: (checked) => updateSettings({ theme: checked ? "dark" : "light" }),
+                    hint: t("darkThemeHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSelect,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ZoomIn, { className: "h-3.5 w-3.5" }),
+                    label: t("interfaceScale"),
+                    value: effectiveUiScale,
+                    onChange: (value) => updateInterfaceScale(value),
+                    options: UI_SCALE_OPTIONS,
+                    hint: currentHost ? t("siteScaleHint") : t("interfaceScaleHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSelect,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Type, { className: "h-3.5 w-3.5" }),
+                    label: t("noteTextSize"),
+                    value: settings.noteFontSize,
+                    onChange: (value) => updateSettings({ noteFontSize: value }),
+                    options: NOTE_FONT_SIZE_OPTIONS,
+                    hint: t("noteTextSizeHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSelect,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Type, { className: "h-3.5 w-3.5" }),
+                    label: t("noteFont"),
+                    value: settings.noteFontFamily,
+                    onChange: (value) => updateSettings({ noteFontFamily: value }),
+                    options: noteFontOptions,
+                    hint: t("noteFontHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSwitch,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Settings2, { className: "h-3.5 w-3.5" }),
+                    label: t("headerControls"),
+                    checked: settings.showHeaderControls,
+                    onCheckedChange: (checked) => updateSettings({ showHeaderControls: checked }),
+                    hint: t("headerControlsHint")
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(SettingsSection, { title: t("floatingPanel"), description: t("floatingPanelSettingsHelp"), children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSwitch,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(PanelTopOpen, { className: "h-3.5 w-3.5" }),
+                    label: t("floatingPanelNearField"),
+                    checked: settings.floatingPanelEnabled,
+                    onCheckedChange: (checked) => updateSettings({ floatingPanelEnabled: checked }),
+                    hint: t("floatingPanelHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSelect,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ZoomIn, { className: "h-3.5 w-3.5" }),
+                    label: t("panelScale"),
+                    value: effectivePanelScale,
+                    onChange: (value) => updatePanelSiteSettings({ panelScale: value }),
+                    options: UI_SCALE_OPTIONS,
+                    hint: currentHost ? t("sitePanelScaleHint") : t("panelScaleHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSelect,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(PanelTopOpen, { className: "h-3.5 w-3.5" }),
+                    label: t("panelPosition"),
+                    value: effectivePanelPlacement,
+                    onChange: (value) => updatePanelSiteSettings({ panelPlacement: value }),
+                    options: [
+                      { value: "auto", label: t("auto") },
+                      { value: "above", label: t("aboveField") },
+                      { value: "below", label: t("belowField") },
+                      { value: "top-right", label: t("topRight") },
+                      { value: "bottom-right", label: t("bottomRight") }
+                    ],
+                    hint: t("panelPositionHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSwitch,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ClipboardList, { className: "h-3.5 w-3.5" }),
+                    label: t("compactPanel"),
+                    checked: !effectivePanelCompactMode,
+                    onCheckedChange: (checked) => updatePanelSiteSettings({ panelCompactMode: !checked }),
+                    hint: t("recentInsertionsHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSwitch,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ClipboardList, { className: "h-3.5 w-3.5" }),
+                    label: t("clipboardInPanel"),
+                    checked: settings.clipboardPanelEnabled,
+                    onCheckedChange: (checked) => updateSettings({ clipboardPanelEnabled: checked }),
+                    hint: t("clipboardHint")
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(SettingsSection, { title: t("sendSettings"), description: t("sendSettingsHelp"), children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSelect,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Send, { className: "h-3.5 w-3.5" }),
+                    label: t("safeSendDelay"),
+                    value: String(settings.safeSendDelay),
+                    onChange: (value) => {
+                      const delay = parseInt(value, 10);
+                      updateSettings({ safeSendDelay: delay, safeSendEnabled: delay > 0 });
+                    },
+                    options: safeSendDelayOptions,
+                    hint: t("safeSendDelayHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSelect,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Send, { className: "h-3.5 w-3.5" }),
+                    label: t("sendMethod"),
+                    value: effectiveSendMethod,
+                    onChange: (value) => updatePanelSiteSettings({ sendMethod: value }),
+                    options: sendMethodOptions,
+                    hint: t("sendMethodHint")
+                  }
+                ),
+                effectiveSendMethod === "button" && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("label", { className: "grid w-full gap-1 rounded-lg border bg-background p-3 text-xs shadow-sm", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("span", { className: "flex items-center gap-1.5 text-muted-foreground", children: [
+                    t("sendButtonSelector"),
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(InfoTip, { text: t("sendButtonSelectorHint") })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                    "input",
+                    {
+                      className: "h-8 rounded-md border bg-background px-2 text-xs text-foreground",
+                      value: effectiveSendButtonSelector,
+                      onChange: (event) => updatePanelSiteSettings({ sendButtonSelector: event.target.value.trim() || null }),
+                      placeholder: "button[type='submit']"
+                    }
+                  )
+                ] })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(SettingsSection, { title: t("searchAndModules"), description: t("searchAndModulesHelp"), children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSelect,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(AtSign, { className: "h-3.5 w-3.5" }),
+                    label: t("trigger"),
+                    value: settings.searchTrigger,
+                    onChange: (value) => updateSettings({ searchTrigger: value }),
+                    options: [{ value: "/", label: "/" }, { value: "@", label: "@" }],
+                    hint: t("triggerHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSwitch,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(AtSign, { className: "h-3.5 w-3.5" }),
+                    label: t("atSearchInInput", { trigger: settings.searchTrigger }),
+                    checked: settings.atMenuEnabled,
+                    onCheckedChange: (checked) => updateSettings({ atMenuEnabled: checked }),
+                    hint: t("atSearchHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSwitch,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(BookOpen, { className: "h-3.5 w-3.5" }),
+                    label: t("variablesTab"),
+                    checked: settings.showVariablesTab,
+                    onCheckedChange: (checked) => updateSettings({ showVariablesTab: checked }),
+                    hint: t("variablesHint")
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                  SettingSwitch,
+                  {
+                    icon: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(FileText, { className: "h-3.5 w-3.5" }),
+                    label: t("tasksTab"),
+                    checked: settings.showTodoTab,
+                    onCheckedChange: (checked) => updateSettings({ showTodoTab: checked }),
+                    hint: t("tasksHint")
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(SettingsSection, { title: t("cardsAndPacks"), description: t("cardsAndPacksHelp"), children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "w-full rounded-lg border bg-background p-3 shadow-sm", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Palette, { className: "h-3.5 w-3.5" }),
+                    t("cardPresets"),
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(InfoTip, { text: t("cardPresetsHint") })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(PresetStrip, { theme: settings.theme, language: settings.uiLanguage, onApply: applyPreset }),
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: "outline", className: "mt-2 w-full", onClick: resetAppearance, children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(RotateCcw, { className: "mr-1.5 h-3.5 w-3.5" }),
+                    t("resetCards")
+                  ] })
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "w-full rounded-lg border bg-background p-3 shadow-sm", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Plus, { className: "h-3.5 w-3.5" }),
+                    t("scenarioPresets"),
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(InfoTip, { text: t("scenarioPresetsHint") })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex gap-2", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+                      "select",
+                      {
+                        className: "h-8 min-w-0 flex-1 rounded-md border bg-background px-2 text-xs text-foreground",
+                        value: scenarioPresetId,
+                        onChange: (event) => setScenarioPresetId(event.target.value),
+                        children: SCENARIO_PRESETS.map((preset) => /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: preset.id, children: t(preset.labelKey) }, preset.id))
+                      }
+                    ),
+                    /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", onClick: addScenarioPreset, children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Plus, { className: "mr-1 h-3 w-3" }),
+                      t("addScenarioPreset")
+                    ] })
+                  ] })
+                ] })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingsSection, { title: t("dataManagement"), description: t("dataManagementHelp"), children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "grid w-full grid-cols-2 gap-2", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: "outline", onClick: handleExport, children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Download, { className: "mr-1 h-3.5 w-3.5" }),
+                  t("export")
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Button, { size: "sm", variant: "outline", onClick: () => fileInputRef.current?.click(), children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Upload, { className: "mr-1 h-3.5 w-3.5" }),
+                  t("import")
+                ] })
+              ] }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SettingsSection, { title: t("featureGuide"), description: t("featureGuideHelp"), className: "lg:col-span-2", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "grid w-full gap-3 md:grid-cols-2", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(GuideItem, { title: t("floatingPanel"), text: t("floatingPanelGuide") }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(GuideItem, { title: t("triggerMenuTitle", { trigger: settings.searchTrigger }), text: t("searchGuide") }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(GuideItem, { title: t("safeSendDelay"), text: t("safeSendGuide") }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(GuideItem, { title: t("sendMethod"), text: t("sendMethodGuide") }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(GuideItem, { title: t("variables"), text: t("variablesGuide") }),
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(GuideItem, { title: t("tasks"), text: t("tasksGuide") })
+              ] }) })
+            ] }) })
           ] }) }),
           editorOpen && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "fixed inset-0 z-[2147483630] flex animate-in fade-in items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm duration-150", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))] animate-in zoom-in-95 overflow-y-auto rounded-lg border bg-background p-5 text-foreground shadow-2xl duration-150", children: [
             /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mb-4 flex items-center justify-between gap-3 border-b pb-3", children: [
@@ -15609,6 +16062,8 @@
           color: template.favorite ? settings.favoriteCardColor : settings.defaultCardColor,
           textColor: settings.cardTextColor,
           fontFamily: settings.cardFontFamily,
+          noteFontSize: settings.noteFontSize,
+          noteFontFamily: settings.noteFontFamily,
           showFullText,
           onOpen: () => setPreviewTemplate(template),
           onEdit: () => {
@@ -15693,11 +16148,13 @@
     icon,
     label,
     checked,
-    onCheckedChange
+    onCheckedChange,
+    hint
   }) {
     return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("label", { className: "flex h-8 min-w-[150px] shrink-0 items-center justify-between gap-2 rounded-md border bg-background px-2.5 py-1 text-xs text-muted-foreground shadow-sm", children: [
       icon,
       /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "min-w-0 truncate", children: label }),
+      hint && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(InfoTip, { text: hint }),
       /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Switch2, { checked, onCheckedChange })
     ] });
   }
@@ -15706,12 +16163,40 @@
     label,
     value,
     options,
-    onChange
+    onChange,
+    hint
   }) {
     return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("label", { className: "flex h-8 min-w-[170px] shrink-0 items-center justify-between gap-2 rounded-md border bg-background px-2.5 py-1 text-xs text-muted-foreground shadow-sm", children: [
       icon,
       /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "min-w-0 truncate", children: label }),
+      hint && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(InfoTip, { text: hint }),
       /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("select", { className: "h-6 min-w-[48px] rounded border bg-background px-1 text-xs text-foreground", value, onChange: (event) => onChange(event.target.value), children: options.map((option) => /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("option", { value: option.value, children: option.label }, option.value)) })
+    ] });
+  }
+  function SettingsSection({
+    title,
+    description,
+    children,
+    className
+  }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("section", { className: cn("rounded-xl border bg-card p-4 text-card-foreground shadow-sm", className), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mb-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("h2", { className: "text-sm font-semibold", children: title }),
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("p", { className: "mt-1 text-xs leading-relaxed text-muted-foreground", children: description })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "flex flex-wrap gap-2", children })
+    ] });
+  }
+  function InfoTip({ text }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("span", { className: "group relative inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border bg-background text-[10px] font-bold text-muted-foreground shadow-sm", children: [
+      "?",
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "pointer-events-none absolute right-0 top-5 z-50 w-64 rounded-lg border bg-popover px-3 py-2 text-left text-[11px] font-normal leading-relaxed text-popover-foreground opacity-0 shadow-xl transition-opacity duration-150 group-hover:opacity-100", children: text })
+    ] });
+  }
+  function GuideItem({ title, text }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "rounded-lg border bg-background p-3 shadow-sm", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "mb-1 text-xs font-semibold", children: title }),
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("p", { className: "text-xs leading-relaxed text-muted-foreground", children: text })
     ] });
   }
   function PresetStrip({
@@ -15774,6 +16259,8 @@
     z-index: 2147483647 !important;
     display: block !important;
     isolation: isolate;
+    font-size: 16px !important;
+    line-height: normal !important;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -15802,8 +16289,8 @@
     color: hsl(var(--foreground));
     display: block;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
     text-align: initial;
     text-transform: none;
     letter-spacing: 0;
@@ -15839,6 +16326,10 @@
     box-sizing: border-box;
   }
 
+  #opspost-content-root * {
+    letter-spacing: 0 !important;
+  }
+
   #opspost-content-root button,
   #opspost-content-root input,
   #opspost-content-root select,
@@ -15859,15 +16350,17 @@
     host.style.setProperty("display", "block", "important");
     host.style.setProperty("z-index", "2147483647", "important");
     host.style.setProperty("isolation", "isolate", "important");
+    host.style.setProperty("font-size", "16px", "important");
+    host.style.setProperty("line-height", "normal", "important");
   }
   function createRootContainer(id) {
     let host = document.getElementById(id);
     if (!host) {
       host = document.createElement("div");
       host.id = id;
-      const parent = document.body || document.documentElement;
-      parent.appendChild(host);
     }
+    const parent = document.documentElement || document.body;
+    if (host.parentElement !== parent) parent.appendChild(host);
     configureHost(host);
     const shadow = host.shadowRoot || host.attachShadow({ mode: "open" });
     if (!shadow.querySelector("style[data-blobnote-shadow-theme]")) {
@@ -16418,6 +16911,14 @@ lucide-react/dist/esm/icons/tags.js:
    *)
 
 lucide-react/dist/esm/icons/trash-2.js:
+  (**
+   * @license lucide-react v0.378.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/type.js:
   (**
    * @license lucide-react v0.378.0 - ISC
    *

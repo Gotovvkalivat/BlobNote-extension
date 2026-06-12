@@ -22,6 +22,8 @@ const SHADOW_THEME_STYLE = `
     z-index: 2147483647 !important;
     display: block !important;
     isolation: isolate;
+    font-size: 16px !important;
+    line-height: normal !important;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -50,8 +52,8 @@ const SHADOW_THEME_STYLE = `
     color: hsl(var(--foreground));
     display: block;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
     text-align: initial;
     text-transform: none;
     letter-spacing: 0;
@@ -87,6 +89,10 @@ const SHADOW_THEME_STYLE = `
     box-sizing: border-box;
   }
 
+  #opspost-content-root * {
+    letter-spacing: 0 !important;
+  }
+
   #opspost-content-root button,
   #opspost-content-root input,
   #opspost-content-root select,
@@ -108,6 +114,8 @@ function configureHost(host: HTMLElement) {
   host.style.setProperty('display', 'block', 'important')
   host.style.setProperty('z-index', '2147483647', 'important')
   host.style.setProperty('isolation', 'isolate', 'important')
+  host.style.setProperty('font-size', '16px', 'important')
+  host.style.setProperty('line-height', 'normal', 'important')
 }
 
 function createRootContainer(id: string) {
@@ -115,9 +123,10 @@ function createRootContainer(id: string) {
   if (!host) {
     host = document.createElement('div')
     host.id = id
-    const parent = document.body || document.documentElement
-    parent.appendChild(host)
   }
+
+  const parent = document.documentElement || document.body
+  if (host.parentElement !== parent) parent.appendChild(host)
 
   configureHost(host)
 
