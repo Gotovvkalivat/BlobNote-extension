@@ -2,9 +2,10 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Save, X } from 'lucide-react'
+import { Check, Save, X } from 'lucide-react'
 import type { AppSettings, Template, TemplateVariable } from '@/types'
 import { translate } from '@/lib/i18n'
+import { TAG_COLORS, normalizeTagColor, tagColorStyle } from '@/lib/tagColors'
 
 interface TemplateEditorProps {
   template: Template | null
@@ -12,6 +13,7 @@ interface TemplateEditorProps {
   onSave: (data: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order' | 'usageCount'>) => void
   onCancel: () => void
   allTags: string[]
+  tagColorByTag?: Record<string, string>
   variables: TemplateVariable[]
   language: AppSettings['uiLanguage']
 }
@@ -22,12 +24,14 @@ export function TemplateEditor({
   onSave,
   onCancel,
   allTags,
+  tagColorByTag = {},
   variables,
   language,
 }: TemplateEditorProps) {
   const [title, setTitle] = React.useState(template?.title || '')
   const [text, setText] = React.useState(template?.text || '')
   const [tag, setTag] = React.useState(template?.tag || '')
+  const [tagColor, setTagColor] = React.useState(template?.tagColor || TAG_COLORS[0].value)
   const [showTagDropdown, setShowTagDropdown] = React.useState(false)
   const [errors, setErrors] = React.useState<{ title?: string; text?: string }>({})
   const titleRef = React.useRef<HTMLInputElement>(null)
@@ -39,6 +43,7 @@ export function TemplateEditor({
       setTitle(template?.title || '')
       setText(template?.text || '')
       setTag(template?.tag || '')
+      setTagColor(template?.tagColor || (template?.tag && tagColorByTag[template.tag]) || TAG_COLORS[0].value)
       setErrors({})
       window.setTimeout(() => titleRef.current?.focus(), 100)
     }
@@ -67,12 +72,19 @@ export function TemplateEditor({
       title: title.trim(),
       text: text.trim(),
       tag: tag.trim() || null,
+      tagColor: tag.trim() ? tagColor : null,
       color: null,
       favorite: template?.favorite || false,
     })
   }
 
   const filteredTags = allTags.filter((item) => item.toLowerCase().includes(tag.toLowerCase()))
+
+  const updateTag = (value: string) => {
+    setTag(value)
+    const savedColor = tagColorByTag[value]
+    if (savedColor) setTagColor(normalizeTagColor(savedColor) || TAG_COLORS[0].value)
+  }
 
   const insertVariableAtCursor = (variableName: string) => {
     const token = `{{${variableName}}}`
@@ -132,7 +144,7 @@ export function TemplateEditor({
             placeholder={t('tagPlaceholder')}
             value={tag}
             onChange={(event) => {
-              setTag(event.target.value)
+              updateTag(event.target.value)
               setShowTagDropdown(true)
             }}
             onFocus={() => setShowTagDropdown(true)}
@@ -146,16 +158,41 @@ export function TemplateEditor({
                   key={item}
                   className="w-full px-2 py-1.5 text-left text-xs hover:bg-muted"
                   onMouseDown={() => {
-                    setTag(item)
+                    updateTag(item)
                     setShowTagDropdown(false)
                   }}
                 >
+                  <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full border align-middle" style={tagColorStyle(tagColorByTag[item])} />
                   {item}
                 </button>
               ))}
             </div>
           )}
         </div>
+
+        {tag.trim() && (
+          <div className="rounded-md border bg-muted/20 p-2">
+            <div className="mb-2 text-[10px] uppercase tracking-wide text-muted-foreground">{t('tagColor')}</div>
+            <div className="flex flex-wrap gap-1.5">
+              {TAG_COLORS.map((color) => {
+                const selected = tagColor === color.value
+                return (
+                  <button
+                    key={color.value}
+                    type="button"
+                    className={`flex h-6 w-6 items-center justify-center rounded-full border transition-transform hover:scale-110 ${selected ? 'ring-2 ring-primary ring-offset-1 ring-offset-background' : ''}`}
+                    style={tagColorStyle(color.value)}
+                    title={t('tagColor')}
+                    aria-label={t('tagColor')}
+                    onClick={() => setTagColor(color.value)}
+                  >
+                    {selected && <Check className="h-3.5 w-3.5" />}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         <Textarea
           ref={textRef}

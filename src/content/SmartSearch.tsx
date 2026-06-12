@@ -7,6 +7,7 @@ import type { AppSettings, Template } from '@/types'
 import { insertTemplate, readRuntimeSnapshot } from '@/lib/templateRuntime'
 import { cn } from '@/lib/utils'
 import { translate } from '@/lib/i18n'
+import { tagColorStyle } from '@/lib/tagColors'
 import { uiScaleFactor } from '@/lib/uiScale'
 
 type SmartSearchProps = {
@@ -120,7 +121,11 @@ export function SmartSearch({ uiScale, open, onOpenChange }: SmartSearchProps) {
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-sm font-medium truncate">{template.title}</span>
-                    {template.tag && <Badge variant="secondary" className="text-[10px] shrink-0">{template.tag}</Badge>}
+                    {template.tag && (
+                      <Badge variant="secondary" className="shrink-0 border text-[10px]" style={tagColorStyle(template.tagColor)}>
+                        {template.tag}
+                      </Badge>
+                    )}
                   </div>
                   <div className="mt-1 text-xs text-muted-foreground line-clamp-2 whitespace-pre-wrap">
                     {template.text}

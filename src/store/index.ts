@@ -3,6 +3,7 @@ import type { Template, CRMBinding, AppSettings, Toast, TemplateVariable, TodoIt
 import { generateId } from '@/lib/utils'
 import { cardPresetFor, normalizeCardPreset } from '@/lib/cardPresets'
 import { isLanguage } from '@/lib/i18n'
+import { normalizeTagColor } from '@/lib/tagColors'
 import { normalizeUiScale } from '@/lib/uiScale'
 
 interface AppState {
@@ -17,7 +18,7 @@ interface AppState {
 
   hydrate: () => Promise<void>
 
-  addTemplate: (template: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order' | 'usageCount'>) => void
+  addTemplate: (template: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order' | 'usageCount' | 'tagColor'> & { tagColor?: string | null }) => void
   updateTemplate: (id: string, updates: Partial<Template>) => void
   deleteTemplate: (id: string) => void
   reorderTemplates: (templateIds: string[]) => void
@@ -156,6 +157,7 @@ function normalizeTemplate(template: Partial<Template>, index: number): Template
     title: String(template.title || '').trim() || 'Без названия',
     text: String(template.text || ''),
     tag: template.tag ? String(template.tag) : null,
+    tagColor: normalizeTagColor(template.tagColor),
     color: template.color ? String(template.color) : null,
     favorite: Boolean(template.favorite),
     usageCount: typeof template.usageCount === 'number' && template.usageCount > 0 ? Math.floor(template.usageCount) : 0,
@@ -518,6 +520,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       updatedAt: new Date().toISOString(),
       order: state.templates.length,
       usageCount: 0,
+      tagColor: normalizeTagColor(template.tagColor),
     }]
     chromeSet({ templates })
     return { templates }

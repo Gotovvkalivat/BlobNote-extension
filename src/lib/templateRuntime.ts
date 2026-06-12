@@ -1,6 +1,7 @@
 import type { AppSettings, CRMBinding, RecentInsertion, SendMethod, SiteSettings, Template, TemplateVariable } from '@/types'
 import { extractVariables, replaceDateVariable } from '@/lib/utils'
 import { isLanguage } from '@/lib/i18n'
+import { normalizeTagColor } from '@/lib/tagColors'
 import { normalizeUiScale } from '@/lib/uiScale'
 
 export type EditableElement = HTMLTextAreaElement | HTMLInputElement | HTMLElement
@@ -208,6 +209,7 @@ export function normalizeTemplates(templates: Partial<Template>[] = []): Templat
     title: String(template.title || '').trim() || 'Без названия',
     text: String(template.text || ''),
     tag: template.tag ? String(template.tag) : null,
+    tagColor: normalizeTagColor(template.tagColor),
     color: template.color ? String(template.color) : null,
     favorite: Boolean(template.favorite),
     usageCount: typeof template.usageCount === 'number' && template.usageCount > 0 ? Math.floor(template.usageCount) : 0,

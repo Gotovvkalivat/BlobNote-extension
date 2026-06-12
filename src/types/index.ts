@@ -3,6 +3,7 @@ export interface Template {
   title: string
   text: string
   tag: string | null
+  tagColor: string | null
   color: string | null
   favorite: boolean
   usageCount: number

@@ -37,6 +37,7 @@ import type { AppSettings, Template } from '@/types'
 import { CARD_PRESETS, type CardPreset } from '@/lib/cardPresets'
 import { LANGUAGE_OPTIONS, translate } from '@/lib/i18n'
 import { SCENARIO_PRESETS, type ScenarioPresetId } from '@/lib/scenarioPresets'
+import { tagColorStyle } from '@/lib/tagColors'
 import { UI_SCALE_OPTIONS, uiScaleStyle } from '@/lib/uiScale'
 
 const CARD_PRESET_NAMES: Record<AppSettings['cardPreset'], string> = {
@@ -97,6 +98,13 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
 
   const allTags = React.useMemo(() => {
     return [...new Set(templates.map((template) => template.tag).filter(Boolean))] as string[]
+  }, [templates])
+
+  const tagColorByTag = React.useMemo(() => {
+    return templates.reduce<Record<string, string>>((acc, template) => {
+      if (template.tag && template.tagColor && !acc[template.tag]) acc[template.tag] = template.tagColor
+      return acc
+    }, {})
   }, [templates])
 
   const filteredTemplates = React.useMemo(() => {
@@ -345,7 +353,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
                   <Input placeholder={t('searchNotesPlaceholder')} className="pl-9" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
                 </div>
 
-                <TagFilter tags={allTags} selected={selectedTags} language={settings.uiLanguage} onChange={setSelectedTags} />
+                <TagFilter tags={allTags} selected={selectedTags} tagColors={tagColorByTag} language={settings.uiLanguage} onChange={setSelectedTags} />
 
                 <div className="flex h-8 items-center gap-1 rounded-md border bg-background px-1.5 text-xs shadow-sm">
                   <select
@@ -381,7 +389,13 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
                     {t('clearAllTags')}
                   </Button>
                   {selectedTags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground" onClick={() => setSelectedTags(selectedTags.filter((item) => item !== tag))}>
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="cursor-pointer border hover:bg-destructive hover:text-destructive-foreground"
+                      style={tagColorStyle(tagColorByTag[tag])}
+                      onClick={() => setSelectedTags(selectedTags.filter((item) => item !== tag))}
+                    >
                       <Tags className="mr-1 h-3 w-3" />
                       {tag}
                       <X className="ml-1 h-3 w-3" />
@@ -447,6 +461,7 @@ export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBase
               onSave={handleSaveTemplate}
               onCancel={closeEditor}
               allTags={allTags}
+              tagColorByTag={tagColorByTag}
               variables={settings.showVariablesTab ? variables : []}
               language={settings.uiLanguage}
             />

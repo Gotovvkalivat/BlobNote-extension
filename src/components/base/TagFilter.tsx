@@ -4,15 +4,17 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { translate } from '@/lib/i18n'
 import type { AppSettings } from '@/types'
+import { tagColorStyle } from '@/lib/tagColors'
 
 interface TagFilterProps {
   tags: string[]
   selected: string[]
+  tagColors?: Record<string, string>
   language: AppSettings['uiLanguage']
   onChange: (tags: string[]) => void
 }
 
-export function TagFilter({ tags, selected, language, onChange }: TagFilterProps) {
+export function TagFilter({ tags, selected, tagColors = {}, language, onChange }: TagFilterProps) {
   const [open, setOpen] = React.useState(false)
   const dropdownRef = React.useRef<HTMLDivElement>(null)
   const t = React.useCallback((key: string) => translate(language, key), [language])
@@ -73,8 +75,9 @@ export function TagFilter({ tags, selected, language, onChange }: TagFilterProps
                 <span
                   className={cn(
                     'flex h-3.5 w-3.5 items-center justify-center rounded border',
-                    active && 'border-primary bg-primary text-primary-foreground'
+                    active && 'ring-1 ring-primary'
                   )}
+                  style={tagColorStyle(tagColors[tag])}
                 >
                   {active && <Check className="h-2.5 w-2.5" />}
                 </span>

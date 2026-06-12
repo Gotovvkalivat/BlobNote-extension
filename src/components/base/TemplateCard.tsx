@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { BarChart3, Copy, FileText, Pencil, Star, Trash2 } from 'lucide-react'
 import type { Template } from '@/types'
+import { tagColorStyle } from '@/lib/tagColors'
 
 interface TemplateCardProps {
   template: Template
@@ -53,6 +54,7 @@ export function TemplateCard({
   }[template.color || '']
   const resolvedColor = color || paletteColor
   const accentColor = deriveCardAccent(resolvedColor)
+  const tagStyle = tagColorStyle(template.tagColor)
 
   return (
     <div
@@ -80,7 +82,7 @@ export function TemplateCard({
       <div className="flex justify-between gap-2 mb-2 shrink-0 pl-1.5">
         <div className="flex items-center gap-1.5 min-w-0 opacity-80">
           <FileText className="h-3.5 w-3.5 shrink-0" />
-          <span className="text-[10px] uppercase tracking-wide truncate">{template.tag || 'Заметка'}</span>
+          <span className="max-w-[140px] truncate rounded-full border px-1.5 py-0.5 text-[10px] uppercase tracking-wide" style={tagStyle}>{template.tag || 'Заметка'}</span>
           {usageLabel && (
             <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-black/5 px-1.5 py-0.5 text-[10px] normal-case tracking-normal dark:bg-white/10" title={usageLabel}>
               <BarChart3 className="h-3 w-3" />
@@ -111,7 +113,7 @@ export function TemplateCard({
 
       <div className="flex-1 overflow-hidden pl-1.5" onClick={onOpen}>
         <div className="font-semibold text-sm mb-1 truncate">{template.title}</div>
-        {template.tag && <Badge variant="secondary" className="text-[10px] py-0 mb-2">{template.tag}</Badge>}
+        {template.tag && <Badge variant="secondary" className="mb-2 border py-0 text-[10px]" style={tagStyle}>{template.tag}</Badge>}
         <div
           className={cn(
             'text-xs whitespace-pre-wrap leading-relaxed opacity-90',

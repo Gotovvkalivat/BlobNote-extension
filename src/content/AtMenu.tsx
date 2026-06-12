@@ -2,6 +2,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import type { EditableElement } from '@/lib/templateRuntime'
 import type { AppSettings, Template } from '@/types'
+import { tagColorStyle } from '@/lib/tagColors'
 import { uiScaleFactor } from '@/lib/uiScale'
 import {
   editableValue,
@@ -209,10 +210,13 @@ export function AtMenu({ uiScale }: AtMenuProps) {
           onClick={() => insertAtTemplate(template)}
         >
           <span className="font-medium">{template.title}</span>
-          {template.tag && <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded ml-2">{template.tag}</span>}
+          {template.tag && (
+            <span className="ml-2 shrink-0 rounded border px-1.5 py-0.5 text-[10px]" style={tagColorStyle(template.tagColor)}>
+              {template.tag}
+            </span>
+          )}
         </button>
       ))}
     </div>
   )
 }
-

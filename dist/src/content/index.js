@@ -10674,6 +10674,7 @@
     fillNoteFields: "\u0417\u0430\u043F\u043E\u043B\u043D\u0438\u0442\u0435 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u0438 \u0442\u0435\u043A\u0441\u0442 \u0437\u0430\u043C\u0435\u0442\u043A\u0438",
     noteTitlePlaceholder: "\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u0437\u0430\u043C\u0435\u0442\u043A\u0438...",
     tagPlaceholder: "\u041A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u044F / \u0422\u0435\u0433...",
+    tagColor: "\u0426\u0432\u0435\u0442 \u0442\u0435\u0433\u0430",
     noteTextPlaceholder: "\u0422\u0435\u043A\u0441\u0442 \u0437\u0430\u043C\u0435\u0442\u043A\u0438...",
     charsShort: "\u0441\u0438\u043C\u0432.",
     create: "\u0421\u043E\u0437\u0434\u0430\u0442\u044C",
@@ -10849,6 +10850,7 @@
     fillNoteFields: "Fill in the note title and text",
     noteTitlePlaceholder: "Note title...",
     tagPlaceholder: "Category / Tag...",
+    tagColor: "Tag color",
     noteTextPlaceholder: "Note text...",
     charsShort: "chars",
     create: "Create",
@@ -11019,6 +11021,32 @@
     return { zoom: uiScaleZoom(value) };
   }
 
+  // src/lib/tagColors.ts
+  var TAG_COLORS = [
+    { value: "#2563eb", bg: "#dbeafe", text: "#1e3a8a", border: "#93c5fd" },
+    { value: "#0891b2", bg: "#cffafe", text: "#164e63", border: "#67e8f9" },
+    { value: "#059669", bg: "#d1fae5", text: "#064e3b", border: "#6ee7b7" },
+    { value: "#65a30d", bg: "#ecfccb", text: "#365314", border: "#bef264" },
+    { value: "#d97706", bg: "#fef3c7", text: "#78350f", border: "#fcd34d" },
+    { value: "#ea580c", bg: "#ffedd5", text: "#7c2d12", border: "#fdba74" },
+    { value: "#dc2626", bg: "#fee2e2", text: "#7f1d1d", border: "#fca5a5" },
+    { value: "#db2777", bg: "#fce7f3", text: "#831843", border: "#f9a8d4" },
+    { value: "#7c3aed", bg: "#ede9fe", text: "#4c1d95", border: "#c4b5fd" },
+    { value: "#475569", bg: "#f1f5f9", text: "#0f172a", border: "#cbd5e1" }
+  ];
+  function normalizeTagColor(value) {
+    return TAG_COLORS.find((color) => color.value === value)?.value || null;
+  }
+  function tagColorStyle(value) {
+    const color = TAG_COLORS.find((item) => item.value === value);
+    if (!color) return void 0;
+    return {
+      backgroundColor: color.bg,
+      borderColor: color.border,
+      color: color.text
+    };
+  }
+
   // src/lib/templateRuntime.ts
   var lastEditableElement = null;
   var cachedVariables = [];
@@ -11137,6 +11165,7 @@
       title: String(template.title || "").trim() || "\u0411\u0435\u0437 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F",
       text: String(template.text || ""),
       tag: template.tag ? String(template.tag) : null,
+      tagColor: normalizeTagColor(template.tagColor),
       color: template.color ? String(template.color) : null,
       favorite: Boolean(template.favorite),
       usageCount: typeof template.usageCount === "number" && template.usageCount > 0 ? Math.floor(template.usageCount) : 0,
@@ -12176,7 +12205,7 @@
             onClick: () => insertAtTemplate(template),
             children: [
               /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "font-medium", children: template.title }),
-              template.tag && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-[10px] bg-muted px-1.5 py-0.5 rounded ml-2", children: template.tag })
+              template.tag && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "ml-2 shrink-0 rounded border px-1.5 py-0.5 text-[10px]", style: tagColorStyle(template.tagColor), children: template.tag })
             ]
           },
           template.id
@@ -12321,7 +12350,7 @@
                 children: [
                   /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between gap-3", children: [
                     /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-sm font-medium truncate", children: template.title }),
-                    template.tag && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Badge, { variant: "secondary", className: "text-[10px] shrink-0", children: template.tag })
+                    template.tag && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Badge, { variant: "secondary", className: "shrink-0 border text-[10px]", style: tagColorStyle(template.tagColor), children: template.tag })
                   ] }),
                   /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mt-1 text-xs text-muted-foreground line-clamp-2 whitespace-pre-wrap", children: template.text })
                 ]
@@ -12535,6 +12564,7 @@
       title: String(template.title || "").trim() || "\u0411\u0435\u0437 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F",
       text: String(template.text || ""),
       tag: template.tag ? String(template.tag) : null,
+      tagColor: normalizeTagColor(template.tagColor),
       color: template.color ? String(template.color) : null,
       favorite: Boolean(template.favorite),
       usageCount: typeof template.usageCount === "number" && template.usageCount > 0 ? Math.floor(template.usageCount) : 0,
@@ -12833,7 +12863,8 @@
         createdAt: (/* @__PURE__ */ new Date()).toISOString(),
         updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
         order: state.templates.length,
-        usageCount: 0
+        usageCount: 0,
+        tagColor: normalizeTagColor(template.tagColor)
       }];
       chromeSet({ templates });
       return { templates };
@@ -14263,6 +14294,7 @@
     }[template.color || ""];
     const resolvedColor = color || paletteColor;
     const accentColor = deriveCardAccent(resolvedColor);
+    const tagStyle = tagColorStyle(template.tagColor);
     return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
       "div",
       {
@@ -14288,7 +14320,7 @@
           /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex justify-between gap-2 mb-2 shrink-0 pl-1.5", children: [
             /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex items-center gap-1.5 min-w-0 opacity-80", children: [
               /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FileText, { className: "h-3.5 w-3.5 shrink-0" }),
-              /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "text-[10px] uppercase tracking-wide truncate", children: template.tag || "\u0417\u0430\u043C\u0435\u0442\u043A\u0430" }),
+              /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "max-w-[140px] truncate rounded-full border px-1.5 py-0.5 text-[10px] uppercase tracking-wide", style: tagStyle, children: template.tag || "\u0417\u0430\u043C\u0435\u0442\u043A\u0430" }),
               usageLabel && /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("span", { className: "inline-flex shrink-0 items-center gap-1 rounded-full bg-black/5 px-1.5 py-0.5 text-[10px] normal-case tracking-normal dark:bg-white/10", title: usageLabel, children: [
                 /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(BarChart3, { className: "h-3 w-3" }),
                 usageLabel
@@ -14324,7 +14356,7 @@
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "flex-1 overflow-hidden pl-1.5", onClick: onOpen, children: [
             /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "font-semibold text-sm mb-1 truncate", children: template.title }),
-            template.tag && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Badge, { variant: "secondary", className: "text-[10px] py-0 mb-2", children: template.tag }),
+            template.tag && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Badge, { variant: "secondary", className: "mb-2 border py-0 text-[10px]", style: tagStyle, children: template.tag }),
             /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
               "div",
               {
@@ -14385,12 +14417,14 @@
     onSave,
     onCancel,
     allTags,
+    tagColorByTag = {},
     variables,
     language
   }) {
     const [title, setTitle] = import_react7.default.useState(template?.title || "");
     const [text, setText] = import_react7.default.useState(template?.text || "");
     const [tag, setTag] = import_react7.default.useState(template?.tag || "");
+    const [tagColor, setTagColor] = import_react7.default.useState(template?.tagColor || TAG_COLORS[0].value);
     const [showTagDropdown, setShowTagDropdown] = import_react7.default.useState(false);
     const [errors, setErrors] = import_react7.default.useState({});
     const titleRef = import_react7.default.useRef(null);
@@ -14401,6 +14435,7 @@
         setTitle(template?.title || "");
         setText(template?.text || "");
         setTag(template?.tag || "");
+        setTagColor(template?.tagColor || template?.tag && tagColorByTag[template.tag] || TAG_COLORS[0].value);
         setErrors({});
         window.setTimeout(() => titleRef.current?.focus(), 100);
       }
@@ -14423,11 +14458,17 @@
         title: title.trim(),
         text: text.trim(),
         tag: tag.trim() || null,
+        tagColor: tag.trim() ? tagColor : null,
         color: null,
         favorite: template?.favorite || false
       });
     };
     const filteredTags = allTags.filter((item) => item.toLowerCase().includes(tag.toLowerCase()));
+    const updateTag = (value) => {
+      setTag(value);
+      const savedColor = tagColorByTag[value];
+      if (savedColor) setTagColor(normalizeTagColor(savedColor) || TAG_COLORS[0].value);
+    };
     const insertVariableAtCursor = (variableName) => {
       const token = `{{${variableName}}}`;
       const textarea = textRef.current;
@@ -14483,7 +14524,7 @@
               placeholder: t("tagPlaceholder"),
               value: tag,
               onChange: (event) => {
-                setTag(event.target.value);
+                updateTag(event.target.value);
                 setShowTagDropdown(true);
               },
               onFocus: () => setShowTagDropdown(true),
@@ -14491,18 +14532,40 @@
               className: "h-10 text-base"
             }
           ),
-          showTagDropdown && filteredTags.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "absolute left-0 right-0 top-full z-10 mt-1 max-h-[120px] overflow-y-auto rounded-md border bg-background shadow-lg", children: filteredTags.map((item) => /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+          showTagDropdown && filteredTags.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "absolute left-0 right-0 top-full z-10 mt-1 max-h-[120px] overflow-y-auto rounded-md border bg-background shadow-lg", children: filteredTags.map((item) => /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
             "button",
             {
               className: "w-full px-2 py-1.5 text-left text-xs hover:bg-muted",
               onMouseDown: () => {
-                setTag(item);
+                updateTag(item);
                 setShowTagDropdown(false);
               },
-              children: item
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "mr-2 inline-block h-2.5 w-2.5 rounded-full border align-middle", style: tagColorStyle(tagColorByTag[item]) }),
+                item
+              ]
             },
             item
           )) })
+        ] }),
+        tag.trim() && /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "rounded-md border bg-muted/20 p-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "mb-2 text-[10px] uppercase tracking-wide text-muted-foreground", children: t("tagColor") }),
+          /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "flex flex-wrap gap-1.5", children: TAG_COLORS.map((color) => {
+            const selected = tagColor === color.value;
+            return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+              "button",
+              {
+                type: "button",
+                className: `flex h-6 w-6 items-center justify-center rounded-full border transition-transform hover:scale-110 ${selected ? "ring-2 ring-primary ring-offset-1 ring-offset-background" : ""}`,
+                style: tagColorStyle(color.value),
+                title: t("tagColor"),
+                "aria-label": t("tagColor"),
+                onClick: () => setTagColor(color.value),
+                children: selected && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Check, { className: "h-3.5 w-3.5" })
+              },
+              color.value
+            );
+          }) })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
           Textarea,
@@ -14550,7 +14613,7 @@
   // src/components/base/TagFilter.tsx
   var import_react8 = __toESM(require_react());
   var import_jsx_runtime21 = __toESM(require_jsx_runtime());
-  function TagFilter({ tags, selected, language, onChange }) {
+  function TagFilter({ tags, selected, tagColors = {}, language, onChange }) {
     const [open, setOpen] = import_react8.default.useState(false);
     const dropdownRef = import_react8.default.useRef(null);
     const t = import_react8.default.useCallback((key) => translate(language, key), [language]);
@@ -14600,8 +14663,9 @@
                   {
                     className: cn(
                       "flex h-3.5 w-3.5 items-center justify-center rounded border",
-                      active && "border-primary bg-primary text-primary-foreground"
+                      active && "ring-1 ring-primary"
                     ),
+                    style: tagColorStyle(tagColors[tag]),
                     children: active && /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(Check, { className: "h-2.5 w-2.5" })
                   }
                 ),
@@ -15204,6 +15268,12 @@
     const allTags = import_react12.default.useMemo(() => {
       return [...new Set(templates.map((template) => template.tag).filter(Boolean))];
     }, [templates]);
+    const tagColorByTag = import_react12.default.useMemo(() => {
+      return templates.reduce((acc, template) => {
+        if (template.tag && template.tagColor && !acc[template.tag]) acc[template.tag] = template.tagColor;
+        return acc;
+      }, {});
+    }, [templates]);
     const filteredTemplates = import_react12.default.useMemo(() => {
       return templates.filter((template) => {
         if (showFavorites && !template.favorite) return false;
@@ -15438,7 +15508,7 @@
                     /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Search, { className: "absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" }),
                     /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Input, { placeholder: t("searchNotesPlaceholder"), className: "pl-9", value: searchQuery, onChange: (event) => setSearchQuery(event.target.value) })
                   ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TagFilter, { tags: allTags, selected: selectedTags, language: settings.uiLanguage, onChange: setSelectedTags }),
+                  /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(TagFilter, { tags: allTags, selected: selectedTags, tagColors: tagColorByTag, language: settings.uiLanguage, onChange: setSelectedTags }),
                   /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "flex h-8 items-center gap-1 rounded-md border bg-background px-1.5 text-xs shadow-sm", children: [
                     /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
                       "select",
@@ -15469,11 +15539,21 @@
                 ] }),
                 selectedTags.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mt-3 flex flex-wrap gap-2", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Button, { size: "sm", variant: "ghost", className: "h-7 text-xs", onClick: () => setSelectedTags([]), children: t("clearAllTags") }),
-                  selectedTags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(Badge, { variant: "secondary", className: "cursor-pointer hover:bg-destructive hover:text-destructive-foreground", onClick: () => setSelectedTags(selectedTags.filter((item) => item !== tag)), children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Tags, { className: "mr-1 h-3 w-3" }),
-                    tag,
-                    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(X, { className: "ml-1 h-3 w-3" })
-                  ] }, tag))
+                  selectedTags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(
+                    Badge,
+                    {
+                      variant: "secondary",
+                      className: "cursor-pointer border hover:bg-destructive hover:text-destructive-foreground",
+                      style: tagColorStyle(tagColorByTag[tag]),
+                      onClick: () => setSelectedTags(selectedTags.filter((item) => item !== tag)),
+                      children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Tags, { className: "mr-1 h-3 w-3" }),
+                        tag,
+                        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(X, { className: "ml-1 h-3 w-3" })
+                      ]
+                    },
+                    tag
+                  ))
                 ] })
               ] }),
               /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "min-h-0 flex-1 overflow-y-auto p-5", children: filteredTemplates.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "mx-auto mt-16 max-w-md rounded-lg border border-dashed p-8 text-center text-muted-foreground", children: [
@@ -15500,6 +15580,7 @@
                 onSave: handleSaveTemplate,
                 onCancel: closeEditor,
                 allTags,
+                tagColorByTag,
                 variables: settings.showVariablesTab ? variables : [],
                 language: settings.uiLanguage
               }
