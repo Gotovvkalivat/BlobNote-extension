@@ -1,0 +1,80 @@
+{
+  "manifest_version": 3,
+  "name": "BlobNote V2",
+  "version": "2.0",
+  "description": "Fast notes, reply templates, tasks, and text insertion.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "alarms",
+    "notifications",
+    "identity",
+    "clipboardRead"
+  ],
+  "background": {
+    "service_worker": "src/background/index.js",
+    "type": "module"
+  },
+  "oauth2": {
+    "client_id": "949261069316-826p2dteil4hascvlgmic08ke88p9pgb.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive.file"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "src/content/index.js"
+      ]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "BlobNote V2",
+    "default_icon": {
+      "16": "icon-16.png",
+      "32": "icon-32.png",
+      "48": "icon-48.png",
+      "128": "icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icon-16.png",
+    "32": "icon-32.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/*"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
+  "commands": {
+    "open-search": {
+      "suggested_key": {
+        "default": "Ctrl+Space",
+        "mac": "Ctrl+Space"
+      },
+      "description": "Open smart note search"
+    },
+    "open-base-modal": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Space",
+        "mac": "Ctrl+Shift+Space"
+      },
+      "description": "Open notes base"
+    }
+  }
+}

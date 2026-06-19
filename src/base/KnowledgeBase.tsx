@@ -1,0 +1,944 @@
+import React from 'react'
+import { useAppStore } from '@/store'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ToastContainer } from '@/components/ui/toast'
+import { TemplateCard } from '@/components/base/TemplateCard'
+import { TemplateEditor } from '@/components/base/TemplateEditor'
+import { TagFilter } from '@/components/base/TagFilter'
+import { TemplatePreviewModal } from '@/components/base/TemplatePreviewModal'
+import { TodoPanel } from '@/components/base/TodoPanel'
+import { VariablesPanel } from '@/components/base/VariablesPanel'
+import { showToast as showToastEvent } from '@/components/ui/toast'
+import {
+  AtSign,
+  BookOpen,
+  ClipboardList,
+  Download,
+  FileText,
+  LayoutGrid,
+  Languages,
+  Moon,
+  Palette,
+  PanelTopOpen,
+  Plus,
+  RotateCcw,
+  Search,
+  Send,
+  Settings2,
+  Star,
+  Tags,
+  Type,
+  Upload,
+  X,
+  ZoomIn,
+} from 'lucide-react'
+import type { AppSettings, SendMethod, SiteSettings, Template } from '@/types'
+import { CARD_PRESETS, type CardPreset } from '@/lib/cardPresets'
+import { LANGUAGE_OPTIONS, translate } from '@/lib/i18n'
+import { SCENARIO_PRESETS, type ScenarioPresetId } from '@/lib/scenarioPresets'
+import { tagColorStyle } from '@/lib/tagColors'
+import { UI_SCALE_OPTIONS, uiScaleStyle } from '@/lib/uiScale'
+import { cn } from '@/lib/utils'
+
+const CARD_PRESET_NAMES: Record<AppSettings['cardPreset'], string> = {
+  lagoon: 'presetLagoon',
+  orchid: 'presetOrchid',
+  graphite: 'presetGraphite',
+  mint: 'presetMint',
+  paper: 'presetPaper',
+  berry: 'presetBerry',
+  sunset: 'presetSunset',
+  steel: 'presetSteel',
+}
+
+const NOTE_FONT_SIZE_OPTIONS: Array<{ value: AppSettings['noteFontSize']; label: string }> = [
+  { value: '12', label: '12px' },
+  { value: '13', label: '13px' },
+  { value: '14', label: '14px' },
+  { value: '15', label: '15px' },
+  { value: '16', label: '16px' },
+  { value: '18', label: '18px' },
+]
+
+type KnowledgeBaseProps = {
+  embedded?: boolean
+  onAfterInsert?: (autoSend: boolean) => void
+}
+
+export function KnowledgeBase({ embedded = false, onAfterInsert }: KnowledgeBaseProps = {}) {
+  const {
+    templates,
+    variables,
+    settings,
+    updateSettings,
+    addTemplate,
+    updateTemplate,
+    deleteTemplate,
+    reorderTemplates,
+    toggleFavorite,
+    importTemplates,
+  } = useAppStore()
+
+  const [searchQuery, setSearchQuery] = React.useState('')
+  const [showFavorites, setShowFavorites] = React.useState(false)
+  const [selectedTags, setSelectedTags] = React.useState<string[]>([])
+  const [editingTemplate, setEditingTemplate] = React.useState<Template | null>(null)
+  const [isCreating, setIsCreating] = React.useState(false)
+  const [draggingTemplateId, setDraggingTemplateId] = React.useState<string | null>(null)
+  const [previewTemplate, setPreviewTemplate] = React.useState<Template | null>(null)
+  const [scenarioPresetId, setScenarioPresetId] = React.useState<ScenarioPresetId>('support')
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
+  const t = React.useCallback(
+    (key: string, params?: Record<string, string | number>) => translate(settings.uiLanguage, key, params),
+    [settings.uiLanguage]
+  )
+
+  const activeTab = getVisibleTab(settings)
+  const editorOpen = isCreating || Boolean(editingTemplate)
+  const currentHost = embedded && typeof window !== 'undefined' ? window.location.hostname : ''
+  const currentSiteSettings = currentHost ? settings.siteSettings[currentHost] : undefined
+  const effectiveUiScale = currentSiteSettings?.uiScale || settings.uiScale
+  const effectivePanelScale = currentSiteSettings?.panelScale || settings.panelScale
+  const effectivePanelPlacement = currentSiteSettings?.panelPlacement || settings.panelPlacement
+  const effectivePanelCompactMode = currentSiteSettings?.panelCompactMode ?? settings.panelCompactMode
+  const effectiveSendMethod = currentSiteSettings?.sendMethod || settings.sendMethod
+  const effectiveSendButtonSelector = currentSiteSettings?.sendButtonSelector ?? settings.sendButtonSelector ?? ''
+
+  React.useEffect(() => {
+    if (embedded) return
+    document.documentElement.classList.toggle('dark', settings.theme === 'dark')
+    return () => document.documentElement.classList.remove('dark')
+  }, [embedded, settings.theme])
+
+  React.useEffect(() => {
+    const nextTab = getVisibleTab(settings)
+    if (nextTab !== settings.lastBaseTab) updateSettings({ lastBaseTab: nextTab })
+  }, [settings, updateSettings])
+
+  const allTags = React.useMemo(() => {
+    return [...new Set(templates.map((template) => template.tag).filter(Boolean))] as string[]
+  }, [templates])
+
+  const tagColorByTag = React.useMemo(() => {
+    return templates.reduce<Record<string, string>>((acc, template) => {
+      if (template.tag && template.tagColor && !acc[template.tag]) acc[template.tag] = template.tagColor
+      return acc
+    }, {})
+  }, [templates])
+
+  const filteredTemplates = React.useMemo(() => {
+    return templates
+      .filter((template) => {
+        if (showFavorites && !template.favorite) return false
+        if (selectedTags.length > 0 && (!template.tag || !selectedTags.includes(template.tag))) return false
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase()
+          return (
+            template.title.toLowerCase().includes(query) ||
+            template.text.toLowerCase().includes(query) ||
+            Boolean(template.tag?.toLowerCase().includes(query))
+          )
+        }
+        return true
+      })
+      .sort((a, b) => a.order - b.order)
+  }, [templates, searchQuery, showFavorites, selectedTags])
+
+  const masonryColumns = React.useMemo(() => {
+    const columnCount = Math.max(1, settings.gridCols)
+    const columns = Array.from({ length: columnCount }, () => ({ height: 0, items: [] as Template[] }))
+
+    filteredTemplates.forEach((template) => {
+      const shortestColumn = columns.reduce((shortest, column, index) => column.height < columns[shortest].height ? index : shortest, 0)
+      columns[shortestColumn].items.push(template)
+      columns[shortestColumn].height += 120 + template.text.length * 0.45 + template.title.length * 0.8
+    })
+
+    return columns.map((column) => column.items)
+  }, [filteredTemplates, settings.gridCols])
+
+  const handleExport = () => {
+    const blob = new Blob([JSON.stringify(templates, null, 2)], { type: 'application/json' })
+    const anchor = document.createElement('a')
+    anchor.href = URL.createObjectURL(blob)
+    anchor.download = `blobnote_backup_${new Date().toISOString().slice(0, 10)}.json`
+    anchor.click()
+    showToastEvent(t('templatesExported'), 'success')
+  }
+
+  const handleImport = (file: File) => {
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      try {
+        const data = JSON.parse(event.target?.result as string)
+        if (Array.isArray(data)) {
+          importTemplates(data)
+          showToastEvent(t('templatesImported'), 'success')
+        }
+      } catch {
+        showToastEvent(t('jsonParseError'), 'error')
+      }
+    }
+    reader.readAsText(file)
+  }
+
+  const handleDropTemplate = (targetId: string) => {
+    if (!draggingTemplateId || draggingTemplateId === targetId) return
+
+    const templateIds = filteredTemplates.map((template) => template.id)
+    const fromIndex = templateIds.indexOf(draggingTemplateId)
+    const toIndex = templateIds.indexOf(targetId)
+    if (fromIndex === -1 || toIndex === -1) return
+
+    const nextIds = [...templateIds]
+    const [movedId] = nextIds.splice(fromIndex, 1)
+    nextIds.splice(toIndex, 0, movedId)
+    reorderTemplates(nextIds)
+    setDraggingTemplateId(null)
+  }
+
+  const handleSaveTemplate = (data: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order' | 'usageCount'>) => {
+    if (editingTemplate) {
+      updateTemplate(editingTemplate.id, data)
+      showToastEvent(t('noteUpdated'), 'success')
+    } else {
+      addTemplate(data)
+      showToastEvent(t('noteCreated'), 'success')
+    }
+    closeEditor()
+  }
+
+  const closeEditor = () => {
+    setEditingTemplate(null)
+    setIsCreating(false)
+  }
+
+  const addStarterTemplates = () => {
+    [
+      {
+        title: 'Приветствие',
+        tag: 'Старт',
+        favorite: true,
+        color: 'blue',
+        text: 'Здравствуйте! Меня зовут {{agent_name}}. Уже смотрю ваш вопрос и скоро вернусь с ответом.',
+      },
+      {
+        title: 'Уточнение данных',
+        tag: 'Поддержка',
+        favorite: true,
+        color: 'amber',
+        text: 'Подскажите, пожалуйста, номер заказа и телефон, который был указан при оформлении. Так я быстрее найду информацию.',
+      },
+      {
+        title: 'Пауза на проверку',
+        tag: 'Поддержка',
+        favorite: false,
+        color: 'slate',
+        text: 'Спасибо, взял(а) в работу. Мне понадобится несколько минут, чтобы всё проверить.',
+      },
+      {
+        title: 'Завершение',
+        tag: 'Финал',
+        favorite: false,
+        color: 'green',
+        text: 'Рад(а), что удалось помочь. Если появятся ещё вопросы, напишите нам в любое время.',
+      },
+    ].forEach((template) => addTemplate(template))
+    showToastEvent(t('starterAdded'), 'success')
+  }
+
+  const addScenarioPreset = () => {
+    const preset = SCENARIO_PRESETS.find((item) => item.id === scenarioPresetId)
+    if (!preset) return
+    preset.templates.forEach((template) => addTemplate(template))
+    showToastEvent(t('scenarioPresetAdded'), 'success')
+  }
+
+  const updateInterfaceScale = (value: AppSettings['uiScale']) => {
+    if (!currentHost) {
+      updateSettings({ uiScale: value })
+      return
+    }
+
+    updateSettings({
+      siteSettings: {
+        ...settings.siteSettings,
+        [currentHost]: {
+          ...(currentSiteSettings || {}),
+          uiScale: value,
+        },
+      },
+    })
+  }
+
+  const updatePanelSiteSettings = (patch: SiteSettings) => {
+    const globalPatch: Partial<AppSettings> = {}
+    if (patch.panelScale) globalPatch.panelScale = patch.panelScale
+    if (patch.panelPlacement) globalPatch.panelPlacement = patch.panelPlacement
+    if (typeof patch.panelCompactMode === 'boolean') globalPatch.panelCompactMode = patch.panelCompactMode
+    if (patch.sendMethod) globalPatch.sendMethod = patch.sendMethod
+    if ('sendButtonSelector' in patch) globalPatch.sendButtonSelector = patch.sendButtonSelector ?? null
+
+    if (!currentHost) {
+      updateSettings(globalPatch)
+      return
+    }
+
+    updateSettings({
+      ...globalPatch,
+      siteSettings: {
+        ...settings.siteSettings,
+        [currentHost]: {
+          ...(currentSiteSettings || {}),
+          ...patch,
+        },
+      },
+    })
+  }
+
+  const applyPreset = (preset: CardPreset) => {
+    updateSettings({
+      cardPreset: preset.cardPreset,
+      defaultCardColor: preset.defaultCardColor,
+      favoriteCardColor: preset.favoriteCardColor,
+      cardTextColor: preset.cardTextColor,
+      cardFontFamily: preset.cardFontFamily,
+    })
+  }
+
+  const resetAppearance = () => applyPreset(CARD_PRESETS[settings.theme].lagoon)
+
+  const noteFontOptions: Array<{ value: AppSettings['noteFontFamily']; label: string }> = [
+    { value: 'system', label: t('fontSystem') },
+    { value: 'arial', label: 'Arial' },
+    { value: 'georgia', label: 'Georgia' },
+    { value: 'mono', label: t('fontMono') },
+  ]
+  const safeSendDelayOptions = [0, ...Array.from({ length: 13 }, (_, index) => index + 3)].map((value) => ({
+    value: String(value),
+    label: `${value} ${t('secondsShort')}`,
+  }))
+  const sendMethodOptions: Array<{ value: SendMethod; label: string }> = [
+    { value: 'auto', label: t('sendAuto') },
+    { value: 'button', label: t('sendButton') },
+    { value: 'enter', label: t('sendEnter') },
+    { value: 'ctrl-enter', label: t('sendCtrlEnter') },
+    { value: 'shift-enter', label: t('sendShiftEnter') },
+    { value: 'alt-enter', label: t('sendAltEnter') },
+  ]
+
+  return (
+    <div
+      className={`${embedded ? 'h-full' : 'h-screen'} ${settings.theme === 'dark' ? 'dark' : ''} flex flex-col overflow-hidden bg-background text-foreground`}
+      style={uiScaleStyle(effectiveUiScale)}
+    >
+      <header className={`z-30 flex shrink-0 flex-wrap items-center justify-between gap-4 border-b bg-background px-4 py-2 shadow-sm ${embedded ? 'pr-16' : ''}`}>
+        <h1 className="flex shrink-0 items-center gap-3 text-sm font-semibold">
+          <BrandLogo title={t('appName')} />
+          <span className="sr-only">{t('appName')}</span>
+          <span className="hidden whitespace-nowrap text-muted-foreground sm:inline">{t('baseSubtitle')}</span>
+        </h1>
+
+        {settings.showHeaderControls && (
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <SettingSelect
+            icon={<Languages className="h-3.5 w-3.5" />}
+            label={t('language')}
+            value={settings.uiLanguage}
+            onChange={(value) => updateSettings({ uiLanguage: value as AppSettings['uiLanguage'] })}
+            options={LANGUAGE_OPTIONS}
+          />
+          <SettingSwitch icon={<Moon className="h-3.5 w-3.5" />} label={t('darkTheme')} checked={settings.theme === 'dark'} onCheckedChange={(checked) => updateSettings({ theme: checked ? 'dark' : 'light' })} />
+          <SettingSelect
+            icon={<ZoomIn className="h-3.5 w-3.5" />}
+            label={t('interfaceScale')}
+            value={effectiveUiScale}
+            onChange={(value) => updateInterfaceScale(value as AppSettings['uiScale'])}
+            options={UI_SCALE_OPTIONS}
+          />
+          <SettingSelect
+            icon={<AtSign className="h-3.5 w-3.5" />}
+            label={t('trigger')}
+            value={settings.searchTrigger}
+            onChange={(value) => updateSettings({ searchTrigger: value as AppSettings['searchTrigger'] })}
+            options={[{ value: '/', label: '/' }, { value: '@', label: '@' }]}
+          />
+          <SettingSwitch icon={<AtSign className="h-3.5 w-3.5" />} label={`${settings.searchTrigger}-${t('atSearch')}`} checked={settings.atMenuEnabled} onCheckedChange={(checked) => updateSettings({ atMenuEnabled: checked })} />
+          <SettingSwitch icon={<PanelTopOpen className="h-3.5 w-3.5" />} label={t('panel')} checked={settings.floatingPanelEnabled} onCheckedChange={(checked) => updateSettings({ floatingPanelEnabled: checked })} />
+          <SettingSwitch icon={<ClipboardList className="h-3.5 w-3.5" />} label={t('clipboard')} checked={settings.clipboardPanelEnabled} onCheckedChange={(checked) => updateSettings({ clipboardPanelEnabled: checked })} />
+          <SettingSwitch icon={<BookOpen className="h-3.5 w-3.5" />} label={t('variables')} checked={settings.showVariablesTab} onCheckedChange={(checked) => updateSettings({ showVariablesTab: checked })} />
+          <SettingSwitch icon={<FileText className="h-3.5 w-3.5" />} label={t('tasks')} checked={settings.showTodoTab} onCheckedChange={(checked) => updateSettings({ showTodoTab: checked })} />
+
+          <select className="h-8 rounded-md border bg-background px-2 text-xs" value={settings.gridCols} onChange={(event) => updateSettings({ gridCols: parseInt(event.target.value, 10) })} title={t('columnsCount')}>
+            <option value={2}>{t('gridCols2')}</option>
+            <option value={3}>{t('gridCols3')}</option>
+            <option value={4}>{t('gridCols4')}</option>
+            <option value={5}>{t('gridCols5')}</option>
+          </select>
+
+          <select className="h-8 rounded-md border bg-background px-2 text-xs" value={settings.gridHeight} onChange={(event) => updateSettings({ gridHeight: event.target.value })} title={t('cardHeight')}>
+            <option value="180px">180px</option>
+            <option value="240px">240px</option>
+            <option value="320px">320px</option>
+            <option value="max-content">{t('auto')}</option>
+          </select>
+
+          <Button size="icon" variant="outline" onClick={handleExport} title={t('export')}><Download className="h-3.5 w-3.5" /></Button>
+          <Button size="icon" variant="outline" onClick={() => fileInputRef.current?.click()} title={t('import')}><Upload className="h-3.5 w-3.5" /></Button>
+        </div>
+        )}
+        <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) handleImport(file) }} />
+      </header>
+
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <Tabs value={activeTab} onValueChange={(value) => updateSettings({ lastBaseTab: value as AppSettings['lastBaseTab'] })} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="z-20 shrink-0 border-b bg-background px-5 py-3 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <TabsList>
+                <TabsTrigger value="templates"><FileText className="mr-1.5 h-3.5 w-3.5" />{t('notesAndTemplates')}</TabsTrigger>
+                {settings.showVariablesTab && <TabsTrigger value="variables"><BookOpen className="mr-1.5 h-3.5 w-3.5" />{t('variables')}</TabsTrigger>}
+                {settings.showTodoTab && <TabsTrigger value="todo"><LayoutGrid className="mr-1.5 h-3.5 w-3.5" />{t('tasks')}</TabsTrigger>}
+                <TabsTrigger value="settings"><Settings2 className="mr-1.5 h-3.5 w-3.5" />{t('settings')}</TabsTrigger>
+              </TabsList>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <PresetStrip theme={settings.theme} language={settings.uiLanguage} onApply={applyPreset} />
+                <Button size="sm" variant="outline" onClick={resetAppearance} title={t('resetCards')}>
+                  <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                  {t('resetCards')}
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <TabsContent value="templates" className="m-0 flex min-h-0 flex-1 flex-col overflow-hidden">
+            <div className="shrink-0 border-b bg-background px-5 py-3 shadow-sm">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="relative min-w-[260px] flex-1 max-w-xl">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input placeholder={t('searchNotesPlaceholder')} className="pl-9" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
+                </div>
+
+                <TagFilter tags={allTags} selected={selectedTags} tagColors={tagColorByTag} language={settings.uiLanguage} onChange={setSelectedTags} />
+
+                <Button size="sm" variant={showFavorites ? 'accent' : 'outline'} onClick={() => setShowFavorites(!showFavorites)}>
+                  <Star className={`mr-1.5 h-3.5 w-3.5 ${showFavorites ? 'fill-current' : ''}`} />
+                  {t('favorites')}
+                </Button>
+
+                <Button size="sm" onClick={() => { setIsCreating(true); setEditingTemplate(null) }}>
+                  <Plus className="mr-1.5 h-3.5 w-3.5" />
+                  {t('createNote')}
+                </Button>
+              </div>
+
+              {selectedTags.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setSelectedTags([])}>
+                    {t('clearAllTags')}
+                  </Button>
+                  {selectedTags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="cursor-pointer border hover:bg-destructive hover:text-destructive-foreground"
+                      style={tagColorStyle(tagColorByTag[tag])}
+                      onClick={() => setSelectedTags(selectedTags.filter((item) => item !== tag))}
+                    >
+                      <Tags className="mr-1 h-3 w-3" />
+                      {tag}
+                      <X className="ml-1 h-3 w-3" />
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-y-auto p-5">
+              {filteredTemplates.length === 0 ? (
+                <div className="mx-auto mt-16 max-w-md rounded-lg border border-dashed p-8 text-center text-muted-foreground">
+                  <div>{templates.length === 0 ? t('emptyBase') : t('nothingFoundCriteria')}</div>
+                  {templates.length === 0 && (
+                    <Button size="sm" variant="outline" className="mt-4" onClick={addStarterTemplates}>{t('addStarterNotes')}</Button>
+                  )}
+                </div>
+              ) : settings.gridHeight === 'max-content' ? (
+                <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${settings.gridCols}, minmax(0, 1fr))` }}>
+                  {masonryColumns.map((column, columnIndex) => (
+                    <div key={columnIndex} className="flex min-w-0 flex-col gap-4">
+                      {column.map((template) => renderTemplateCard(template, true))}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${settings.gridCols}, minmax(0, 1fr))` }}>
+                  {filteredTemplates.map((template) => renderTemplateCard(template, false))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          {settings.showVariablesTab && (
+            <TabsContent value="variables" className="m-0 min-h-0 flex-1 overflow-y-auto bg-background">
+              <VariablesPanel />
+            </TabsContent>
+          )}
+
+          {settings.showTodoTab && (
+            <TabsContent value="todo" className="m-0 min-h-0 flex-1 overflow-y-auto bg-background">
+              <TodoPanel />
+            </TabsContent>
+          )}
+
+          <TabsContent value="settings" className="m-0 min-h-0 flex-1 overflow-y-auto bg-background p-5">
+            <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-2">
+              <SettingsSection title={t('readability')} description={t('readabilityHelp')}>
+                <SettingSwitch
+                  icon={<Moon className="h-3.5 w-3.5" />}
+                  label={t('darkTheme')}
+                  checked={settings.theme === 'dark'}
+                  onCheckedChange={(checked) => updateSettings({ theme: checked ? 'dark' : 'light' })}
+                  hint={t('darkThemeHint')}
+                />
+                <SettingSelect
+                  icon={<ZoomIn className="h-3.5 w-3.5" />}
+                  label={t('interfaceScale')}
+                  value={effectiveUiScale}
+                  onChange={(value) => updateInterfaceScale(value as AppSettings['uiScale'])}
+                  options={UI_SCALE_OPTIONS}
+                  hint={currentHost ? t('siteScaleHint') : t('interfaceScaleHint')}
+                />
+                <SettingSelect
+                  icon={<Type className="h-3.5 w-3.5" />}
+                  label={t('noteTextSize')}
+                  value={settings.noteFontSize}
+                  onChange={(value) => updateSettings({ noteFontSize: value as AppSettings['noteFontSize'] })}
+                  options={NOTE_FONT_SIZE_OPTIONS}
+                  hint={t('noteTextSizeHint')}
+                />
+                <SettingSelect
+                  icon={<Type className="h-3.5 w-3.5" />}
+                  label={t('noteFont')}
+                  value={settings.noteFontFamily}
+                  onChange={(value) => updateSettings({ noteFontFamily: value as AppSettings['noteFontFamily'] })}
+                  options={noteFontOptions}
+                  hint={t('noteFontHint')}
+                />
+                <SettingSwitch
+                  icon={<Settings2 className="h-3.5 w-3.5" />}
+                  label={t('headerControls')}
+                  checked={settings.showHeaderControls}
+                  onCheckedChange={(checked) => updateSettings({ showHeaderControls: checked })}
+                  hint={t('headerControlsHint')}
+                />
+              </SettingsSection>
+
+              <SettingsSection title={t('floatingPanel')} description={t('floatingPanelSettingsHelp')}>
+                <SettingSwitch
+                  icon={<PanelTopOpen className="h-3.5 w-3.5" />}
+                  label={t('floatingPanelNearField')}
+                  checked={settings.floatingPanelEnabled}
+                  onCheckedChange={(checked) => updateSettings({ floatingPanelEnabled: checked })}
+                  hint={t('floatingPanelHint')}
+                />
+                <SettingSelect
+                  icon={<ZoomIn className="h-3.5 w-3.5" />}
+                  label={t('panelScale')}
+                  value={effectivePanelScale}
+                  onChange={(value) => updatePanelSiteSettings({ panelScale: value as AppSettings['panelScale'] })}
+                  options={UI_SCALE_OPTIONS}
+                  hint={currentHost ? t('sitePanelScaleHint') : t('panelScaleHint')}
+                />
+                <SettingSelect
+                  icon={<PanelTopOpen className="h-3.5 w-3.5" />}
+                  label={t('panelPosition')}
+                  value={effectivePanelPlacement}
+                  onChange={(value) => updatePanelSiteSettings({ panelPlacement: value as AppSettings['panelPlacement'] })}
+                  options={[
+                    { value: 'auto', label: t('auto') },
+                    { value: 'above', label: t('aboveField') },
+                    { value: 'below', label: t('belowField') },
+                    { value: 'top-right', label: t('topRight') },
+                    { value: 'bottom-right', label: t('bottomRight') },
+                  ]}
+                  hint={t('panelPositionHint')}
+                />
+                <SettingSwitch
+                  icon={<ClipboardList className="h-3.5 w-3.5" />}
+                  label={t('compactPanel')}
+                  checked={!effectivePanelCompactMode}
+                  onCheckedChange={(checked) => updatePanelSiteSettings({ panelCompactMode: !checked })}
+                  hint={t('recentInsertionsHint')}
+                />
+                <SettingSwitch
+                  icon={<ClipboardList className="h-3.5 w-3.5" />}
+                  label={t('clipboardInPanel')}
+                  checked={settings.clipboardPanelEnabled}
+                  onCheckedChange={(checked) => updateSettings({ clipboardPanelEnabled: checked })}
+                  hint={t('clipboardHint')}
+                />
+              </SettingsSection>
+
+              <SettingsSection title={t('sendSettings')} description={t('sendSettingsHelp')}>
+                <SettingSelect
+                  icon={<Send className="h-3.5 w-3.5" />}
+                  label={t('safeSendDelay')}
+                  value={String(settings.safeSendDelay)}
+                  onChange={(value) => {
+                    const delay = parseInt(value, 10)
+                    updateSettings({ safeSendDelay: delay, safeSendEnabled: delay > 0 })
+                  }}
+                  options={safeSendDelayOptions}
+                  hint={t('safeSendDelayHint')}
+                />
+                <SettingSelect
+                  icon={<Send className="h-3.5 w-3.5" />}
+                  label={t('sendMethod')}
+                  value={effectiveSendMethod}
+                  onChange={(value) => updatePanelSiteSettings({ sendMethod: value as SendMethod })}
+                  options={sendMethodOptions}
+                  hint={t('sendMethodHint')}
+                />
+                {effectiveSendMethod === 'button' && (
+                  <label className="grid w-full gap-1 rounded-lg border bg-background p-3 text-xs shadow-sm">
+                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                      {t('sendButtonSelector')}
+                      <InfoTip text={t('sendButtonSelectorHint')} />
+                    </span>
+                    <input
+                      className="h-8 rounded-md border bg-background px-2 text-xs text-foreground"
+                      value={effectiveSendButtonSelector}
+                      onChange={(event) => updatePanelSiteSettings({ sendButtonSelector: event.target.value.trim() || null })}
+                      placeholder="button[type='submit']"
+                    />
+                  </label>
+                )}
+              </SettingsSection>
+
+              <SettingsSection title={t('searchAndModules')} description={t('searchAndModulesHelp')}>
+                <SettingSelect
+                  icon={<AtSign className="h-3.5 w-3.5" />}
+                  label={t('trigger')}
+                  value={settings.searchTrigger}
+                  onChange={(value) => updateSettings({ searchTrigger: value as AppSettings['searchTrigger'] })}
+                  options={[{ value: '/', label: '/' }, { value: '@', label: '@' }]}
+                  hint={t('triggerHint')}
+                />
+                <SettingSwitch
+                  icon={<AtSign className="h-3.5 w-3.5" />}
+                  label={t('atSearchInInput', { trigger: settings.searchTrigger })}
+                  checked={settings.atMenuEnabled}
+                  onCheckedChange={(checked) => updateSettings({ atMenuEnabled: checked })}
+                  hint={t('atSearchHint')}
+                />
+                <SettingSwitch
+                  icon={<BookOpen className="h-3.5 w-3.5" />}
+                  label={t('variablesTab')}
+                  checked={settings.showVariablesTab}
+                  onCheckedChange={(checked) => updateSettings({ showVariablesTab: checked })}
+                  hint={t('variablesHint')}
+                />
+                <SettingSwitch
+                  icon={<FileText className="h-3.5 w-3.5" />}
+                  label={t('tasksTab')}
+                  checked={settings.showTodoTab}
+                  onCheckedChange={(checked) => updateSettings({ showTodoTab: checked })}
+                  hint={t('tasksHint')}
+                />
+              </SettingsSection>
+
+              <SettingsSection title={t('cardsAndPacks')} description={t('cardsAndPacksHelp')}>
+                <div className="w-full rounded-lg border bg-background p-3 shadow-sm">
+                  <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <Palette className="h-3.5 w-3.5" />
+                    {t('cardPresets')}
+                    <InfoTip text={t('cardPresetsHint')} />
+                  </div>
+                  <PresetStrip theme={settings.theme} language={settings.uiLanguage} onApply={applyPreset} />
+                  <Button size="sm" variant="outline" className="mt-2 w-full" onClick={resetAppearance}>
+                    <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                    {t('resetCards')}
+                  </Button>
+                </div>
+
+                <div className="w-full rounded-lg border bg-background p-3 shadow-sm">
+                  <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <Plus className="h-3.5 w-3.5" />
+                    {t('scenarioPresets')}
+                    <InfoTip text={t('scenarioPresetsHint')} />
+                  </div>
+                  <div className="flex gap-2">
+                    <select
+                      className="h-8 min-w-0 flex-1 rounded-md border bg-background px-2 text-xs text-foreground"
+                      value={scenarioPresetId}
+                      onChange={(event) => setScenarioPresetId(event.target.value as ScenarioPresetId)}
+                    >
+                      {SCENARIO_PRESETS.map((preset) => (
+                        <option key={preset.id} value={preset.id}>{t(preset.labelKey)}</option>
+                      ))}
+                    </select>
+                    <Button size="sm" onClick={addScenarioPreset}>
+                      <Plus className="mr-1 h-3 w-3" />
+                      {t('addScenarioPreset')}
+                    </Button>
+                  </div>
+                </div>
+              </SettingsSection>
+
+              <SettingsSection title={t('dataManagement')} description={t('dataManagementHelp')}>
+                <div className="grid w-full grid-cols-2 gap-2">
+                  <Button size="sm" variant="outline" onClick={handleExport}><Download className="mr-1 h-3.5 w-3.5" />{t('export')}</Button>
+                  <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()}><Upload className="mr-1 h-3.5 w-3.5" />{t('import')}</Button>
+                </div>
+              </SettingsSection>
+
+              <SettingsSection title={t('featureGuide')} description={t('featureGuideHelp')} className="lg:col-span-2">
+                <div className="grid w-full gap-3 md:grid-cols-2">
+                  <GuideItem title={t('floatingPanel')} text={t('floatingPanelGuide')} />
+                  <GuideItem title={t('triggerMenuTitle', { trigger: settings.searchTrigger })} text={t('searchGuide')} />
+                  <GuideItem title={t('safeSendDelay')} text={t('safeSendGuide')} />
+                  <GuideItem title={t('sendMethod')} text={t('sendMethodGuide')} />
+                  <GuideItem title={t('variables')} text={t('variablesGuide')} />
+                  <GuideItem title={t('tasks')} text={t('tasksGuide')} />
+                </div>
+              </SettingsSection>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </main>
+
+      {editorOpen && (
+        <div className="fixed inset-0 z-[2147483630] flex animate-in fade-in items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm duration-150">
+          <div className="max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))] animate-in zoom-in-95 overflow-y-auto rounded-lg border bg-background p-5 text-foreground shadow-2xl duration-150">
+            <div className="mb-4 flex items-center justify-between gap-3 border-b pb-3">
+              <div>
+                <div className="text-sm font-semibold">{editingTemplate ? t('editNote') : t('newNote')}</div>
+                <div className="text-xs text-muted-foreground">{t('editorNoShift')}</div>
+              </div>
+              <Button size="icon" variant="ghost" onClick={closeEditor}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <TemplateEditor
+              template={editingTemplate}
+              isNew={isCreating}
+              onSave={handleSaveTemplate}
+              onCancel={closeEditor}
+              allTags={allTags}
+              tagColorByTag={tagColorByTag}
+              variables={settings.showVariablesTab ? variables : []}
+              language={settings.uiLanguage}
+            />
+          </div>
+        </div>
+      )}
+
+      <TemplatePreviewModal
+        template={previewTemplate}
+        variables={settings.showVariablesTab ? variables : null}
+        language={settings.uiLanguage}
+        allowInsert={embedded}
+        onInserted={onAfterInsert}
+        onClose={() => setPreviewTemplate(null)}
+      />
+      <ToastContainer />
+    </div>
+  )
+
+  function renderTemplateCard(template: Template, showFullText: boolean) {
+    return (
+      <TemplateCard
+        key={template.id}
+        template={template}
+        color={template.favorite ? settings.favoriteCardColor : settings.defaultCardColor}
+        textColor={settings.cardTextColor}
+        fontFamily={settings.cardFontFamily}
+        noteFontSize={settings.noteFontSize}
+        noteFontFamily={settings.noteFontFamily}
+        showFullText={showFullText}
+        onOpen={() => setPreviewTemplate(template)}
+        onEdit={() => { setEditingTemplate(template); setIsCreating(false) }}
+        onDelete={() => { if (confirm(t('deleteNoteQuestion', { title: template.title }))) { deleteTemplate(template.id); showToastEvent(t('noteDeleted'), 'success') } }}
+        onToggleFavorite={() => toggleFavorite(template.id)}
+        onCopy={() => { navigator.clipboard.writeText(template.text); showToastEvent(t('textCopied'), 'success') }}
+        usageLabel={template.usageCount > 0 ? t('usageCount', { count: template.usageCount }) : undefined}
+        cardStyle={showFullText ? undefined : { height: settings.gridHeight }}
+        draggable={!showFullText}
+        onDragStart={() => setDraggingTemplateId(template.id)}
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={(event) => { event.preventDefault(); handleDropTemplate(template.id) }}
+      />
+    )
+  }
+}
+
+function BrandLogo({ title }: { title: string }) {
+  return (
+    <span className="inline-flex items-center gap-2 text-foreground">
+      <svg
+        aria-hidden="true"
+        className="h-8 w-8 shrink-0"
+        viewBox="0 0 64 64"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="blobnote-mark-gradient" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#09B8F5" />
+            <stop offset="0.55" stopColor="#2C6DF6" />
+            <stop offset="1" stopColor="#7037F4" />
+          </linearGradient>
+          <linearGradient id="blobnote-line-gradient" x1="22" y1="28" x2="43" y2="43" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#16B7F3" />
+            <stop offset="1" stopColor="#6E3DF4" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M12.5 38.5C7.8 28.7 12.7 15.3 23.4 10.2C32 6.1 42.7 8.3 48.9 15.7C54.8 22.8 56.2 34.8 50.8 43.6C44.7 53.5 30.9 57.8 20.9 52.4C14.9 49.2 10.8 43.6 12.5 38.5Z"
+          fill="url(#blobnote-mark-gradient)"
+        />
+        <circle cx="51.5" cy="14.5" r="4.5" fill="#2D74F7" />
+        <circle cx="11" cy="50" r="3.8" fill="#6D38F3" />
+        <path
+          d="M21 19.5C21 16.5 23.5 14 26.5 14H38.5L48 23.5V41.5C48 45.1 45.1 48 41.5 48H26.5C23.5 48 21 45.5 21 42.5V19.5Z"
+          fill="white"
+        />
+        <path d="M38.5 14V23.5H48" fill="#C9F3FF" />
+        <path d="M38.5 14V21.5C38.5 22.6 39.4 23.5 40.5 23.5H48" stroke="#18AEEB" strokeWidth="2" strokeLinejoin="round" />
+        <path d="M27 29.5H38.5" stroke="url(#blobnote-line-gradient)" strokeWidth="3.2" strokeLinecap="round" />
+        <path d="M27 36H42" stroke="url(#blobnote-line-gradient)" strokeWidth="3.2" strokeLinecap="round" />
+        <path d="M27 42.5H37" stroke="url(#blobnote-line-gradient)" strokeWidth="3.2" strokeLinecap="round" />
+      </svg>
+      <span className="text-base font-bold leading-none text-foreground">{title}</span>
+    </span>
+  )
+}
+
+function SettingSwitch({
+  icon,
+  label,
+  checked,
+  onCheckedChange,
+  hint,
+}: {
+  icon: React.ReactNode
+  label: string
+  checked: boolean
+  onCheckedChange: (checked: boolean) => void
+  hint?: string
+}) {
+  return (
+    <label className="flex h-8 min-w-[150px] shrink-0 items-center justify-between gap-2 rounded-md border bg-background px-2.5 py-1 text-xs text-muted-foreground shadow-sm">
+      {icon}
+      <span className="min-w-0 truncate">{label}</span>
+      {hint && <InfoTip text={hint} />}
+      <Switch checked={checked} onCheckedChange={onCheckedChange} />
+    </label>
+  )
+}
+
+function SettingSelect({
+  icon,
+  label,
+  value,
+  options,
+  onChange,
+  hint,
+}: {
+  icon: React.ReactNode
+  label: string
+  value: string
+  options: Array<{ value: string; label: string }>
+  onChange: (value: string) => void
+  hint?: string
+}) {
+  return (
+    <label className="flex h-8 min-w-[170px] shrink-0 items-center justify-between gap-2 rounded-md border bg-background px-2.5 py-1 text-xs text-muted-foreground shadow-sm">
+      {icon}
+      <span className="min-w-0 truncate">{label}</span>
+      {hint && <InfoTip text={hint} />}
+      <select className="h-6 min-w-[48px] rounded border bg-background px-1 text-xs text-foreground" value={value} onChange={(event) => onChange(event.target.value)}>
+        {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+      </select>
+    </label>
+  )
+}
+
+function SettingsSection({
+  title,
+  description,
+  children,
+  className,
+}: {
+  title: string
+  description: string
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <section className={cn('rounded-xl border bg-card p-4 text-card-foreground shadow-sm', className)}>
+      <div className="mb-3">
+        <h2 className="text-sm font-semibold">{title}</h2>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{description}</p>
+      </div>
+      <div className="flex flex-wrap gap-2">{children}</div>
+    </section>
+  )
+}
+
+function InfoTip({ text }: { text: string }) {
+  return (
+    <span className="group relative inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border bg-background text-[10px] font-bold text-muted-foreground shadow-sm">
+      ?
+      <span className="pointer-events-none absolute right-0 top-5 z-50 w-64 rounded-lg border bg-popover px-3 py-2 text-left text-[11px] font-normal leading-relaxed text-popover-foreground opacity-0 shadow-xl transition-opacity duration-150 group-hover:opacity-100">
+        {text}
+      </span>
+    </span>
+  )
+}
+
+function GuideItem({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-lg border bg-background p-3 shadow-sm">
+      <div className="mb-1 text-xs font-semibold">{title}</div>
+      <p className="text-xs leading-relaxed text-muted-foreground">{text}</p>
+    </div>
+  )
+}
+
+function PresetStrip({
+  theme,
+  language,
+  onApply,
+}: {
+  theme: AppSettings['theme']
+  language: AppSettings['uiLanguage']
+  onApply: (preset: CardPreset) => void
+}) {
+  return (
+    <div className="flex items-center gap-1 rounded-md border bg-background px-2 py-1" title={translate(language, 'cardPresets')}>
+      <Palette className="h-3.5 w-3.5 text-muted-foreground" />
+      {Object.values(CARD_PRESETS[theme]).map((preset) => (
+        <button
+          key={preset.cardPreset}
+          type="button"
+          className="h-6 rounded-md border px-2 text-[11px] hover:bg-muted"
+          onClick={() => onApply(preset)}
+          style={{ background: preset.defaultCardColor, color: preset.cardTextColor }}
+        >
+          {translate(language, CARD_PRESET_NAMES[preset.cardPreset])}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function getVisibleTab(settings: AppSettings): AppSettings['lastBaseTab'] {
+  if (settings.lastBaseTab === 'variables' && !settings.showVariablesTab) return 'templates'
+  if (settings.lastBaseTab === 'todo' && !settings.showTodoTab) return 'templates'
+  return settings.lastBaseTab
+}

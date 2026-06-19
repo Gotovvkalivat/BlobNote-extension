@@ -1,0 +1,12 @@
+node_modules/
+.npm-cache/
+.env
+dist/
+dist-no-drive/
+dist-firefox/
+release/
+*.docx
+*.log
+*.tmp
+*.bak
+.DS_Store
