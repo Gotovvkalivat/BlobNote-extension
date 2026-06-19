@@ -89,16 +89,20 @@ export function SmartSearch({ uiScale, open, onOpenChange }: SmartSearchProps) {
             onKeyDown={(event) => {
               if (event.key === 'ArrowDown') {
                 event.preventDefault()
+                event.stopPropagation()
                 setSelectedIndex((index) => (index + 1) % Math.max(filtered.length, 1))
               } else if (event.key === 'ArrowUp') {
                 event.preventDefault()
+                event.stopPropagation()
                 setSelectedIndex((index) => (index - 1 + Math.max(filtered.length, 1)) % Math.max(filtered.length, 1))
               } else if (event.key === 'Enter') {
                 event.preventDefault()
+                event.stopPropagation()
                 const template = filtered[selectedIndex]
                 if (template) void chooseTemplate(template, event.ctrlKey)
               } else if (event.key === 'Escape') {
                 event.preventDefault()
+                event.stopPropagation()
                 onOpenChange(false)
               }
             }}

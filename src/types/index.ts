@@ -67,6 +67,7 @@ export interface SiteSettings {
   panelCompactMode?: boolean
   sendMethod?: SendMethod
   sendButtonSelector?: string | null
+  pinnedInputSelector?: string | null
 }
 
 export interface RecentInsertion {

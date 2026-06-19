@@ -4,10 +4,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ToastContainer } from '@/components/ui/toast'
 import { TemplateCard } from '@/components/base/TemplateCard'
 import { TemplateEditor } from '@/components/base/TemplateEditor'
 import { TemplatePreviewModal } from '@/components/base/TemplatePreviewModal'
+import { TodoPanel } from '@/components/base/TodoPanel'
+import { VariablesPanel } from '@/components/base/VariablesPanel'
 import { showToast as showToastEvent } from '@/components/ui/toast'
 import { CARD_PRESETS, cardPresetFor } from '@/lib/cardPresets'
 import { SCENARIO_PRESETS, type ScenarioPresetId } from '@/lib/scenarioPresets'
@@ -18,6 +21,7 @@ import { cn } from '@/lib/utils'
 import type { AppSettings, Template } from '@/types'
 import {
   Archive,
+  Braces,
   CheckSquare,
   ChevronDown,
   ChevronRight,
@@ -27,7 +31,10 @@ import {
   Eye,
   Folder,
   Grid2X2,
+  Heart,
+  Info,
   LayoutList,
+  ListTodo,
   LogIn,
   Palette,
   PanelTopOpen,
@@ -50,6 +57,7 @@ type KnowledgeBaseV2Props = {
 type ViewMode = 'cards' | 'table'
 type MainFilter = 'all' | 'favorites' | 'recent'
 type SortMode = 'updated' | 'usage' | 'title'
+type ActiveTab = 'templates' | 'variables' | 'todo'
 type TemplateWithFolder = Template & { folder?: string | null; deletedAt?: string | null }
 
 const VIEW_STORAGE_KEY = 'blobnote-v2-view-mode'
@@ -72,6 +80,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
   const {
     templates,
     variables,
+    todos,
     recentInsertions,
     settings,
     updateSettings,
@@ -87,6 +96,10 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
   const [folderFilter, setFolderFilter] = React.useState<string | null>(null)
   const [tagFilter, setTagFilter] = React.useState<string | null>(null)
   const [sortMode, setSortMode] = React.useState<SortMode>('updated')
+  const [activeTab, setActiveTab] = React.useState<ActiveTab>(() => {
+    const storedTab = readStorage('blobnote-v2-active-tab', 'templates')
+    return storedTab === 'variables' || storedTab === 'todo' ? storedTab : 'templates'
+  })
   const [viewMode, setViewMode] = React.useState<ViewMode>(() => readStorage(VIEW_STORAGE_KEY, 'cards') as ViewMode)
   const [massMode, setMassMode] = React.useState(() => readStorage(MASS_STORAGE_KEY, 'false') === 'true')
   const [selectedIds, setSelectedIds] = React.useState<string[]>([])
@@ -109,6 +122,18 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
 
   React.useEffect(() => writeStorage(VIEW_STORAGE_KEY, viewMode), [viewMode])
   React.useEffect(() => writeStorage(MASS_STORAGE_KEY, String(massMode)), [massMode])
+  const visibleTab = getVisibleBaseTab(activeTab, settings)
+  React.useEffect(() => {
+    if (visibleTab !== activeTab) setActiveTab(visibleTab)
+    writeStorage('blobnote-v2-active-tab', visibleTab)
+  }, [activeTab, visibleTab])
+
+  const switchTab = (tab: ActiveTab) => {
+    const nextTab = getVisibleBaseTab(tab, settings)
+    setActiveTab(nextTab)
+    writeStorage('blobnote-v2-active-tab', nextTab)
+    updateSettings({ lastBaseTab: nextTab })
+  }
 
   const activeTemplates = React.useMemo(() => {
     return (templates as TemplateWithFolder[])
@@ -302,21 +327,27 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
       )}
       style={uiScaleStyle(settings.uiScale)}
     >
-      <aside className="hidden w-72 shrink-0 border-r bg-white/95 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/95 lg:flex lg:flex-col">
+      <aside className="hidden w-64 shrink-0 border-r bg-white/95 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/95 lg:flex lg:flex-col">
         <BrandBlock />
 
-        <Button className="mb-5 h-11 w-full text-white shadow-sm" onClick={createTemplate}>
+        <Button className="mb-4 h-10 w-full text-white shadow-sm" onClick={createTemplate}>
           <Plus className="mr-2 h-4 w-4" />
           {ui(language, 'Новый шаблон', 'New template')}
         </Button>
 
         <nav className="space-y-1">
-          <SidebarButton active={mainFilter === 'all' && !folderFilter && !tagFilter} icon={<Archive />} label={ui(language, 'Все шаблоны', 'All templates')} count={activeTemplates.length} onClick={() => { setMainFilter('all'); setFolderFilter(null); setTagFilter(null) }} />
-          <SidebarButton active={mainFilter === 'favorites'} icon={<Star />} label={translate(language, 'favorites')} count={activeTemplates.filter((template) => template.favorite).length} onClick={() => { setMainFilter('favorites'); setFolderFilter(null); setTagFilter(null) }} />
-          <SidebarButton active={mainFilter === 'recent'} icon={<ClipboardList />} label={ui(language, 'Недавние', 'Recent')} count={recentInsertions.length} onClick={() => { setMainFilter('recent'); setFolderFilter(null); setTagFilter(null) }} />
+          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'all' && !folderFilter && !tagFilter} icon={<Archive />} label={ui(language, 'Все шаблоны', 'All templates')} count={activeTemplates.length} onClick={() => { switchTab('templates'); setMainFilter('all'); setFolderFilter(null); setTagFilter(null) }} />
+          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'favorites'} icon={<Heart />} label={translate(language, 'favorites')} count={activeTemplates.filter((template) => template.favorite).length} onClick={() => { switchTab('templates'); setMainFilter('favorites'); setFolderFilter(null); setTagFilter(null) }} />
+          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'recent'} icon={<ClipboardList />} label={ui(language, 'Недавние', 'Recent')} count={recentInsertions.length} onClick={() => { switchTab('templates'); setMainFilter('recent'); setFolderFilter(null); setTagFilter(null) }} />
+          {settings.showVariablesTab && (
+            <SidebarButton active={visibleTab === 'variables'} icon={<Braces />} label={translate(language, 'variablesTab')} count={variables.length} onClick={() => switchTab('variables')} />
+          )}
+          {settings.showTodoTab && (
+            <SidebarButton active={visibleTab === 'todo'} icon={<ListTodo />} label={translate(language, 'tasksTab')} count={todos.length} onClick={() => switchTab('todo')} />
+          )}
         </nav>
 
-        <div className="mt-7 min-h-0">
+        <div className="mt-5 min-h-0">
           <SidebarTitle label={ui(language, 'Папки', 'Folders')} />
           <div className="max-h-[34vh] space-y-1 overflow-y-auto pr-1">
             {folders.map((folder) => (
@@ -340,7 +371,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
         {allTags.length > 0 && (
           <div className="mt-7 min-h-0">
             <SidebarTitle label={translate(language, 'tags')} />
-            <div className="max-h-[24vh] overflow-y-auto pr-1">
+            <div className="max-h-[22vh] overflow-y-auto pr-1">
               <div className="flex flex-wrap gap-2">
                 {allTags.map((tag) => (
                   <button
@@ -367,30 +398,41 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                 <BrandBlock compact />
               </div>
               <div className="min-w-0">
-                <h1 className="truncate text-2xl font-bold">{currentTitle(language, mainFilter, folderFilter, tagFilter)}</h1>
+                <h1 className="truncate text-2xl font-bold">{currentBaseTitle(language, visibleTab, mainFilter, folderFilter, tagFilter)}</h1>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {ui(language, '{{count}} шаблонов', '{{count}} templates').replace('{{count}}', String(filteredTemplates.length))}
+                  {visibleTab === 'variables'
+                    ? ui(language, '{{count}} переменных', '{{count}} variables').replace('{{count}}', String(variables.length))
+                    : visibleTab === 'todo'
+                      ? ui(language, '{{count}} задач', '{{count}} tasks').replace('{{count}}', String(todos.length))
+                      : ui(language, '{{count}} шаблонов', '{{count}} templates').replace('{{count}}', String(filteredTemplates.length))}
                 </p>
               </div>
             </div>
             <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-              <div className="relative w-full max-w-md">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <Input className="h-11 rounded-xl bg-white pl-10 dark:bg-slate-900" placeholder={ui(language, 'Поиск шаблонов...', 'Search templates...')} value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
-              </div>
+              {visibleTab === 'templates' && (
+                <div className="relative w-full max-w-md">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Input className="h-11 rounded-xl bg-white pl-10 dark:bg-slate-900" placeholder={ui(language, 'Поиск шаблонов...', 'Search templates...')} value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
+                </div>
+              )}
               <Button variant="outline" size="icon" onClick={() => setSettingsOpen(true)} title={translate(language, 'settings')}>
                 <Settings2 className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon" onClick={() => setViewMode(viewMode === 'cards' ? 'table' : 'cards')} title={viewMode === 'cards' ? ui(language, 'Таблица', 'Table') : ui(language, 'Карточки', 'Cards')}>
-                {viewMode === 'cards' ? <LayoutList className="h-4 w-4" /> : <Grid2X2 className="h-4 w-4" />}
-              </Button>
-              <Button className="text-white shadow-sm" onClick={createTemplate}>
-                <Plus className="mr-2 h-4 w-4" />
-                {translate(language, 'createNote')}
-              </Button>
+              {visibleTab === 'templates' && (
+                <>
+                  <Button variant="outline" size="icon" onClick={() => setViewMode(viewMode === 'cards' ? 'table' : 'cards')} title={viewMode === 'cards' ? ui(language, 'Таблица', 'Table') : ui(language, 'Карточки', 'Cards')}>
+                    {viewMode === 'cards' ? <LayoutList className="h-4 w-4" /> : <Grid2X2 className="h-4 w-4" />}
+                  </Button>
+                  <Button className="text-white shadow-sm" onClick={createTemplate}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    {translate(language, 'createNote')}
+                  </Button>
+                </>
+              )}
             </div>
           </div>
 
+          {visibleTab === 'templates' && (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2">
               <FilterButton active={mainFilter === 'all' && !folderFilter && !tagFilter} onClick={() => { setMainFilter('all'); setFolderFilter(null); setTagFilter(null) }}>{ui(language, 'Все', 'All')}</FilterButton>
@@ -405,18 +447,23 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                 <option value="usage">{ui(language, 'Сортировка: по использованию', 'Sort: usage')}</option>
                 <option value="title">{ui(language, 'Сортировка: по названию', 'Sort: title')}</option>
               </select>
-              <select className="h-10 rounded-xl border bg-white px-3 text-sm dark:border-slate-800 dark:bg-slate-900" value={String(settings.gridCols)} onChange={(event) => updateSettings({ gridCols: Math.max(1, Number(event.target.value) || 3) })}>
-                {[1, 2, 3, 4].map((value) => <option key={value} value={value}>{ui(language, `${value} колонки`, `${value} columns`)}</option>)}
-              </select>
-              <select className="h-10 rounded-xl border bg-white px-3 text-sm dark:border-slate-800 dark:bg-slate-900" value={settings.gridHeight} onChange={(event) => updateSettings({ gridHeight: event.target.value })}>
-                {['180px', '220px', '260px', '320px'].map((value) => <option key={value} value={value}>{value}</option>)}
-              </select>
+              {viewMode === 'cards' && (
+                <>
+                  <select className="h-10 rounded-xl border bg-white px-3 text-sm dark:border-slate-800 dark:bg-slate-900" value={String(settings.gridCols)} onChange={(event) => updateSettings({ gridCols: Math.max(1, Number(event.target.value) || 3) })}>
+                    {[1, 2, 3, 4].map((value) => <option key={value} value={value}>{ui(language, `${value} колонки`, `${value} columns`)}</option>)}
+                  </select>
+                  <select className="h-10 rounded-xl border bg-white px-3 text-sm dark:border-slate-800 dark:bg-slate-900" value={settings.gridHeight} onChange={(event) => updateSettings({ gridHeight: event.target.value })}>
+                    {['180px', '220px', '240px', '260px', '320px', 'masonry'].map((value) => <option key={value} value={value}>{value === 'masonry' ? ui(language, 'Masonry', 'Masonry') : value}</option>)}
+                  </select>
+                </>
+              )}
               <Button variant={massMode ? 'default' : 'outline'} className={cn(massMode && 'text-white')} onClick={() => { setMassMode(!massMode); if (massMode) setSelectedIds([]) }}>
                 <CheckSquare className="mr-2 h-4 w-4" />
                 {ui(language, 'Массовые действия', 'Bulk actions')}
               </Button>
             </div>
           </div>
+          )}
         </header>
 
         {selectedIds.length > 0 && (
@@ -433,7 +480,11 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
         )}
 
         <section className="min-h-0 flex-1 overflow-y-auto p-5">
-          {filteredTemplates.length === 0 ? (
+          {visibleTab === 'variables' ? (
+            <VariablesPanel />
+          ) : visibleTab === 'todo' ? (
+            <TodoPanel />
+          ) : filteredTemplates.length === 0 ? (
             <div className="mx-auto mt-20 max-w-md rounded-2xl border border-dashed bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <Sparkles className="mx-auto mb-3 h-8 w-8 text-primary" />
               <div className="font-semibold">{activeTemplates.length === 0 ? translate(language, 'emptyBase') : translate(language, 'nothingFoundCriteria')}</div>
@@ -443,40 +494,43 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
             </div>
           ) : viewMode === 'cards' ? (
             <div
-              className="grid gap-4"
-              style={{ gridTemplateColumns: `repeat(${Math.max(1, settings.gridCols || 3)}, minmax(0, 1fr))` }}
+              className={settings.gridHeight === 'masonry' ? 'gap-4 [column-fill:_balance]' : 'grid gap-4'}
+              style={settings.gridHeight === 'masonry'
+                ? { columnCount: Math.max(1, settings.gridCols || 3), columnGap: '1rem' }
+                : { gridTemplateColumns: `repeat(${Math.max(1, settings.gridCols || 3)}, minmax(0, 1fr))` }}
             >
               {filteredTemplates.map((template) => (
-                <TemplateShell
-                  key={template.id}
-                  massMode={massMode}
-                  checked={selectedIds.includes(template.id)}
-                  onCheckedChange={(checked) => toggleSelected(template.id, checked, setSelectedIds)}
-                >
-                  <TemplateCard
-                    template={template}
-                    color={template.favorite ? settings.favoriteCardColor : settings.defaultCardColor}
-                    textColor={settings.cardTextColor}
-                    fontFamily={settings.cardFontFamily}
-                    noteFontSize={settings.noteFontSize}
-                    noteFontFamily={settings.noteFontFamily}
-                    showFullText={false}
-                    cardStyle={{ height: settings.gridHeight }}
-                    draggable
-                    onDragStart={(event) => {
-                      event.dataTransfer.setData('text/blobnote-template-id', template.id)
-                      event.dataTransfer.effectAllowed = 'move'
-                      setDraggingTemplateId(template.id)
-                    }}
-                    onDrop={() => setDraggingTemplateId(null)}
-                    onOpen={() => setPreviewTemplate(template)}
-                    onEdit={() => { setEditingTemplate(template); setIsCreating(false) }}
-                    onDelete={() => { if (confirm(translate(language, 'deleteNoteQuestion', { title: template.title }))) deleteTemplate(template.id) }}
-                    onToggleFavorite={() => toggleFavorite(template.id)}
-                    onCopy={() => { navigator.clipboard.writeText(template.text); showToastEvent(translate(language, 'textCopied'), 'success') }}
-                    usageLabel={template.usageCount > 0 ? translate(language, 'usageCount', { count: template.usageCount }) : undefined}
-                  />
-                </TemplateShell>
+                <div key={template.id} className={settings.gridHeight === 'masonry' ? 'mb-4 break-inside-avoid' : ''}>
+                  <TemplateShell
+                    massMode={massMode}
+                    checked={selectedIds.includes(template.id)}
+                    onCheckedChange={(checked) => toggleSelected(template.id, checked, setSelectedIds)}
+                  >
+                    <TemplateCard
+                      template={template}
+                      color={template.favorite ? settings.favoriteCardColor : settings.defaultCardColor}
+                      textColor={settings.cardTextColor}
+                      fontFamily={settings.cardFontFamily}
+                      noteFontSize={settings.noteFontSize}
+                      noteFontFamily={settings.noteFontFamily}
+                      showFullText={settings.gridHeight === 'masonry'}
+                      cardStyle={{ minHeight: settings.gridHeight === 'masonry' ? 180 : undefined, height: settings.gridHeight === 'masonry' ? 'auto' : settings.gridHeight }}
+                      draggable
+                      onDragStart={(event) => {
+                        event.dataTransfer.setData('text/blobnote-template-id', template.id)
+                        event.dataTransfer.effectAllowed = 'move'
+                        setDraggingTemplateId(template.id)
+                      }}
+                      onDrop={() => setDraggingTemplateId(null)}
+                      onOpen={() => setPreviewTemplate(template)}
+                      onEdit={() => { setEditingTemplate(template); setIsCreating(false) }}
+                      onDelete={() => { if (confirm(translate(language, 'deleteNoteQuestion', { title: template.title }))) deleteTemplate(template.id) }}
+                      onToggleFavorite={() => toggleFavorite(template.id)}
+                      onCopy={() => { navigator.clipboard.writeText(template.text); showToastEvent(translate(language, 'textCopied'), 'success') }}
+                      usageLabel={template.usageCount > 0 ? translate(language, 'usageCount', { count: template.usageCount }) : undefined}
+                    />
+                  </TemplateShell>
+                </div>
               ))}
             </div>
           ) : (
@@ -756,10 +810,22 @@ function SettingsDrawer({
   onApplyCardPreset: (preset: AppSettings['cardPreset']) => void
 }) {
   const presets = Object.keys(CARD_PRESETS[settings.theme]) as AppSettings['cardPreset'][]
+  const sendDelayOptions = [0, ...Array.from({ length: 13 }, (_, index) => index + 3)].map((value) => ({
+    value: String(value),
+    label: `${value} ${translate(language, 'secondsShort')}`,
+  }))
+  const sendMethodOptions = [
+    { value: 'auto', label: translate(language, 'sendAuto') },
+    { value: 'button', label: translate(language, 'sendButton') },
+    { value: 'enter', label: translate(language, 'sendEnter') },
+    { value: 'ctrl-enter', label: translate(language, 'sendCtrlEnter') },
+    { value: 'shift-enter', label: translate(language, 'sendShiftEnter') },
+    { value: 'alt-enter', label: translate(language, 'sendAltEnter') },
+  ]
 
   return (
     <div className="fixed inset-0 z-[2147483632] flex justify-end bg-slate-950/40 backdrop-blur-sm" onMouseDown={onClose}>
-      <aside className="h-full w-[min(520px,100vw)] overflow-y-auto border-l bg-white p-5 shadow-2xl dark:border-slate-800 dark:bg-slate-950" onMouseDown={(event) => event.stopPropagation()}>
+      <aside className="h-full w-[min(760px,100vw)] overflow-y-auto border-l bg-white p-5 shadow-2xl dark:border-slate-800 dark:bg-slate-950" onMouseDown={(event) => event.stopPropagation()}>
         <div className="mb-5 flex items-center justify-between">
           <div>
             <div className="text-lg font-bold">{translate(language, 'settings')}</div>
@@ -768,7 +834,8 @@ function SettingsDrawer({
           <Button size="icon" variant="ghost" onClick={onClose}><X className="h-4 w-4" /></Button>
         </div>
 
-        <div className="space-y-4">
+        <TooltipProvider delayDuration={250}>
+        <div className="grid gap-4 xl:grid-cols-2">
           <SettingsBlock title={ui(language, 'Основное', 'Basics')}>
             <ToggleLine label={translate(language, 'darkTheme')} checked={settings.theme === 'dark'} onCheckedChange={(checked) => onSettingsChange({ theme: checked ? 'dark' : 'light', ...cardPresetFor(checked ? 'dark' : 'light', settings.cardPreset) })} />
             <SelectLine label={translate(language, 'language')} value={settings.uiLanguage} onChange={(value) => onSettingsChange({ uiLanguage: value as AppSettings['uiLanguage'] })} options={[{ value: 'ru', label: 'RU' }, { value: 'en', label: 'EN' }]} />
@@ -777,7 +844,7 @@ function SettingsDrawer({
 
           <SettingsBlock title={ui(language, 'Раскладка и карточки', 'Layout and cards')}>
               <SelectLine label={ui(language, 'Колонки', 'Columns')} value={String(settings.gridCols)} onChange={(value) => onSettingsChange({ gridCols: Math.max(1, Number(value) || 3) })} options={[1, 2, 3, 4].map((value) => ({ value: String(value), label: ui(language, `${value} колонки`, `${value} columns`) }))} />
-            <SelectLine label={ui(language, 'Высота карточки', 'Card height')} value={settings.gridHeight} onChange={(value) => onSettingsChange({ gridHeight: value })} options={['180px', '220px', '260px', '320px'].map((value) => ({ value, label: value }))} />
+            <SelectLine label={ui(language, 'Высота карточки', 'Card height')} value={settings.gridHeight} onChange={(value) => onSettingsChange({ gridHeight: value })} options={['180px', '220px', '240px', '260px', '320px', 'masonry'].map((value) => ({ value, label: value === 'masonry' ? ui(language, 'Masonry', 'Masonry') : value }))} />
             <SelectLine label={translate(language, 'noteTextSize')} value={settings.noteFontSize} onChange={(value) => onSettingsChange({ noteFontSize: value as AppSettings['noteFontSize'] })} options={['12', '13', '14', '15', '16', '18'].map((value) => ({ value, label: `${value}px` }))} />
             <SelectLine label={translate(language, 'noteFontFamily')} value={settings.noteFontFamily} onChange={(value) => onSettingsChange({ noteFontFamily: value as AppSettings['noteFontFamily'] })} options={[
               { value: 'system', label: ui(language, 'Системный', 'System') },
@@ -823,6 +890,39 @@ function SettingsDrawer({
             <ToggleLine label={ui(language, 'Показывать основные настройки в заголовке панели', 'Show main settings in panel header')} checked={settings.showHeaderControls} onCheckedChange={(checked) => onSettingsChange({ showHeaderControls: checked })} />
           </SettingsBlock>
 
+          <SettingsBlock title={translate(language, 'sendSettings')}>
+            <SelectLine
+              label={translate(language, 'safeSendDelay')}
+              value={String(settings.safeSendDelay)}
+              onChange={(value) => {
+                const delay = Number(value)
+                onSettingsChange({ safeSendDelay: delay, safeSendEnabled: delay > 0 })
+              }}
+              options={sendDelayOptions}
+              hint={translate(language, 'safeSendDelayHint')}
+            />
+            <SelectLine
+              label={translate(language, 'sendMethod')}
+              value={settings.sendMethod}
+              onChange={(value) => onSettingsChange({ sendMethod: value as AppSettings['sendMethod'] })}
+              options={sendMethodOptions}
+              hint={translate(language, 'sendMethodHint')}
+            />
+            {settings.sendMethod === 'button' && (
+              <label className="grid gap-1 rounded-xl bg-white p-3 text-sm shadow-sm dark:bg-slate-950">
+                <span className="flex items-center gap-1 font-medium">
+                  {translate(language, 'sendButtonSelector')}
+                  <HintTooltip text={translate(language, 'sendButtonSelectorHint')} />
+                </span>
+                <Input
+                  value={settings.sendButtonSelector || ''}
+                  onChange={(event) => onSettingsChange({ sendButtonSelector: event.target.value.trim() || null })}
+                  placeholder="button[type='submit']"
+                />
+              </label>
+            )}
+          </SettingsBlock>
+
           <SettingsBlock title={translate(language, 'searchAndModules')}>
             <SelectLine label={translate(language, 'trigger')} value={settings.searchTrigger} onChange={(value) => onSettingsChange({ searchTrigger: value as AppSettings['searchTrigger'] })} options={[{ value: '/', label: '/' }, { value: '@', label: '@' }]} />
             <ToggleLine label={translate(language, 'atSearchInInput', { trigger: settings.searchTrigger })} checked={settings.atMenuEnabled} onCheckedChange={(checked) => onSettingsChange({ atMenuEnabled: checked })} hint={translate(language, 'atSearchHint')} />
@@ -861,6 +961,7 @@ function SettingsDrawer({
             <GuideLine icon={<CheckSquare />} title={ui(language, 'Массовые действия', 'Bulk actions')} text={ui(language, 'Нажмите «Массовые действия», выберите карточки и быстро удалите, продублируйте или добавьте их в избранное.', 'Turn on bulk actions, select cards, then delete, duplicate, or favorite them quickly.')} />
           </SettingsBlock>
         </div>
+        </TooltipProvider>
       </aside>
     </div>
   )
@@ -897,7 +998,10 @@ function ToggleLine({ label, checked, onCheckedChange, hint }: { label: string; 
   return (
     <label className="flex items-center justify-between gap-3 rounded-xl bg-white p-3 text-sm shadow-sm dark:bg-slate-950">
       <span>
-        <span className="block font-medium">{label}</span>
+        <span className="flex items-center gap-1 font-medium">
+          {label}
+          <HintTooltip text={hint} />
+        </span>
         {hint && <span className="mt-1 block text-xs leading-relaxed text-slate-500 dark:text-slate-400">{hint}</span>}
       </span>
       <Switch checked={checked} onCheckedChange={onCheckedChange} />
@@ -905,14 +1009,33 @@ function ToggleLine({ label, checked, onCheckedChange, hint }: { label: string; 
   )
 }
 
-function SelectLine({ label, value, options, onChange }: { label: string; value: string; options: Array<{ value: string; label: string }>; onChange: (value: string) => void }) {
+function SelectLine({ label, value, options, onChange, hint }: { label: string; value: string; options: Array<{ value: string; label: string }>; onChange: (value: string) => void; hint?: string }) {
   return (
     <label className="grid gap-1 rounded-xl bg-white p-3 text-sm shadow-sm dark:bg-slate-950">
-      <span className="font-medium">{label}</span>
+      <span className="flex items-center gap-1 font-medium">
+        {label}
+        <HintTooltip text={hint} />
+      </span>
       <select className="h-9 rounded-lg border bg-white px-2 dark:border-slate-800 dark:bg-slate-900" value={value} onChange={(event) => onChange(event.target.value)}>
         {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
       </select>
     </label>
+  )
+}
+
+function HintTooltip({ text }: { text?: string }) {
+  if (!text) return null
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button type="button" className="inline-flex h-4 w-4 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200" onClick={(event) => event.preventDefault()}>
+          <Info className="h-3 w-3" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" align="start" sideOffset={6} collisionPadding={12} className="max-w-[260px] bg-slate-950 px-3 py-2 text-left leading-relaxed text-white dark:bg-white dark:text-slate-950">
+        {text}
+      </TooltipContent>
+    </Tooltip>
   )
 }
 
@@ -946,6 +1069,18 @@ function scaleOptions() {
 
 function getTemplateFolder(template: TemplateWithFolder, fallback: string) {
   return typeof template.folder === 'string' && template.folder.trim() ? template.folder.trim() : fallback
+}
+
+function getVisibleBaseTab(tab: ActiveTab, settings: AppSettings): ActiveTab {
+  if (tab === 'variables' && !settings.showVariablesTab) return 'templates'
+  if (tab === 'todo' && !settings.showTodoTab) return 'templates'
+  return tab
+}
+
+function currentBaseTitle(language: AppSettings['uiLanguage'], tab: ActiveTab, mainFilter: MainFilter, folderFilter: string | null, tagFilter: string | null) {
+  if (tab === 'variables') return translate(language, 'variablesTab')
+  if (tab === 'todo') return translate(language, 'tasksTab')
+  return currentTitle(language, mainFilter, folderFilter, tagFilter)
 }
 
 function currentTitle(language: AppSettings['uiLanguage'], mainFilter: MainFilter, folderFilter: string | null, tagFilter: string | null) {

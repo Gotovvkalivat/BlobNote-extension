@@ -44,6 +44,7 @@ export type RuntimeSnapshot = {
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean
+  showHeaderControls: boolean
   recentInsertions: RecentInsertion[]
   searchTrigger: AppSettings['searchTrigger']
   showVariablesTab: boolean
@@ -81,6 +82,7 @@ type RawSyncData = {
   atMenuEnabled: boolean
   floatingPanelEnabled: boolean
   clipboardPanelEnabled: boolean
+  showHeaderControls: boolean
   recentInsertions: Partial<RecentInsertion>[]
   searchTrigger: AppSettings['searchTrigger']
   showVariablesTab: boolean
@@ -106,6 +108,7 @@ const defaults: RawSyncData = {
   atMenuEnabled: false,
   floatingPanelEnabled: true,
   clipboardPanelEnabled: false,
+  showHeaderControls: true,
   recentInsertions: [],
   searchTrigger: '/',
   showVariablesTab: false,
@@ -139,6 +142,7 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
       atMenuEnabled: false,
       floatingPanelEnabled: true,
       clipboardPanelEnabled: false,
+      showHeaderControls: true,
       recentInsertions: [],
       searchTrigger: '/',
       showVariablesTab: false,
@@ -175,6 +179,7 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
         atMenuEnabled: data.atMenuEnabled ?? false,
         floatingPanelEnabled: data.floatingPanelEnabled ?? true,
         clipboardPanelEnabled: data.clipboardPanelEnabled ?? false,
+        showHeaderControls: data.showHeaderControls ?? true,
         recentInsertions: normalizeRecentInsertions(data.recentInsertions),
         searchTrigger: data.searchTrigger === '@' ? '@' : '/',
         showVariablesTab: variablesEnabled,
@@ -277,10 +282,11 @@ function normalizeSiteSettings(value: unknown): Record<string, SiteSettings> {
     if (settings.uiScale) next.uiScale = normalizeUiScale(settings.uiScale)
     if (settings.panelScale) next.panelScale = normalizeUiScale(settings.panelScale)
     if (settings.panelPlacement) next.panelPlacement = normalizePanelPlacement(settings.panelPlacement)
-    if (typeof settings.panelCompactMode === 'boolean') next.panelCompactMode = settings.panelCompactMode
-    if (settings.sendMethod) next.sendMethod = normalizeSendMethod(settings.sendMethod)
-    if ('sendButtonSelector' in settings) next.sendButtonSelector = normalizeSendButtonSelector(settings.sendButtonSelector)
-    if (Object.keys(next).length > 0) acc[host] = next
+  if (typeof settings.panelCompactMode === 'boolean') next.panelCompactMode = settings.panelCompactMode
+  if (settings.sendMethod) next.sendMethod = normalizeSendMethod(settings.sendMethod)
+  if ('sendButtonSelector' in settings) next.sendButtonSelector = normalizeSendButtonSelector(settings.sendButtonSelector)
+  if ('pinnedInputSelector' in settings) next.pinnedInputSelector = normalizeSendButtonSelector(settings.pinnedInputSelector)
+  if (Object.keys(next).length > 0) acc[host] = next
     return acc
   }, {})
 }

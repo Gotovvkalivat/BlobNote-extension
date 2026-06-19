@@ -1,5 +1,5 @@
 import React from 'react'
-import { Copy, Send, X } from 'lucide-react'
+import { Copy, Maximize2, Minimize2, Send, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { showToast } from '@/components/ui/toast'
@@ -18,12 +18,14 @@ type TemplatePreviewModalProps = {
 
 export function TemplatePreviewModal({ template, variables, language, allowInsert, onInserted, onClose }: TemplatePreviewModalProps) {
   const [text, setText] = React.useState('')
+  const [fullSize, setFullSize] = React.useState(false)
   const t = React.useCallback((key: string) => translate(language, key), [language])
 
   React.useEffect(() => {
     if (!template) return
     const resolved = resolveTemplateText(template.text, variables)
     setText(resolved ?? template.text)
+    setFullSize(false)
   }, [template, variables])
 
   if (!template) return null
@@ -47,12 +49,25 @@ export function TemplatePreviewModal({ template, variables, language, allowInser
 
   return (
     <div className="fixed inset-0 z-[2147483630] flex animate-in fade-in items-center justify-center bg-slate-950/40 p-4 text-foreground backdrop-blur-sm duration-150">
-      <div className="flex max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))] animate-in zoom-in-95 flex-col overflow-hidden rounded-lg border bg-background shadow-2xl duration-150">
+      <div className={`flex animate-in zoom-in-95 flex-col overflow-hidden rounded-lg border bg-background shadow-2xl duration-150 ${
+        fullSize
+          ? 'h-[calc(100vh-24px)] w-[calc(100vw-24px)]'
+          : 'max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))]'
+      }`}>
         <div className="flex items-center gap-3 border-b px-4 py-3">
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-sm truncate">{template.title}</div>
             <div className="text-[11px] text-muted-foreground">{t('previewHint')}</div>
           </div>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8"
+            title={fullSize ? (language === 'en' ? 'Compact view' : 'Обычный размер') : (language === 'en' ? 'Full size' : 'На весь экран')}
+            onClick={() => setFullSize((value) => !value)}
+          >
+            {fullSize ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          </Button>
           <Button size="icon" variant="ghost" className="h-8 w-8" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
@@ -62,7 +77,7 @@ export function TemplatePreviewModal({ template, variables, language, allowInser
           <Textarea
             value={text}
             onChange={(event) => setText(event.target.value)}
-            className="min-h-[320px] max-h-[60vh] resize-y text-base leading-relaxed"
+            className={`resize-y text-base leading-relaxed ${fullSize ? 'h-full min-h-[calc(100vh-180px)]' : 'min-h-[320px] max-h-[60vh]'}`}
           />
         </div>
 

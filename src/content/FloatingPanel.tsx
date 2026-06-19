@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { ClipboardList, Clock3, Database, Eraser, Minimize2, Pencil, Save, Send, Settings2, Trash2, X } from 'lucide-react'
+import { ClipboardList, Clock3, Database, Eraser, Minimize2, Pencil, Pin, PinOff, Save, Send, Settings2, Trash2, X } from 'lucide-react'
 import type { AppSettings, RecentInsertion, SendMethod, SiteSettings, Template } from '@/types'
 import { translate } from '@/lib/i18n'
 import { showToast } from '@/components/ui/toast'
@@ -14,6 +14,7 @@ import {
   readRuntimeSnapshot,
   setNativeValue,
 } from '@/lib/templateRuntime'
+import type { EditableElement } from '@/lib/templateRuntime'
 
 type FloatingPanelProps = {
   uiScale: AppSettings['uiScale']
@@ -75,7 +76,8 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
   const [settingsOpen, setSettingsOpen] = React.useState(false)
   const [panelScale, setPanelScale] = React.useState<AppSettings['panelScale']>(uiScale)
   const [placement, setPlacement] = React.useState<AppSettings['panelPlacement']>('auto')
-  const [compactMode, setCompactMode] = React.useState(false)
+  const [showRecentInsertions, setShowRecentInsertions] = React.useState(false)
+  const [pinnedInputSelector, setPinnedInputSelector] = React.useState('')
   const [safeSendDelay, setSafeSendDelay] = React.useState(0)
   const [sendMethod, setSendMethod] = React.useState<SendMethod>('auto')
   const [sendButtonSelector, setSendButtonSelector] = React.useState('')
@@ -83,8 +85,9 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
   const [draftTitle, setDraftTitle] = React.useState('')
   const [draftText, setDraftText] = React.useState('')
   const panelRef = React.useRef<HTMLDivElement>(null)
-  const targetRef = React.useRef<Element | null>(null)
+  const targetRef = React.useRef<EditableElement | null>(null)
   const t = React.useCallback((key: string) => translate(language, key), [language])
+  const text = React.useCallback((ru: string, en: string) => (language === 'en' ? en : ru), [language])
   const scale = uiScaleFactor(panelScale)
 
   React.useEffect(() => {
@@ -101,10 +104,11 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
       setLanguage(snapshot.uiLanguage)
       setPanelScale(snapshot.panelScale)
       setPlacement(snapshot.panelPlacement)
-      setCompactMode(snapshot.panelCompactMode)
+      setShowRecentInsertions(snapshot.panelCompactMode)
       setSafeSendDelay(snapshot.safeSendDelay)
       setSendMethod(snapshot.sendMethod)
       setSendButtonSelector(snapshot.sendButtonSelector || '')
+      setPinnedInputSelector(snapshot.siteSettings[window.location.hostname]?.pinnedInputSelector || '')
     }
 
     void loadSnapshot()
@@ -157,6 +161,11 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
         setCollapsed(false)
       }
 
+      if (pinnedInputSelector && !matchesPinnedInput(target, pinnedInputSelector)) {
+        setVisible(false)
+        return
+      }
+
       const panelHovered = Boolean(panelRef.current?.matches(':hover'))
       const panelRoot = panelRef.current?.getRootNode()
       const panelFocused = Boolean(
@@ -170,9 +179,20 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
 
       if (editableFocused || panelActive) {
         const rect = target.getBoundingClientRect()
+        if (collapsed) {
+          const visualSize = 40 * scale
+          setPosition({
+            top: clamp(rect.bottom - visualSize - 4, 8, window.innerHeight - visualSize - 8),
+            left: clamp(rect.right - visualSize - 4, 8, window.innerWidth - visualSize - 8),
+            width: 40,
+          })
+          setVisible(true)
+          return
+        }
+
         const layoutHeight = panelRef.current?.offsetHeight || (favorites.length > 0 || clipboardItems.length > 0 ? 168 : 78)
         const visualHeight = layoutHeight * scale
-        const visualWidth = compactMode ? Math.min(Math.max(260, rect.width), window.innerWidth - 16) : Math.min(Math.max(320, rect.width), window.innerWidth - 16)
+        const visualWidth = Math.min(Math.max(320, rect.width), window.innerWidth - 16)
         const layoutWidth = visualWidth / scale
         const availableAbove = rect.top - 8
         const availableBelow = window.innerHeight - rect.bottom - 8
@@ -220,7 +240,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
       document.removeEventListener('input', checkFocus, true)
       window.clearInterval(interval)
     }
-  }, [clipboardItems.length, compactMode, enabled, favorites.length, placement, scale, settingsOpen])
+  }, [clipboardItems.length, collapsed, enabled, favorites.length, pinnedInputSelector, placement, scale, settingsOpen])
 
   React.useEffect(() => {
     if (!enabled || !clipboardEnabled) {
@@ -252,7 +272,9 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
 
   if (!enabled || !visible) return null
 
-  const target = getActiveEditableElement()
+  const activeTarget = getActiveEditableElement()
+  if (activeTarget) targetRef.current = activeTarget
+  const target = activeTarget || targetRef.current
   const updateSiteSettings = (patch: SiteSettings) => {
     const host = window.location.hostname
     if (typeof chrome === 'undefined' || !chrome.storage?.sync) return
@@ -263,7 +285,6 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
     if (typeof patch.panelCompactMode === 'boolean') globalPatch.panelCompactMode = patch.panelCompactMode
     if (patch.sendMethod) globalPatch.sendMethod = patch.sendMethod
     if ('sendButtonSelector' in patch) globalPatch.sendButtonSelector = patch.sendButtonSelector ?? null
-
     if (!host) {
       chrome.storage.sync.set(globalPatch)
       return
@@ -288,6 +309,20 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
     if (!target) return
     setNativeValue(target, '')
     target.focus()
+  }
+
+  const pinCurrentField = () => {
+    if (!target) return
+    const selector = createInputSelector(target)
+    setPinnedInputSelector(selector)
+    updateSiteSettings({ pinnedInputSelector: selector })
+    showToast(text('Панель привязана к этому полю', 'Panel pinned to this field'), 'success')
+  }
+
+  const unpinField = () => {
+    setPinnedInputSelector('')
+    updateSiteSettings({ pinnedInputSelector: null })
+    showToast(text('Привязка панели сброшена', 'Panel pin cleared'), 'success')
   }
 
   const startEditing = (template: Template) => {
@@ -335,13 +370,12 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           zIndex: 2147483640,
           color: '#ffffff',
         }}
-        className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/20 bg-slate-950 px-2 text-[10px] font-semibold text-white shadow-[0_18px_42px_rgba(2,6,23,.42),0_0_0_1px_rgba(255,255,255,.12)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_rgba(2,6,23,.52),0_0_0_1px_rgba(255,255,255,.18)] active:scale-95"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-slate-950 text-white shadow-[0_18px_42px_rgba(2,6,23,.42),0_0_0_1px_rgba(255,255,255,.14)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_rgba(2,6,23,.52),0_0_0_1px_rgba(255,255,255,.2)] active:scale-95"
         title={t('showPanel')}
         onMouseDown={(event) => event.preventDefault()}
         onClick={() => setCollapsed(false)}
       >
-        <BlobNoteMark className="h-5 w-5 shrink-0" />
-        <span className="max-w-[80px] truncate [text-shadow:0_1px_2px_rgba(0,0,0,.8)]" style={{ color: '#ffffff' }}>BlobNote</span>
+        <BlobNoteMark className="h-6 w-6 shrink-0" />
       </button>
     )
   }
@@ -396,14 +430,14 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
             <Minimize2 className="h-3 w-3" />
           </Button>
           <Button
-            size="sm"
+            size="icon"
             variant="default"
-            className="h-6 text-xs"
+            className="h-6 w-6 text-white"
+            title={t('base')}
             onMouseDown={(event) => event.preventDefault()}
             onClick={onOpenBase}
           >
-            <Database className="mr-1 h-3 w-3" />
-            {t('base')}
+            <Database className="h-3 w-3" />
           </Button>
         </div>
       </div>
@@ -451,15 +485,40 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
             <label className="flex items-center gap-2 rounded-md border bg-muted/30 px-2 py-1.5">
               <input
                 type="checkbox"
-                checked={!compactMode}
+                checked={showRecentInsertions}
                 onChange={(event) => {
-                  const nextCompactMode = !event.target.checked
-                  setCompactMode(nextCompactMode)
-                  updateSiteSettings({ panelCompactMode: nextCompactMode })
+                  setShowRecentInsertions(event.target.checked)
+                  updateSiteSettings({ panelCompactMode: event.target.checked })
                 }}
               />
               <span>{t('compactPanel')}</span>
             </label>
+            <div className="grid gap-1 rounded-md border bg-muted/30 px-2 py-1.5">
+              <div className="text-muted-foreground">{text('Привязка к полю', 'Field pin')}</div>
+              <div className="grid grid-cols-2 gap-1">
+                <button
+                  type="button"
+                  className="inline-flex min-w-0 items-center justify-center gap-1 rounded-md border bg-background px-2 py-1 text-[10px] font-medium hover:bg-muted"
+                  title={text('Показывать панель только у текущего поля ввода', 'Show the panel only near the current input field')}
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={pinCurrentField}
+                >
+                  <Pin className="h-3 w-3" />
+                  <span className="truncate">{text('Привязать', 'Pin')}</span>
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex min-w-0 items-center justify-center gap-1 rounded-md border bg-background px-2 py-1 text-[10px] font-medium hover:bg-muted"
+                  title={text('Снова показывать панель у любых полей ввода', 'Show the panel near any input field again')}
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={unpinField}
+                >
+                  <PinOff className="h-3 w-3" />
+                  <span className="truncate">{text('Сбросить', 'Clear')}</span>
+                </button>
+              </div>
+              {pinnedInputSelector && <div className="truncate text-[10px] text-muted-foreground" title={pinnedInputSelector}>{pinnedInputSelector}</div>}
+            </div>
           </div>
 
           <div className="grid gap-2">
@@ -558,18 +617,16 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
               >
                 <span className="block min-w-0 truncate">{template.title}</span>
               </Button>
-              {!compactMode && (
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-6 w-6 rounded-md"
-                  title={t('editNote')}
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => startEditing(template)}
-                >
-                  <Pencil className="h-3 w-3" />
-                </Button>
-              )}
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-6 w-6 rounded-md"
+                title={t('editNote')}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => startEditing(template)}
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
               <Button
                 size="icon"
                 variant="secondary"
@@ -585,7 +642,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
         )}
       </div>
 
-      {recentInsertions.length > 0 && !compactMode && (
+      {recentInsertions.length > 0 && showRecentInsertions && (
         <div className="mt-2 border-t pt-2">
           <div className="mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
             <Clock3 className="h-3 w-3" />
@@ -731,4 +788,35 @@ function PanelChoiceGrid({
       ))}
     </div>
   )
+}
+
+function cssEscape(value: string) {
+  if (typeof CSS !== 'undefined' && CSS.escape) return CSS.escape(value)
+  return value.replace(/["\\#.:,[\]>+~*^$|=]/g, '\\$&')
+}
+
+function createInputSelector(element: Element) {
+  const tag = element.tagName.toLowerCase()
+  const id = element.getAttribute('id')
+  if (id) return `#${cssEscape(id)}`
+
+  const stableAttributes = ['name', 'aria-label', 'placeholder', 'data-testid', 'data-test', 'data-qa', 'data-role']
+  for (const attribute of stableAttributes) {
+    const value = element.getAttribute(attribute)
+    if (value) return `${tag}[${attribute}="${cssEscape(value)}"]`
+  }
+
+  const parent = element.parentElement
+  if (!parent) return tag
+  const siblings = Array.from(parent.children).filter((item) => item.tagName === element.tagName)
+  const index = Math.max(1, siblings.indexOf(element) + 1)
+  return `${parent.tagName.toLowerCase()} > ${tag}:nth-of-type(${index})`
+}
+
+function matchesPinnedInput(element: Element, selector: string) {
+  try {
+    return element.matches(selector) || document.querySelector(selector) === element
+  } catch {
+    return false
+  }
 }

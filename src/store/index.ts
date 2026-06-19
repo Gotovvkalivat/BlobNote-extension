@@ -277,6 +277,7 @@ function normalizeSiteSettings(value: unknown): Record<string, SiteSettings> {
     if (typeof settings.panelCompactMode === 'boolean') next.panelCompactMode = settings.panelCompactMode
     if (settings.sendMethod) next.sendMethod = normalizeSendMethod(settings.sendMethod)
     if ('sendButtonSelector' in settings) next.sendButtonSelector = normalizeSendButtonSelector(settings.sendButtonSelector)
+    if ('pinnedInputSelector' in settings) next.pinnedInputSelector = normalizeSendButtonSelector(settings.pinnedInputSelector)
     if (Object.keys(next).length > 0) acc[host] = next
     return acc
   }, {})

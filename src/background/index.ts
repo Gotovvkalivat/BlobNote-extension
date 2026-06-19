@@ -2,6 +2,8 @@
 
 const TOP_TEMPLATES_LIMIT = 10
 const TODO_ALARM_PREFIX = 'ops-todo-reminder-'
+const GOOGLE_CLIENT_ID = '949261069316-826p2dteil4hascvlgmic08ke88p9pgb.apps.googleusercontent.com'
+const GOOGLE_DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file'
 type UiLanguage = 'ru' | 'en'
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -122,27 +124,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   }
 
   if (request.type === 'GOOGLE_SIGN_IN') {
-    const identity = chrome.identity
-    if (!identity?.getAuthToken) {
-      sendResponse({ success: false, error: 'Google-вход пока не настроен для этой сборки' })
-      return false
-    }
-
-    identity.getAuthToken({ interactive: true }, (token) => {
-      if (chrome.runtime.lastError || !token) {
-        sendResponse({ success: false, error: chrome.runtime.lastError?.message || 'Не удалось войти через Google' })
-        return
-      }
-
-      chrome.storage.sync.set(
-        {
-          googleDriveConnected: true,
-          googleDriveConnectedAt: new Date().toISOString(),
-        },
-        () => sendResponse({ success: true })
-      )
-    })
-
+    signInWithGoogle(sendResponse)
     return true
   }
 
@@ -183,6 +165,85 @@ function updateContextMenu() {
               : 'Открыть базу',
         contexts: ['editable'],
       })
+    })
+  })
+}
+
+function signInWithGoogle(sendResponse: (response?: { success: boolean; error?: string }) => void) {
+  const identity = chrome.identity
+  if (!identity) {
+    sendResponse({ success: false, error: 'Google-вход недоступен в этой сборке расширения' })
+    return
+  }
+
+  const finish = (token: string) => {
+    chrome.storage.local.set({ googleDriveAccessToken: token }, () => {
+      chrome.storage.sync.set(
+        {
+          googleDriveConnected: true,
+          googleDriveConnectedAt: new Date().toISOString(),
+        },
+        () => sendResponse({ success: true })
+      )
+    })
+  }
+
+  if (identity.getAuthToken) {
+    identity.getAuthToken({ interactive: true }, (token) => {
+      if (token && !chrome.runtime.lastError) {
+        finish(token)
+        return
+      }
+
+      launchGoogleWebAuthFlow(identity, sendResponse, chrome.runtime.lastError?.message)
+    })
+    return
+  }
+
+  launchGoogleWebAuthFlow(identity, sendResponse)
+}
+
+function launchGoogleWebAuthFlow(
+  identity: typeof chrome.identity,
+  sendResponse: (response?: { success: boolean; error?: string }) => void,
+  previousError?: string
+) {
+  if (!identity.launchWebAuthFlow || !identity.getRedirectURL) {
+    sendResponse({ success: false, error: previousError || 'Google-вход пока не настроен для этой сборки' })
+    return
+  }
+
+  const redirectUri = identity.getRedirectURL('google')
+  const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
+  authUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID)
+  authUrl.searchParams.set('response_type', 'token')
+  authUrl.searchParams.set('redirect_uri', redirectUri)
+  authUrl.searchParams.set('scope', GOOGLE_DRIVE_SCOPE)
+  authUrl.searchParams.set('prompt', 'consent')
+
+  identity.launchWebAuthFlow({ url: authUrl.toString(), interactive: true }, (redirectUrl) => {
+    if (chrome.runtime.lastError || !redirectUrl) {
+      const setupHint = `Google-вход не завершён. Проверьте OAuth Client ID и добавьте redirect URI: ${redirectUri}`
+      sendResponse({ success: false, error: chrome.runtime.lastError?.message || previousError || setupHint })
+      return
+    }
+
+    const hash = new URL(redirectUrl).hash.replace(/^#/, '')
+    const params = new URLSearchParams(hash)
+    const token = params.get('access_token')
+    if (!token) {
+      sendResponse({ success: false, error: `Google не вернул access token. Redirect URI для настройки: ${redirectUri}` })
+      return
+    }
+
+    chrome.storage.local.set({ googleDriveAccessToken: token }, () => {
+      chrome.storage.sync.set(
+        {
+          googleDriveConnected: true,
+          googleDriveConnectedAt: new Date().toISOString(),
+        },
+        () => sendResponse({ success: true })
+      )
     })
   })
 }

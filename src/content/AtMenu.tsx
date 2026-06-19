@@ -128,21 +128,27 @@ export function AtMenu({ uiScale }: AtMenuProps) {
       setActive(true)
     }
 
+    const stopMenuKey = (event: KeyboardEvent) => {
+      event.preventDefault()
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+    }
+
     const handleKeydown = (event: KeyboardEvent) => {
       if (!active) return
 
       if (event.key === 'ArrowDown') {
-        event.preventDefault()
+        stopMenuKey(event)
         setSelectedIndex((index) => (index + 1) % filtered.length)
       } else if (event.key === 'ArrowUp') {
-        event.preventDefault()
+        stopMenuKey(event)
         setSelectedIndex((index) => (index - 1 + filtered.length) % filtered.length)
       } else if (event.key === 'Enter') {
-        event.preventDefault()
+        stopMenuKey(event)
         const template = filtered[selectedIndex]
         if (template) insertAtTemplate(template)
       } else if (event.key === 'Escape') {
-        event.preventDefault()
+        stopMenuKey(event)
         setActive(false)
       }
     }
@@ -153,12 +159,12 @@ export function AtMenu({ uiScale }: AtMenuProps) {
     }
 
     document.addEventListener('input', handleInput)
-    document.addEventListener('keydown', handleKeydown)
+    document.addEventListener('keydown', handleKeydown, true)
     document.addEventListener('click', handleClick)
 
     return () => {
       document.removeEventListener('input', handleInput)
-      document.removeEventListener('keydown', handleKeydown)
+      document.removeEventListener('keydown', handleKeydown, true)
       document.removeEventListener('click', handleClick)
     }
   }, [active, enabled, filtered, scale, selectedIndex, templates, trigger])

@@ -35,6 +35,7 @@ export function TemplateEditor({
   const [folder, setFolder] = React.useState((template as Template & { folder?: string | null })?.folder || '')
   const [tag, setTag] = React.useState(template?.tag || '')
   const [tagColor, setTagColor] = React.useState(template?.tagColor || TAG_COLORS[0].value)
+  const [showFolderDropdown, setShowFolderDropdown] = React.useState(false)
   const [showTagDropdown, setShowTagDropdown] = React.useState(false)
   const [errors, setErrors] = React.useState<{ title?: string; text?: string }>({})
   const titleRef = React.useRef<HTMLInputElement>(null)
@@ -83,6 +84,7 @@ export function TemplateEditor({
     })
   }
 
+  const filteredFolders = allFolders.filter((item) => item.toLowerCase().includes(folder.toLowerCase()))
   const filteredTags = allTags.filter((item) => item.toLowerCase().includes(tag.toLowerCase()))
 
   const updateTag = (value: string) => {
@@ -144,18 +146,38 @@ export function TemplateEditor({
           </div>
         </div>
 
-        <div className="relative">
-          <Input
-            placeholder={language === 'en' ? 'Folder...' : 'Папка...'}
-            value={folder}
-            onChange={(event) => setFolder(event.target.value)}
-            list="blobnote-folder-options"
-            className="mb-2 h-10 text-base"
-          />
-          <datalist id="blobnote-folder-options">
-            {allFolders.map((item) => <option key={item} value={item} />)}
-          </datalist>
+        <div className="space-y-2">
+          <div className="relative">
+            <Input
+              placeholder={language === 'en' ? 'Folder...' : 'Папка...'}
+              value={folder}
+              onChange={(event) => {
+                setFolder(event.target.value)
+                setShowFolderDropdown(true)
+              }}
+              onFocus={() => setShowFolderDropdown(true)}
+              onBlur={() => window.setTimeout(() => setShowFolderDropdown(false), 200)}
+              className="h-10 text-base"
+            />
+            {showFolderDropdown && filteredFolders.length > 0 && (
+              <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-[132px] overflow-y-auto rounded-md border bg-background shadow-lg">
+                {filteredFolders.map((item) => (
+                  <button
+                    key={item}
+                    className="w-full px-2 py-1.5 text-left text-xs hover:bg-muted"
+                    onMouseDown={() => {
+                      setFolder(item)
+                      setShowFolderDropdown(false)
+                    }}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
+          <div className="relative">
           <Input
             placeholder={t('tagPlaceholder')}
             value={tag}
@@ -184,6 +206,7 @@ export function TemplateEditor({
               ))}
             </div>
           )}
+          </div>
         </div>
 
         {tag.trim() && (
