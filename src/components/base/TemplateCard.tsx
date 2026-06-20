@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { BarChart3, Copy, FileText, Pencil, Star, Trash2 } from 'lucide-react'
+import { BarChart3, Copy, FileText, Heart, Pencil, Trash2 } from 'lucide-react'
 import type { Template } from '@/types'
 import { tagColorStyle } from '@/lib/tagColors'
 
@@ -102,10 +102,10 @@ export function TemplateCard({
         <Button
           size="icon"
           variant="ghost"
-          className={cn('h-6 w-6', template.favorite && 'text-amber-500')}
+          className={cn('h-6 w-6', template.favorite && 'text-rose-500')}
           onClick={(event) => { event.stopPropagation(); onToggleFavorite() }}
         >
-          <Star className={cn('h-3 w-3', template.favorite && 'fill-current')} />
+          <Heart className={cn('h-3 w-3', template.favorite && 'fill-current')} />
         </Button>
         <Button size="icon" variant="ghost" className="h-6 w-6" onClick={(event) => { event.stopPropagation(); onEdit() }}>
           <Pencil className="h-3 w-3" />

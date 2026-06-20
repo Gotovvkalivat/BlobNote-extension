@@ -22,7 +22,6 @@ import {
   Settings,
   Slash,
   Sparkles,
-  Star,
 } from 'lucide-react'
 
 type PopupTab = 'base' | 'settings'
@@ -224,7 +223,7 @@ function TemplateRow({ template, language, onInsert, onSend }: { template: Templ
     <div className="group grid grid-cols-[1fr_auto] gap-2 p-2.5 transition hover:bg-slate-50 dark:hover:bg-slate-800/70">
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          {template.favorite ? <Star className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-500" /> : <Heart className="h-3.5 w-3.5 shrink-0 text-slate-300" />}
+          <Heart className={`h-3.5 w-3.5 shrink-0 ${template.favorite ? 'fill-rose-400 text-rose-500' : 'text-slate-300'}`} />
           <div className="truncate text-sm font-semibold">{template.title}</div>
         </div>
         <div className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{template.text}</div>

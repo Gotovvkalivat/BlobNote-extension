@@ -3,9 +3,8 @@ import { Search, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { showToast } from '@/components/ui/toast'
 import type { AppSettings, Template } from '@/types'
-import { getActiveEditableElement, insertTemplate, readRuntimeSnapshot } from '@/lib/templateRuntime'
+import { insertTemplate, readRuntimeSnapshot } from '@/lib/templateRuntime'
 import { cn } from '@/lib/utils'
 import { translate } from '@/lib/i18n'
 import { tagColorStyle } from '@/lib/tagColors'
@@ -22,9 +21,7 @@ export function SmartSearch({ uiScale, open, onOpenChange }: SmartSearchProps) {
   const [language, setLanguage] = React.useState<'ru' | 'en'>('ru')
   const [query, setQuery] = React.useState('')
   const [selectedIndex, setSelectedIndex] = React.useState(0)
-  const [pinnedInputSelector, setPinnedInputSelector] = React.useState('')
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const targetRef = React.useRef<Element | null>(null)
 
   React.useEffect(() => {
     if (!open) return
@@ -34,8 +31,6 @@ export function SmartSearch({ uiScale, open, onOpenChange }: SmartSearchProps) {
       if (!mounted) return
       setTemplates(snapshot.templates)
       setLanguage(snapshot.uiLanguage)
-      setPinnedInputSelector(snapshot.siteSettings[window.location.hostname]?.pinnedInputSelector || '')
-      targetRef.current = getActiveEditableElement()
       setSelectedIndex(0)
       window.setTimeout(() => inputRef.current?.focus(), 0)
     })
@@ -67,11 +62,6 @@ export function SmartSearch({ uiScale, open, onOpenChange }: SmartSearchProps) {
   const width = Math.min(720, window.innerWidth - 32) / scale
 
   const chooseTemplate = async (template: Template, autoSend = false) => {
-    if (pinnedInputSelector && targetRef.current && !matchesPinnedInput(targetRef.current, pinnedInputSelector)) {
-      showToast(language === 'en' ? 'Search is pinned to another field' : 'Поиск привязан к другому полю', 'info')
-      onOpenChange(false)
-      return
-    }
     insertTemplate(template, { autoSend })
     onOpenChange(false)
   }
@@ -162,12 +152,4 @@ export function SmartSearch({ uiScale, open, onOpenChange }: SmartSearchProps) {
       </div>
     </div>
   )
-}
-
-function matchesPinnedInput(element: Element, selector: string) {
-  try {
-    return element.matches(selector) || document.querySelector(selector) === element
-  } catch {
-    return false
-  }
 }

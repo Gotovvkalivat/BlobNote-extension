@@ -23,8 +23,6 @@ import {
   Archive,
   Braces,
   CheckSquare,
-  ChevronDown,
-  ChevronRight,
   ClipboardList,
   Copy,
   Download,
@@ -43,7 +41,6 @@ import {
   Search,
   Settings2,
   Sparkles,
-  Star,
   Trash2,
   Upload,
   X,
@@ -108,8 +105,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
   const [previewTemplate, setPreviewTemplate] = React.useState<Template | null>(null)
   const [settingsOpen, setSettingsOpen] = React.useState(false)
   const [scenarioPresetId, setScenarioPresetId] = React.useState<ScenarioPresetId>('support')
-  const [expandedFolders, setExpandedFolders] = React.useState<string[]>([])
-  const [draggingTemplateId, setDraggingTemplateId] = React.useState<string | null>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const language = settings.uiLanguage
   const defaultFolder = ui(language, DEFAULT_FOLDER_RU, DEFAULT_FOLDER_EN)
@@ -295,13 +290,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
     showToastEvent(translate(language, 'noteDeleted'), 'success')
   }
 
-  const assignTemplateToFolder = (templateId: string, folder: string) => {
-    const targetFolder = folder === defaultFolder ? null : folder
-    updateTemplate(templateId, { folder: targetFolder } as Partial<Template>)
-    setExpandedFolders((current) => current.includes(folder) ? current : [...current, folder])
-    showToastEvent(ui(language, `Перемещено в папку «${folder}»`, `Moved to "${folder}"`), 'success')
-  }
-
   const handleGoogleSignIn = () => {
     if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage) {
       showToastEvent(ui(language, 'Google-вход доступен только в установленном расширении', 'Google sign-in is available only inside the installed extension'), 'info')
@@ -347,39 +335,17 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
           <SidebarButton active={visibleTab === 'templates' && mainFilter === 'favorites'} icon={<Heart />} label={translate(language, 'favorites')} count={activeTemplates.filter((template) => template.favorite).length} onClick={() => { switchTab('templates'); setMainFilter('favorites'); setFolderFilter(null); setTagFilter(null) }} />
           <SidebarButton active={visibleTab === 'templates' && mainFilter === 'recent'} icon={<ClipboardList />} label={ui(language, 'Недавние', 'Recent')} count={recentInsertions.length} onClick={() => { switchTab('templates'); setMainFilter('recent'); setFolderFilter(null); setTagFilter(null) }} />
           {settings.showVariablesTab && (
-            <SidebarButton active={visibleTab === 'variables'} icon={<Braces />} label={translate(language, 'variablesTab')} count={variables.length} onClick={() => switchTab('variables')} />
+            <SidebarButton active={visibleTab === 'variables'} icon={<Braces />} label={ui(language, 'Переменные', 'Variables')} count={variables.length} onClick={() => switchTab('variables')} />
           )}
           {settings.showTodoTab && (
-            <SidebarButton active={visibleTab === 'todo'} icon={<ListTodo />} label={translate(language, 'tasksTab')} count={todos.length} onClick={() => switchTab('todo')} />
+            <SidebarButton active={visibleTab === 'todo'} icon={<ListTodo />} label={ui(language, 'Задачи', 'Tasks')} count={todos.length} onClick={() => switchTab('todo')} />
           )}
         </nav>
 
-        <div className="mt-5 min-h-0">
-          <SidebarTitle label={ui(language, 'Папки', 'Folders')} />
-          <div className="max-h-[34vh] space-y-1 overflow-y-auto pr-1">
-            {folders.map((folder) => (
-              <FolderTreeItem
-                key={folder.name}
-                folder={folder}
-                active={folderFilter === folder.name}
-                expanded={expandedFolders.includes(folder.name)}
-                dragging={Boolean(draggingTemplateId)}
-                onToggle={() => setExpandedFolders((current) => current.includes(folder.name) ? current.filter((item) => item !== folder.name) : [...current, folder.name])}
-                onOpen={() => { switchTab('templates'); setMainFilter('all'); setFolderFilter(folder.name); setExpandedFolders((current) => current.includes(folder.name) ? current : [...current, folder.name]) }}
-                onTemplateOpen={(template) => setPreviewTemplate(template)}
-                onDropTemplate={(templateId) => {
-                  assignTemplateToFolder(templateId, folder.name)
-                  setDraggingTemplateId(null)
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
         {sidebarTags.length > 0 && (
-          <div className="mt-7 min-h-0">
+          <div className="mt-5 min-h-0">
             <SidebarTitle label={translate(language, 'tags')} />
-            <div className="max-h-[22vh] overflow-y-auto pr-1">
+            <div className="max-h-[56vh] overflow-y-auto pr-1">
               <div className="flex flex-wrap gap-2">
                 {sidebarTags.map((tag) => (
                   <button
@@ -396,24 +362,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
             </div>
           </div>
         )}
-
-        <div className="mt-5 space-y-2 border-t pt-4 dark:border-slate-800">
-          <SidebarTitle label={translate(language, 'dataManagement')} />
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" size="sm" className="h-8 justify-center text-xs" onClick={exportTemplates}>
-              <Download className="mr-1.5 h-3.5 w-3.5" />
-              {translate(language, 'export')}
-            </Button>
-            <Button variant="outline" size="sm" className="h-8 justify-center text-xs" onClick={() => fileInputRef.current?.click()}>
-              <Upload className="mr-1.5 h-3.5 w-3.5" />
-              {translate(language, 'import')}
-            </Button>
-          </div>
-          <Button variant="outline" size="sm" className="h-8 w-full justify-center text-xs" onClick={handleGoogleSignIn}>
-            <LogIn className="mr-1.5 h-3.5 w-3.5" />
-            {ui(language, 'Google-вход', 'Google sign-in')}
-          </Button>
-        </div>
       </aside>
 
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
@@ -463,7 +411,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
             <div className="flex flex-wrap gap-2">
               <FilterButton active={mainFilter === 'all' && !folderFilter && !tagFilter} onClick={() => { setMainFilter('all'); setFolderFilter(null); setTagFilter(null) }}>{ui(language, 'Все', 'All')}</FilterButton>
               <FilterButton active={mainFilter === 'favorites'} onClick={() => { setMainFilter('favorites'); setFolderFilter(null); setTagFilter(null) }}>{translate(language, 'favorites')}</FilterButton>
-              <FilterButton active={Boolean(folderFilter)} onClick={() => setFolderFilter(null)}>{folderFilter || ui(language, 'С папками', 'With folders')}</FilterButton>
               <FilterButton active={Boolean(tagFilter)} onClick={() => setTagFilter(null)}>{tagFilter || ui(language, 'С тегами', 'With tags')}</FilterButton>
             </div>
 
@@ -496,7 +443,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
           <div className="shrink-0 border-b bg-indigo-50 px-5 py-3 dark:border-indigo-900/60 dark:bg-indigo-950/40">
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <span className="mr-2 font-semibold">{ui(language, 'Выбрано: {{count}}', 'Selected: {{count}}').replace('{{count}}', String(selectedIds.length))}</span>
-              <Button size="sm" variant="outline" onClick={() => bulkFavorite(true)}><Star className="mr-1 h-3.5 w-3.5" />{ui(language, 'В избранное', 'Favorite')}</Button>
+              <Button size="sm" variant="outline" onClick={() => bulkFavorite(true)}><Heart className="mr-1 h-3.5 w-3.5" />{ui(language, 'В избранное', 'Favorite')}</Button>
               <Button size="sm" variant="outline" onClick={() => bulkFavorite(false)}>{ui(language, 'Убрать избранное', 'Unfavorite')}</Button>
               <Button size="sm" variant="outline" onClick={bulkDuplicate}><Copy className="mr-1 h-3.5 w-3.5" />{ui(language, 'Дублировать', 'Duplicate')}</Button>
               <Button size="sm" variant="destructive" onClick={bulkDelete}><Trash2 className="mr-1 h-3.5 w-3.5" />{ui(language, 'Удалить', 'Delete')}</Button>
@@ -541,13 +488,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                       noteFontFamily={settings.noteFontFamily}
                       showFullText={settings.gridHeight === 'masonry'}
                       cardStyle={{ minHeight: settings.gridHeight === 'masonry' ? 180 : undefined, height: settings.gridHeight === 'masonry' ? 'auto' : settings.gridHeight }}
-                      draggable
-                      onDragStart={(event) => {
-                        event.dataTransfer.setData('text/blobnote-template-id', template.id)
-                        event.dataTransfer.effectAllowed = 'move'
-                        setDraggingTemplateId(template.id)
-                      }}
-                      onDrop={() => setDraggingTemplateId(null)}
                       onOpen={() => setPreviewTemplate(template)}
                       onEdit={() => { setEditingTemplate(template); setIsCreating(false) }}
                       onDelete={() => { if (confirm(translate(language, 'deleteNoteQuestion', { title: template.title }))) deleteTemplate(template.id) }}
@@ -667,69 +607,6 @@ function BlobMark() {
   )
 }
 
-function FolderTreeItem({
-  folder,
-  active,
-  expanded,
-  dragging,
-  onToggle,
-  onOpen,
-  onTemplateOpen,
-  onDropTemplate,
-}: {
-  folder: { name: string; count: number; templates: TemplateWithFolder[] }
-  active: boolean
-  expanded: boolean
-  dragging: boolean
-  onToggle: () => void
-  onOpen: () => void
-  onTemplateOpen: (template: TemplateWithFolder) => void
-  onDropTemplate: (templateId: string) => void
-}) {
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    const templateId = event.dataTransfer.getData('text/blobnote-template-id')
-    if (templateId) onDropTemplate(templateId)
-  }
-
-  return (
-    <div
-      className={cn('rounded-xl transition', dragging && 'ring-1 ring-primary/30')}
-      onDragOver={(event) => {
-        event.preventDefault()
-        event.dataTransfer.dropEffect = 'move'
-      }}
-      onDrop={handleDrop}
-    >
-      <div className={cn('flex items-center rounded-xl transition hover:bg-slate-100 dark:hover:bg-slate-900', active && 'bg-indigo-50 font-semibold text-primary dark:bg-indigo-950/60')}>
-        <button type="button" className="flex h-9 w-8 shrink-0 items-center justify-center" onClick={onToggle}>
-          {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        </button>
-        <button type="button" className="flex min-w-0 flex-1 items-center gap-2 py-2 pr-3 text-left text-sm" onClick={onOpen}>
-          <Folder className="h-4 w-4 shrink-0" />
-          <span className="min-w-0 flex-1 truncate">{folder.name}</span>
-          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-900 dark:text-slate-400">{folder.count}</span>
-        </button>
-      </div>
-      {expanded && folder.templates.length > 0 && (
-        <div className="ml-8 mt-1 max-h-44 space-y-1 overflow-y-auto border-l pl-2 dark:border-slate-800">
-          {folder.templates.map((template) => (
-            <button
-              key={template.id}
-              type="button"
-              className="block w-full truncate rounded-lg px-2 py-1 text-left text-xs text-slate-500 transition hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white"
-              title={template.title}
-              onClick={() => onTemplateOpen(template)}
-            >
-              {template.title}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
 function TemplateShell({ massMode, checked, onCheckedChange, children }: { massMode: boolean; checked: boolean; onCheckedChange: (checked: boolean) => void; children: React.ReactNode }) {
   return (
     <div className="relative">
@@ -803,7 +680,7 @@ function TemplateTable({
               <td className="px-4 py-3 text-slate-500">{template.usageCount || 0}</td>
               <td className="px-4 py-3">
                 <div className="flex justify-end gap-1">
-                  <Button size="icon" variant="ghost" onClick={() => onToggleFavorite(template.id)}><Star className={cn('h-4 w-4', template.favorite && 'fill-amber-400 text-amber-500')} /></Button>
+                  <Button size="icon" variant="ghost" onClick={() => onToggleFavorite(template.id)}><Heart className={cn('h-4 w-4', template.favorite && 'fill-rose-400 text-rose-500')} /></Button>
                   <Button size="icon" variant="ghost" onClick={() => onPreview(template)}><Eye className="h-4 w-4" /></Button>
                   <Button size="icon" variant="ghost" onClick={() => onEdit(template)}><Pencil className="h-4 w-4" /></Button>
                   <Button size="icon" variant="ghost" onClick={() => onDuplicate(template)}><Copy className="h-4 w-4" /></Button>
@@ -1112,8 +989,8 @@ function getVisibleBaseTab(tab: ActiveTab, settings: AppSettings): ActiveTab {
 }
 
 function currentBaseTitle(language: AppSettings['uiLanguage'], tab: ActiveTab, mainFilter: MainFilter, folderFilter: string | null, tagFilter: string | null) {
-  if (tab === 'variables') return translate(language, 'variablesTab')
-  if (tab === 'todo') return translate(language, 'tasksTab')
+  if (tab === 'variables') return ui(language, 'Переменные', 'Variables')
+  if (tab === 'todo') return ui(language, 'Задачи', 'Tasks')
   return currentTitle(language, mainFilter, folderFilter, tagFilter)
 }
 

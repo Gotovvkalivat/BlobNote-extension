@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { ClipboardList, Clock3, Database, Eraser, Minimize2, Pencil, Pin, PinOff, Save, Send, Settings2, Trash2, X } from 'lucide-react'
+import { ClipboardList, Clock3, Database, Eraser, Minimize2, Pin, PinOff, Save, Send, Settings2, Trash2, X } from 'lucide-react'
 import type { AppSettings, RecentInsertion, SendMethod, SiteSettings, Template } from '@/types'
 import { translate } from '@/lib/i18n'
 import { showToast } from '@/components/ui/toast'
@@ -325,13 +325,6 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
     showToast(text('Привязка панели сброшена', 'Panel pin cleared'), 'success')
   }
 
-  const startEditing = (template: Template) => {
-    setEditingTemplate(template)
-    setDraftTitle(template.title)
-    setDraftText(template.text)
-    setSettingsOpen(false)
-  }
-
   const saveEditing = () => {
     if (!editingTemplate || !draftTitle.trim() || !draftText.trim() || typeof chrome === 'undefined' || !chrome.storage?.sync) return
     chrome.storage.sync.get({ templates: [] }, (items) => {
@@ -629,16 +622,6 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
                 title={template.title}
               >
                 <span className="block min-w-0 truncate">{template.title}</span>
-              </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-6 w-6 rounded-md"
-                title={t('editNote')}
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => startEditing(template)}
-              >
-                <Pencil className="h-3 w-3" />
               </Button>
               <Button
                 size="icon"
