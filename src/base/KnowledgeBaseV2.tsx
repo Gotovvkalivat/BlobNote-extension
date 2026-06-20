@@ -155,6 +155,13 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
     return [...new Set(activeTemplates.map((template) => template.tag).filter(Boolean))] as string[]
   }, [activeTemplates])
 
+  const sidebarTags = React.useMemo(() => {
+    const source = folderFilter
+      ? activeTemplates.filter((template) => getTemplateFolder(template, defaultFolder) === folderFilter)
+      : activeTemplates
+    return [...new Set(source.map((template) => template.tag).filter(Boolean))] as string[]
+  }, [activeTemplates, defaultFolder, folderFilter])
+
   const folders = React.useMemo(() => {
     const counts = new Map<string, number>()
     activeTemplates.forEach((template) => {
@@ -358,7 +365,8 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                 expanded={expandedFolders.includes(folder.name)}
                 dragging={Boolean(draggingTemplateId)}
                 onToggle={() => setExpandedFolders((current) => current.includes(folder.name) ? current.filter((item) => item !== folder.name) : [...current, folder.name])}
-                onOpen={() => { setMainFilter('all'); setFolderFilter(folder.name); setTagFilter(null); setExpandedFolders((current) => current.includes(folder.name) ? current : [...current, folder.name]) }}
+                onOpen={() => { switchTab('templates'); setMainFilter('all'); setFolderFilter(folder.name); setExpandedFolders((current) => current.includes(folder.name) ? current : [...current, folder.name]) }}
+                onTemplateOpen={(template) => setPreviewTemplate(template)}
                 onDropTemplate={(templateId) => {
                   assignTemplateToFolder(templateId, folder.name)
                   setDraggingTemplateId(null)
@@ -368,18 +376,18 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
           </div>
         </div>
 
-        {allTags.length > 0 && (
+        {sidebarTags.length > 0 && (
           <div className="mt-7 min-h-0">
             <SidebarTitle label={translate(language, 'tags')} />
             <div className="max-h-[22vh] overflow-y-auto pr-1">
               <div className="flex flex-wrap gap-2">
-                {allTags.map((tag) => (
+                {sidebarTags.map((tag) => (
                   <button
                     key={tag}
                     type="button"
                     className={cn('rounded-full border px-2.5 py-1 text-xs font-medium transition hover:-translate-y-0.5', tagFilter === tag && 'ring-2 ring-primary')}
                     style={tagColorStyle(tagColorByTag[tag])}
-                    onClick={() => { setMainFilter('all'); setFolderFilter(null); setTagFilter(tag) }}
+                    onClick={() => { switchTab('templates'); setMainFilter('all'); setTagFilter(tag) }}
                   >
                     {tag}
                   </button>
@@ -388,6 +396,24 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
             </div>
           </div>
         )}
+
+        <div className="mt-5 space-y-2 border-t pt-4 dark:border-slate-800">
+          <SidebarTitle label={translate(language, 'dataManagement')} />
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" size="sm" className="h-8 justify-center text-xs" onClick={exportTemplates}>
+              <Download className="mr-1.5 h-3.5 w-3.5" />
+              {translate(language, 'export')}
+            </Button>
+            <Button variant="outline" size="sm" className="h-8 justify-center text-xs" onClick={() => fileInputRef.current?.click()}>
+              <Upload className="mr-1.5 h-3.5 w-3.5" />
+              {translate(language, 'import')}
+            </Button>
+          </div>
+          <Button variant="outline" size="sm" className="h-8 w-full justify-center text-xs" onClick={handleGoogleSignIn}>
+            <LogIn className="mr-1.5 h-3.5 w-3.5" />
+            {ui(language, 'Google-вход', 'Google sign-in')}
+          </Button>
+        </div>
       </aside>
 
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
@@ -453,7 +479,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                     {[1, 2, 3, 4].map((value) => <option key={value} value={value}>{ui(language, `${value} колонки`, `${value} columns`)}</option>)}
                   </select>
                   <select className="h-10 rounded-xl border bg-white px-3 text-sm dark:border-slate-800 dark:bg-slate-900" value={settings.gridHeight} onChange={(event) => updateSettings({ gridHeight: event.target.value })}>
-                    {['180px', '220px', '240px', '260px', '320px', 'masonry'].map((value) => <option key={value} value={value}>{value === 'masonry' ? ui(language, 'Masonry', 'Masonry') : value}</option>)}
+                    {['180px', '220px', '240px', '260px', '320px', 'masonry'].map((value) => <option key={value} value={value}>{value === 'masonry' ? ui(language, 'Авто', 'Auto') : value}</option>)}
                   </select>
                 </>
               )}
@@ -648,6 +674,7 @@ function FolderTreeItem({
   dragging,
   onToggle,
   onOpen,
+  onTemplateOpen,
   onDropTemplate,
 }: {
   folder: { name: string; count: number; templates: TemplateWithFolder[] }
@@ -656,6 +683,7 @@ function FolderTreeItem({
   dragging: boolean
   onToggle: () => void
   onOpen: () => void
+  onTemplateOpen: (template: TemplateWithFolder) => void
   onDropTemplate: (templateId: string) => void
 }) {
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -686,9 +714,15 @@ function FolderTreeItem({
       {expanded && folder.templates.length > 0 && (
         <div className="ml-8 mt-1 max-h-44 space-y-1 overflow-y-auto border-l pl-2 dark:border-slate-800">
           {folder.templates.map((template) => (
-            <div key={template.id} className="truncate rounded-lg px-2 py-1 text-xs text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-900" title={template.title}>
+            <button
+              key={template.id}
+              type="button"
+              className="block w-full truncate rounded-lg px-2 py-1 text-left text-xs text-slate-500 transition hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white"
+              title={template.title}
+              onClick={() => onTemplateOpen(template)}
+            >
               {template.title}
-            </div>
+            </button>
           ))}
         </div>
       )}
@@ -844,7 +878,7 @@ function SettingsDrawer({
 
           <SettingsBlock title={ui(language, 'Раскладка и карточки', 'Layout and cards')}>
               <SelectLine label={ui(language, 'Колонки', 'Columns')} value={String(settings.gridCols)} onChange={(value) => onSettingsChange({ gridCols: Math.max(1, Number(value) || 3) })} options={[1, 2, 3, 4].map((value) => ({ value: String(value), label: ui(language, `${value} колонки`, `${value} columns`) }))} />
-            <SelectLine label={ui(language, 'Высота карточки', 'Card height')} value={settings.gridHeight} onChange={(value) => onSettingsChange({ gridHeight: value })} options={['180px', '220px', '240px', '260px', '320px', 'masonry'].map((value) => ({ value, label: value === 'masonry' ? ui(language, 'Masonry', 'Masonry') : value }))} />
+            <SelectLine label={ui(language, 'Высота карточки', 'Card height')} value={settings.gridHeight} onChange={(value) => onSettingsChange({ gridHeight: value })} options={['180px', '220px', '240px', '260px', '320px', 'masonry'].map((value) => ({ value, label: value === 'masonry' ? ui(language, 'Авто', 'Auto') : value }))} />
             <SelectLine label={translate(language, 'noteTextSize')} value={settings.noteFontSize} onChange={(value) => onSettingsChange({ noteFontSize: value as AppSettings['noteFontSize'] })} options={['12', '13', '14', '15', '16', '18'].map((value) => ({ value, label: `${value}px` }))} />
             <SelectLine label={translate(language, 'noteFontFamily')} value={settings.noteFontFamily} onChange={(value) => onSettingsChange({ noteFontFamily: value as AppSettings['noteFontFamily'] })} options={[
               { value: 'system', label: ui(language, 'Системный', 'System') },
@@ -1084,6 +1118,7 @@ function currentBaseTitle(language: AppSettings['uiLanguage'], tab: ActiveTab, m
 }
 
 function currentTitle(language: AppSettings['uiLanguage'], mainFilter: MainFilter, folderFilter: string | null, tagFilter: string | null) {
+  if (folderFilter && tagFilter) return `${folderFilter} · #${tagFilter}`
   if (folderFilter) return folderFilter
   if (tagFilter) return `#${tagFilter}`
   if (mainFilter === 'favorites') return translate(language, 'favorites')

@@ -95,20 +95,20 @@ export function PopupV2() {
   }
 
   return (
-    <div className="h-[640px] w-[480px] overflow-hidden bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
-      <header className="border-b bg-white px-4 py-4 dark:border-slate-800 dark:bg-slate-950">
+    <div className="h-[560px] w-[420px] overflow-hidden bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
+      <header className="border-b bg-white px-3 py-3 dark:border-slate-800 dark:bg-slate-950">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src={assetUrl('icon-48.png')} alt="" className="h-9 w-9" />
+            <img src={assetUrl('icon-48.png')} alt="" className="h-8 w-8" />
             <div>
-              <div className="text-lg font-bold">BlobNote</div>
+              <div className="text-base font-bold">BlobNote</div>
               <div className="text-xs text-slate-500 dark:text-slate-400">v2.0</div>
             </div>
           </div>
-          <span className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-semibold dark:bg-slate-900">V2</span>
+          <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold dark:bg-slate-900">V2</span>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1 dark:bg-slate-900">
+        <div className="mt-3 grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-900">
           <button type="button" className={tabClass(tab === 'base')} onClick={() => setTab('base')}>
             <BookOpen className="h-4 w-4" />
             {translate(language, 'base')}
@@ -121,19 +121,19 @@ export function PopupV2() {
       </header>
 
       {tab === 'base' ? (
-        <main className="flex h-[calc(640px-123px)] flex-col overflow-hidden p-4">
+        <main className="flex h-[calc(560px-103px)] flex-col overflow-hidden p-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               autoFocus
-              className="h-11 rounded-xl bg-white pl-10 dark:border-slate-800 dark:bg-slate-900"
+              className="h-9 rounded-lg bg-white pl-10 text-sm dark:border-slate-800 dark:bg-slate-900"
               placeholder={ui(language, 'Поиск шаблона...', 'Search template...')}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
           </div>
 
-          <div className="mt-3 min-h-0 flex-1 overflow-y-auto rounded-2xl border bg-white dark:border-slate-800 dark:bg-slate-900">
+          <div className="mt-2 min-h-0 flex-1 overflow-y-auto rounded-xl border bg-white dark:border-slate-800 dark:bg-slate-900">
             {orderedTemplates.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center p-8 text-center">
                 <Sparkles className="mb-3 h-8 w-8 text-primary" />
@@ -149,24 +149,24 @@ export function PopupV2() {
             )}
           </div>
 
-          <div className="mt-3 grid gap-2">
-            <Button className="h-11 w-full" onClick={openBaseOnCurrentPage}>
+          <div className="mt-2 grid gap-2">
+            <Button className="h-9 w-full text-sm" onClick={openBaseOnCurrentPage}>
               <PanelTopOpen className="mr-2 h-4 w-4" />
               {translate(language, 'openBaseCurrent')}
             </Button>
             <div className="grid grid-cols-2 gap-2">
-              <Button variant="outline" onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL('base.html') })}>
+              <Button variant="outline" className="h-9 text-sm" onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL('base.html') })}>
                 <ExternalLink className="mr-2 h-4 w-4" />
                 {ui(language, 'Вся база', 'All templates')}
               </Button>
-              <Button variant="outline" onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL('base.html') })}>
+              <Button variant="outline" className="h-9 text-sm" onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL('base.html') })}>
                 <Plus className="mr-2 h-4 w-4" />
                 {translate(language, 'create')}
               </Button>
             </div>
           </div>
 
-          <p className="mt-3 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+          <p className="mt-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
             {ui(language, 'Быстрая вставка: ', 'Quick insert: ')}
             <Kbd>{settings.searchTrigger}</Kbd>
             {ui(language, ' в поле сообщения или ', ' in a message field or ')}
@@ -174,13 +174,13 @@ export function PopupV2() {
           </p>
         </main>
       ) : (
-        <main className="h-[calc(640px-123px)] overflow-y-auto p-4">
-          <div className={`mb-4 rounded-2xl border p-4 ${currentSiteActive ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950/30' : 'border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/30'}`}>
+        <main className="h-[calc(560px-103px)] overflow-y-auto p-3">
+          <div className={`mb-3 rounded-xl border p-3 ${currentSiteActive ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950/30' : 'border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/30'}`}>
             <div className="text-sm font-semibold">{currentSiteActive ? ui(language, 'BlobNote работает на этой странице', 'BlobNote is active on this page') : ui(language, 'BlobNote выключен на этой странице', 'BlobNote is off on this page')}</div>
             <div className="mt-1 truncate text-xs text-slate-600 dark:text-slate-300">{currentHost || ui(language, 'Текущая вкладка', 'Current tab')}</div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             <ToggleLine icon={<Moon />} label={translate(language, 'darkTheme')} checked={settings.theme === 'dark'} onCheckedChange={(checked) => updateSettings({ theme: checked ? 'dark' : 'light' })} />
             <SelectLine icon={<Languages />} label={translate(language, 'language')} value={settings.uiLanguage} onChange={(value) => updateSettings({ uiLanguage: value as AppSettings['uiLanguage'] })} options={[{ value: 'ru', label: 'RU' }, { value: 'en', label: 'EN' }]} />
             <SelectLine icon={<Slash />} label={translate(language, 'trigger')} value={settings.searchTrigger} onChange={(value) => updateSettings({ searchTrigger: value as AppSettings['searchTrigger'] })} options={[{ value: '/', label: '/' }, { value: '@', label: '@' }]} />
@@ -221,19 +221,19 @@ export function PopupV2() {
 
 function TemplateRow({ template, language, onInsert, onSend }: { template: Template; language: AppSettings['uiLanguage']; onInsert: () => void; onSend: () => void }) {
   return (
-    <div className="group grid grid-cols-[1fr_auto] gap-2 p-3 transition hover:bg-slate-50 dark:hover:bg-slate-800/70">
+    <div className="group grid grid-cols-[1fr_auto] gap-2 p-2.5 transition hover:bg-slate-50 dark:hover:bg-slate-800/70">
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          {template.favorite ? <Star className="h-4 w-4 shrink-0 fill-amber-400 text-amber-500" /> : <Heart className="h-4 w-4 shrink-0 text-slate-300" />}
-          <div className="truncate font-semibold">{template.title}</div>
+          {template.favorite ? <Star className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-500" /> : <Heart className="h-3.5 w-3.5 shrink-0 text-slate-300" />}
+          <div className="truncate text-sm font-semibold">{template.title}</div>
         </div>
-        <div className="mt-1 line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{template.text}</div>
-        {template.tag && <div className="mt-2 inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-800 dark:text-slate-300">{template.tag}</div>}
+        <div className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{template.text}</div>
+        {template.tag && <div className="mt-1.5 inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500 dark:bg-slate-800 dark:text-slate-300">{template.tag}</div>}
       </div>
       <div className="flex flex-col gap-1">
-        <Button size="sm" className="h-8" onClick={onInsert}>{translate(language, 'insert')}</Button>
-        <Button size="icon" variant="outline" className="h-8 w-8" title={translate(language, 'insertAndSend')} onClick={onSend}>
-          <Send className="h-4 w-4" />
+        <Button size="sm" className="h-7 px-2 text-xs" onClick={onInsert}>{translate(language, 'insert')}</Button>
+        <Button size="icon" variant="outline" className="h-7 w-7" title={translate(language, 'insertAndSend')} onClick={onSend}>
+          <Send className="h-3.5 w-3.5" />
         </Button>
       </div>
     </div>
@@ -242,7 +242,7 @@ function TemplateRow({ template, language, onInsert, onSend }: { template: Templ
 
 function ToggleLine({ icon, label, checked, onCheckedChange }: { icon: React.ReactElement; label: string; checked: boolean; onCheckedChange: (checked: boolean) => void }) {
   return (
-    <label className="flex items-center justify-between gap-3 rounded-2xl border bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
+    <label className="flex items-center justify-between gap-3 rounded-xl border bg-white p-2.5 dark:border-slate-800 dark:bg-slate-900">
       <span className="flex min-w-0 items-center gap-2 text-sm font-medium">
         {React.cloneElement(icon, { className: 'h-4 w-4 shrink-0 text-slate-500' })}
         <span className="min-w-0 truncate">{label}</span>
@@ -254,12 +254,12 @@ function ToggleLine({ icon, label, checked, onCheckedChange }: { icon: React.Rea
 
 function SelectLine({ icon, label, value, options, onChange }: { icon: React.ReactElement; label: string; value: string; options: Array<{ value: string; label: string }>; onChange: (value: string) => void }) {
   return (
-    <label className="grid gap-2 rounded-2xl border bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
+    <label className="grid gap-1.5 rounded-xl border bg-white p-2.5 dark:border-slate-800 dark:bg-slate-900">
       <span className="flex items-center gap-2 text-sm font-medium">
         {React.cloneElement(icon, { className: 'h-4 w-4 shrink-0 text-slate-500' })}
         {label}
       </span>
-      <select className="h-9 rounded-lg border bg-white px-2 text-sm dark:border-slate-800 dark:bg-slate-950" value={value} onChange={(event) => onChange(event.target.value)}>
+      <select className="h-8 rounded-lg border bg-white px-2 text-sm dark:border-slate-800 dark:bg-slate-950" value={value} onChange={(event) => onChange(event.target.value)}>
         {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
       </select>
     </label>
@@ -271,7 +271,7 @@ function Kbd({ children }: { children: React.ReactNode }) {
 }
 
 function tabClass(active: boolean) {
-  return `flex h-10 items-center justify-center gap-2 rounded-xl text-sm font-semibold transition ${active ? 'bg-white text-slate-950 shadow-sm dark:bg-slate-950 dark:text-white' : 'text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white'}`
+  return `flex h-8 items-center justify-center gap-2 rounded-lg text-sm font-semibold transition ${active ? 'bg-white text-slate-950 shadow-sm dark:bg-slate-950 dark:text-white' : 'text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white'}`
 }
 
 function ui(language: AppSettings['uiLanguage'], ru: string, en: string) {

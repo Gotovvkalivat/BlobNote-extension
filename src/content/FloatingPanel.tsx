@@ -411,6 +411,19 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           </Button>
           <Button
             size="icon"
+            variant={pinnedInputSelector ? 'secondary' : 'ghost'}
+            className="h-6 w-6"
+            disabled={!target}
+            title={pinnedInputSelector
+              ? text('Панель привязана к этому полю. Нажмите, чтобы снова показывать ее у любых полей.', 'Panel is pinned to this field. Click to show it near any field again.')
+              : text('Привязать к текущему полю. Панель и /-поиск будут открываться только у этого поля.', 'Pin to the current field. The panel and / search will open only for this field.')}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={pinnedInputSelector ? unpinField : pinCurrentField}
+          >
+            {pinnedInputSelector ? <PinOff className="h-3 w-3" /> : <Pin className="h-3 w-3" />}
+          </Button>
+          <Button
+            size="icon"
             variant="ghost"
             className="h-6 w-6 text-destructive"
             title={t('clear')}

@@ -37,6 +37,7 @@ export function AtMenu({ uiScale }: AtMenuProps) {
   })
   const [enabled, setEnabled] = React.useState(true)
   const [trigger, setTrigger] = React.useState<AppSettings['searchTrigger']>('/')
+  const [pinnedInputSelector, setPinnedInputSelector] = React.useState('')
   const scale = uiScaleFactor(uiScale)
 
   React.useEffect(() => {
@@ -48,12 +49,13 @@ export function AtMenu({ uiScale }: AtMenuProps) {
       setTemplates(snapshot.templates)
       setEnabled(snapshot.atMenuEnabled)
       setTrigger(snapshot.searchTrigger)
+      setPinnedInputSelector(snapshot.siteSettings[window.location.hostname]?.pinnedInputSelector || '')
     }
 
     void loadData()
 
     const handleStorage = (changes: Record<string, chrome.storage.StorageChange>, area: string) => {
-      if (area === 'sync' && (changes.templates || changes.atMenuEnabled || changes.searchTrigger)) void loadData()
+      if (area === 'sync' && (changes.templates || changes.atMenuEnabled || changes.searchTrigger || changes.siteSettings)) void loadData()
     }
 
     chrome.storage?.onChanged?.addListener(handleStorage)
@@ -69,6 +71,10 @@ export function AtMenu({ uiScale }: AtMenuProps) {
       if (!enabled || !isEditableElement(event.target)) return
 
       const input = event.target
+      if (pinnedInputSelector && !matchesPinnedInput(input, pinnedInputSelector)) {
+        setActive(false)
+        return
+      }
       const value = editableValue(input)
       const cursorPos = 'selectionStart' in input && typeof input.selectionStart === 'number'
         ? input.selectionStart || 0
@@ -167,7 +173,7 @@ export function AtMenu({ uiScale }: AtMenuProps) {
       document.removeEventListener('keydown', handleKeydown, true)
       document.removeEventListener('click', handleClick)
     }
-  }, [active, enabled, filtered, scale, selectedIndex, templates, trigger])
+  }, [active, enabled, filtered, pinnedInputSelector, scale, selectedIndex, templates, trigger])
 
   const insertAtTemplate = (template: Template) => {
     if (!inputElement) return
@@ -225,4 +231,12 @@ export function AtMenu({ uiScale }: AtMenuProps) {
       ))}
     </div>
   )
+}
+
+function matchesPinnedInput(element: Element, selector: string) {
+  try {
+    return element.matches(selector) || document.querySelector(selector) === element
+  } catch {
+    return false
+  }
 }
