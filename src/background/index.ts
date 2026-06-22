@@ -2,8 +2,6 @@
 
 const TOP_TEMPLATES_LIMIT = 10
 const TODO_ALARM_PREFIX = 'ops-todo-reminder-'
-const GOOGLE_CLIENT_ID = '949261069316-826p2dteil4hascvlgmic08ke88p9pgb.apps.googleusercontent.com'
-const GOOGLE_DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file'
 type UiLanguage = 'ru' | 'en'
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -171,7 +169,7 @@ function updateContextMenu() {
 
 function signInWithGoogle(sendResponse: (response?: { success: boolean; error?: string }) => void) {
   const identity = chrome.identity
-  if (!identity) {
+  if (!identity?.getAuthToken) {
     sendResponse({ success: false, error: 'Google-вход недоступен в этой сборке расширения' })
     return
   }
@@ -188,64 +186,24 @@ function signInWithGoogle(sendResponse: (response?: { success: boolean; error?: 
     })
   }
 
-  if (identity.getAuthToken) {
-    identity.getAuthToken({ interactive: true }, (token) => {
-      if (token && !chrome.runtime.lastError) {
-        finish(token)
-        return
-      }
-
-      launchGoogleWebAuthFlow(identity, sendResponse, chrome.runtime.lastError?.message)
-    })
-    return
-  }
-
-  launchGoogleWebAuthFlow(identity, sendResponse)
-}
-
-function launchGoogleWebAuthFlow(
-  identity: typeof chrome.identity,
-  sendResponse: (response?: { success: boolean; error?: string }) => void,
-  previousError?: string
-) {
-  if (!identity.launchWebAuthFlow || !identity.getRedirectURL) {
-    sendResponse({ success: false, error: previousError || 'Google-вход пока не настроен для этой сборки' })
-    return
-  }
-
-  const redirectUri = identity.getRedirectURL()
-  const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
-  authUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID)
-  authUrl.searchParams.set('response_type', 'token')
-  authUrl.searchParams.set('redirect_uri', redirectUri)
-  authUrl.searchParams.set('scope', GOOGLE_DRIVE_SCOPE)
-  authUrl.searchParams.set('prompt', 'consent')
-
-  identity.launchWebAuthFlow({ url: authUrl.toString(), interactive: true }, (redirectUrl) => {
-    if (chrome.runtime.lastError || !redirectUrl) {
-      const setupHint = `Google-вход не настроен для расширения. Нужен OAuth Client типа Web application или Chrome Extension с Authorized redirect URI: ${redirectUri}`
-      sendResponse({ success: false, error: chrome.runtime.lastError?.message || previousError || setupHint })
+  identity.getAuthToken({ interactive: true }, (token) => {
+    if (token && !chrome.runtime.lastError) {
+      finish(token)
       return
     }
 
-    const hash = new URL(redirectUrl).hash.replace(/^#/, '')
-    const params = new URLSearchParams(hash)
-    const token = params.get('access_token')
-    if (!token) {
-      sendResponse({ success: false, error: `Google не вернул access token. Redirect URI для настройки: ${redirectUri}` })
-      return
-    }
-
-    chrome.storage.local.set({ googleDriveAccessToken: token }, () => {
-      chrome.storage.sync.set(
-        {
-          googleDriveConnected: true,
-          googleDriveConnectedAt: new Date().toISOString(),
-        },
-        () => sendResponse({ success: true })
-      )
+    sendResponse({
+      success: false,
+      error: googleAuthSetupMessage(chrome.runtime.lastError?.message),
     })
   })
+}
+
+function googleAuthSetupMessage(previousError?: string) {
+  const extensionId = chrome.runtime.id
+  const base = `Google-вход не завершён. Проверьте, что OAuth Client ID создан именно как Chrome Extension и его Item ID совпадает с ID расширения: ${extensionId}.`
+  const localHint = ' Для распакованной локальной сборки ID может отличаться от магазина; тогда нужен manifest key для стабильного ID или отдельный OAuth-клиент под локальный ID.'
+  return previousError ? `${previousError}. ${base}${localHint}` : `${base}${localHint}`
 }
 
 function openBasePage() {
