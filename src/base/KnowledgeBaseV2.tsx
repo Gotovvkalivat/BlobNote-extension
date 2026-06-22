@@ -458,10 +458,12 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                   </select>
                 </>
               )}
-              <Button variant={massMode ? 'default' : 'outline'} className={cn(massMode && 'text-white')} onClick={() => { setMassMode(!massMode); if (massMode) setSelectedIds([]) }}>
-                <CheckSquare className="mr-2 h-4 w-4" />
-                {ui(language, 'Массовые действия', 'Bulk actions')}
-              </Button>
+              {viewMode === 'cards' && (
+                <Button variant={massMode ? 'default' : 'outline'} className={cn(massMode && 'text-white')} onClick={() => { setMassMode(!massMode); if (massMode) setSelectedIds([]) }}>
+                  <CheckSquare className="mr-2 h-4 w-4" />
+                  {ui(language, 'Массовые действия', 'Bulk actions')}
+                </Button>
+              )}
             </div>
           </div>
           )}
@@ -768,13 +770,12 @@ function SettingsDrawer({
         <div className="mb-5 flex items-center justify-between">
           <div>
             <div className="text-lg font-bold">{translate(language, 'settings')}</div>
-            <p className="text-sm text-slate-500">{ui(language, 'Понятные настройки: внешний вид, панели, поиск, импорт и готовые наборы.', 'Clear settings: appearance, panels, search, import, and ready-made packs.')}</p>
           </div>
           <Button size="icon" variant="ghost" onClick={onClose}><X className="h-4 w-4" /></Button>
         </div>
 
         <TooltipProvider delayDuration={250}>
-        <div className="grid items-start gap-3 xl:grid-cols-2">
+        <div className="columns-1 gap-3 xl:columns-2">
           <SettingsBlock title={ui(language, 'Основное', 'Basics')}>
             <ToggleLine label={translate(language, 'darkTheme')} checked={settings.theme === 'dark'} onCheckedChange={(checked) => onSettingsChange({ theme: checked ? 'dark' : 'light', ...cardPresetFor(checked ? 'dark' : 'light', settings.cardPreset) })} />
             <SelectLine label={translate(language, 'language')} value={settings.uiLanguage} onChange={(value) => onSettingsChange({ uiLanguage: value as AppSettings['uiLanguage'] })} options={[{ value: 'ru', label: 'RU' }, { value: 'en', label: 'EN' }]} />
@@ -886,11 +887,8 @@ function SettingsDrawer({
             </div>
             <Button variant="outline" className="w-full justify-center" onClick={onGoogleSignIn}>
               <LogIn className="mr-2 h-4 w-4" />
-              {ui(language, 'Войти через Google', 'Sign in with Google')}
+              {ui(language, 'Подключить Google Диск', 'Connect Google Drive')}
             </Button>
-            <p className="text-xs leading-relaxed text-slate-500">
-              {ui(language, 'Кнопка готова для подключения Google-синхронизации. Когда будет OAuth-клиент, включим полноценную синхронизацию без ручного импорта.', 'The button is ready for Google sync. Once OAuth is configured, full sync can replace manual import.')}
-            </p>
           </SettingsBlock>
 
           <SettingsBlock title={translate(language, 'featureGuide')}>
@@ -926,7 +924,7 @@ function FilterButton({ active, children, onClick }: { active: boolean; children
 
 function SettingsBlock({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-xl border bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/70">
+    <section className="mb-3 break-inside-avoid rounded-xl border bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/70">
       <h2 className="mb-2 font-semibold">{title}</h2>
       <div className="space-y-2.5">{children}</div>
     </section>

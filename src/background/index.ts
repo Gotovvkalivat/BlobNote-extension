@@ -223,7 +223,7 @@ function launchGoogleWebAuthFlow(
 
   identity.launchWebAuthFlow({ url: authUrl.toString(), interactive: true }, (redirectUrl) => {
     if (chrome.runtime.lastError || !redirectUrl) {
-      const setupHint = `Google-вход не завершён. В Google Cloud добавьте Authorized redirect URI: ${redirectUri}`
+      const setupHint = `Google-вход не настроен для расширения. Нужен OAuth Client типа Web application или Chrome Extension с Authorized redirect URI: ${redirectUri}`
       sendResponse({ success: false, error: chrome.runtime.lastError?.message || previousError || setupHint })
       return
     }
