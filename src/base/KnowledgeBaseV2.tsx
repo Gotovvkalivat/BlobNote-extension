@@ -38,7 +38,7 @@ import {
   Pencil,
   Plus,
   Search,
-  Settings2,
+  Settings,
   Sparkles,
   Trash2,
   Upload,
@@ -406,25 +406,24 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
             </div>
             <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
               {visibleTab === 'templates' && (
-                <div className="relative w-full max-w-md">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <Input className="h-11 rounded-xl bg-white pl-10 dark:bg-slate-900" placeholder={ui(language, 'Поиск шаблонов...', 'Search templates...')} value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
-                </div>
-              )}
-              <Button variant="outline" size="icon" onClick={() => setSettingsOpen(true)} title={translate(language, 'settings')}>
-                <Settings2 className="h-4 w-4" />
-              </Button>
-              {visibleTab === 'templates' && (
                 <>
-                  <Button variant="outline" size="icon" onClick={() => setViewMode(viewMode === 'cards' ? 'table' : 'cards')} title={viewMode === 'cards' ? ui(language, 'Таблица', 'Table') : ui(language, 'Карточки', 'Cards')}>
-                    {viewMode === 'cards' ? <LayoutList className="h-4 w-4" /> : <Grid2X2 className="h-4 w-4" />}
-                  </Button>
                   <Button className="text-white shadow-sm" onClick={createTemplate}>
                     <Plus className="mr-2 h-4 w-4" />
                     {translate(language, 'createNote')}
                   </Button>
+                  <div className="relative w-full max-w-md">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Input className="h-11 rounded-xl bg-white pl-10 dark:bg-slate-900" placeholder={ui(language, 'Поиск шаблонов...', 'Search templates...')} value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
+                  </div>
+                  <Button variant="outline" size="icon" onClick={() => setViewMode(viewMode === 'cards' ? 'table' : 'cards')} title={viewMode === 'cards' ? ui(language, 'Таблица', 'Table') : ui(language, 'Карточки', 'Cards')}>
+                    {viewMode === 'cards' ? <LayoutList className="h-4 w-4" /> : <Grid2X2 className="h-4 w-4" />}
+                  </Button>
                 </>
               )}
+              <Button variant="outline" className="h-11 px-4" onClick={() => setSettingsOpen(true)} title={translate(language, 'settings')}>
+                <Settings className="mr-2 h-4 w-4" />
+                {translate(language, 'settings')}
+              </Button>
             </div>
           </div>
 
