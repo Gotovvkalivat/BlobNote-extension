@@ -213,7 +213,7 @@ function launchGoogleWebAuthFlow(
     return
   }
 
-  const redirectUri = identity.getRedirectURL('google')
+  const redirectUri = identity.getRedirectURL()
   const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
   authUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID)
   authUrl.searchParams.set('response_type', 'token')
@@ -223,7 +223,7 @@ function launchGoogleWebAuthFlow(
 
   identity.launchWebAuthFlow({ url: authUrl.toString(), interactive: true }, (redirectUrl) => {
     if (chrome.runtime.lastError || !redirectUrl) {
-      const setupHint = `Google-вход не завершён. Проверьте OAuth Client ID и добавьте redirect URI: ${redirectUri}`
+      const setupHint = `Google-вход не завершён. В Google Cloud добавьте Authorized redirect URI: ${redirectUri}`
       sendResponse({ success: false, error: chrome.runtime.lastError?.message || previousError || setupHint })
       return
     }

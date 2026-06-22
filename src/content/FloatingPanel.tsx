@@ -25,27 +25,18 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), Math.max(min, max))
 }
 
-function BlobNoteMark({ className = 'h-5 w-5' }: { className?: string }) {
+function PanelDot({ className = 'h-4 w-4' }: { className?: string }) {
   return (
-    <svg aria-hidden="true" className={className} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg aria-hidden="true" className={className} viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9" fill="url(#blobnote-panel-dot)" />
+      <path d="M8 8.7h5.2c1.8 0 3 1 3 2.5 0 .9-.5 1.6-1.3 2 .9.4 1.5 1.1 1.5 2.1 0 1.7-1.4 2.8-3.5 2.8H8V8.7Z" fill="white" />
       <defs>
-        <linearGradient id="blobnote-panel-mark" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#09B8F5" />
-          <stop offset="0.55" stopColor="#2C6DF6" />
-          <stop offset="1" stopColor="#7037F4" />
-        </linearGradient>
-        <linearGradient id="blobnote-panel-lines" x1="22" y1="28" x2="43" y2="43" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#16B7F3" />
-          <stop offset="1" stopColor="#6E3DF4" />
+        <linearGradient id="blobnote-panel-dot" x1="4" y1="4" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#12C7F3" />
+          <stop offset="0.55" stopColor="#2B74FF" />
+          <stop offset="1" stopColor="#7C3CFF" />
         </linearGradient>
       </defs>
-      <path d="M12.5 38.5C7.8 28.7 12.7 15.3 23.4 10.2C32 6.1 42.7 8.3 48.9 15.7C54.8 22.8 56.2 34.8 50.8 43.6C44.7 53.5 30.9 57.8 20.9 52.4C14.9 49.2 10.8 43.6 12.5 38.5Z" fill="url(#blobnote-panel-mark)" />
-      <circle cx="51.5" cy="14.5" r="4.5" fill="#2D74F7" />
-      <path d="M21 19.5C21 16.5 23.5 14 26.5 14H38.5L48 23.5V41.5C48 45.1 45.1 48 41.5 48H26.5C23.5 48 21 45.5 21 42.5V19.5Z" fill="white" />
-      <path d="M38.5 14V21.5C38.5 22.6 39.4 23.5 40.5 23.5H48" fill="#C9F3FF" stroke="#18AEEB" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M27 29.5H38.5" stroke="url(#blobnote-panel-lines)" strokeWidth="3.2" strokeLinecap="round" />
-      <path d="M27 36H42" stroke="url(#blobnote-panel-lines)" strokeWidth="3.2" strokeLinecap="round" />
-      <path d="M27 42.5H37" stroke="url(#blobnote-panel-lines)" strokeWidth="3.2" strokeLinecap="round" />
     </svg>
   )
 }
@@ -180,11 +171,11 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
       if (editableFocused || panelActive) {
         const rect = target.getBoundingClientRect()
         if (collapsed) {
-          const visualSize = 40 * scale
+          const visualSize = 32 * scale
           setPosition({
             top: clamp(rect.bottom - visualSize - 4, 8, window.innerHeight - visualSize - 8),
             left: clamp(rect.right - visualSize - 4, 8, window.innerWidth - visualSize - 8),
-            width: 40,
+            width: 32,
           })
           setVisible(true)
           return
@@ -363,12 +354,12 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           zIndex: 2147483640,
           color: '#ffffff',
         }}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-slate-950 text-white shadow-[0_18px_42px_rgba(2,6,23,.42),0_0_0_1px_rgba(255,255,255,.14)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_rgba(2,6,23,.52),0_0_0_1px_rgba(255,255,255,.2)] active:scale-95"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/35 bg-slate-950 text-white shadow-[0_14px_34px_rgba(2,6,23,.38),0_0_0_1px_rgba(255,255,255,.16)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(2,6,23,.5),0_0_0_1px_rgba(255,255,255,.22)] active:scale-95"
         title={t('showPanel')}
         onMouseDown={(event) => event.preventDefault()}
         onClick={() => setCollapsed(false)}
       >
-        <BlobNoteMark className="h-6 w-6 shrink-0" />
+        <PanelDot className="h-4 w-4 shrink-0" />
       </button>
     )
   }
@@ -409,7 +400,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
             disabled={!target}
             title={pinnedInputSelector
               ? text('Панель привязана к этому полю. Нажмите, чтобы снова показывать ее у любых полей.', 'Panel is pinned to this field. Click to show it near any field again.')
-              : text('Привязать к текущему полю. Панель и /-поиск будут открываться только у этого поля.', 'Pin to the current field. The panel and / search will open only for this field.')}
+              : text('Привязать парящую панель к текущему полю. Поиск через символ продолжит работать везде.', 'Pin the floating panel to the current field. Trigger search will keep working everywhere.')}
             onMouseDown={(event) => event.preventDefault()}
             onClick={pinnedInputSelector ? unpinField : pinCurrentField}
           >

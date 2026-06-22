@@ -27,7 +27,6 @@ import {
   Copy,
   Download,
   Eye,
-  Folder,
   Grid2X2,
   Heart,
   Info,
@@ -91,7 +90,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
   const [searchQuery, setSearchQuery] = React.useState('')
   const [mainFilter, setMainFilter] = React.useState<MainFilter>('all')
   const [folderFilter, setFolderFilter] = React.useState<string | null>(null)
-  const [tagFilter, setTagFilter] = React.useState<string | null>(null)
+  const [tagFilters, setTagFilters] = React.useState<string[]>([])
   const [sortMode, setSortMode] = React.useState<SortMode>('updated')
   const [activeTab, setActiveTab] = React.useState<ActiveTab>(() => {
     const storedTab = readStorage('blobnote-v2-active-tab', 'templates')
@@ -180,7 +179,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
       if (mainFilter === 'favorites' && !template.favorite) return false
       if (mainFilter === 'recent' && !recentIds.has(template.id)) return false
       if (folderFilter && getTemplateFolder(template, defaultFolder) !== folderFilter) return false
-      if (tagFilter && template.tag !== tagFilter) return false
+      if (tagFilters.length > 0 && (!template.tag || !tagFilters.includes(template.tag))) return false
       if (!query) return true
       const folder = getTemplateFolder(template, defaultFolder)
       return (
@@ -190,7 +189,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
         folder.toLowerCase().includes(query)
       )
     })
-  }, [activeTemplates, defaultFolder, folderFilter, mainFilter, recentIds, searchQuery, tagFilter])
+  }, [activeTemplates, defaultFolder, folderFilter, mainFilter, recentIds, searchQuery, tagFilters])
 
   React.useEffect(() => {
     setSelectedIds((current) => current.filter((id) => filteredTemplates.some((template) => template.id === id)))
@@ -203,6 +202,17 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
 
   const editorOpen = isCreating || Boolean(editingTemplate)
   const allSelected = filteredTemplates.length > 0 && filteredTemplates.every((template) => selectedIds.includes(template.id))
+  const tagFilterLabel = tagFilters.length === 0
+    ? ui(language, 'С тегами', 'With tags')
+    : tagFilters.length === 1
+      ? `#${tagFilters[0]}`
+      : ui(language, '{{count}} тегов', '{{count}} tags').replace('{{count}}', String(tagFilters.length))
+
+  const toggleTagFilter = (tag: string) => {
+    switchTab('templates')
+    setMainFilter('all')
+    setTagFilters((current) => current.includes(tag) ? current.filter((item) => item !== tag) : [...current, tag])
+  }
 
   const handleSaveTemplate = (data: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order' | 'usageCount'>) => {
     if (editingTemplate) {
@@ -331,9 +341,9 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
         </Button>
 
         <nav className="space-y-1">
-          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'all' && !folderFilter && !tagFilter} icon={<Archive />} label={ui(language, 'Все шаблоны', 'All templates')} count={activeTemplates.length} onClick={() => { switchTab('templates'); setMainFilter('all'); setFolderFilter(null); setTagFilter(null) }} />
-          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'favorites'} icon={<Heart />} label={translate(language, 'favorites')} count={activeTemplates.filter((template) => template.favorite).length} onClick={() => { switchTab('templates'); setMainFilter('favorites'); setFolderFilter(null); setTagFilter(null) }} />
-          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'recent'} icon={<ClipboardList />} label={ui(language, 'Недавние', 'Recent')} count={recentInsertions.length} onClick={() => { switchTab('templates'); setMainFilter('recent'); setFolderFilter(null); setTagFilter(null) }} />
+          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'all' && !folderFilter && tagFilters.length === 0} icon={<Archive />} label={ui(language, 'Все шаблоны', 'All templates')} count={activeTemplates.length} onClick={() => { switchTab('templates'); setMainFilter('all'); setFolderFilter(null); setTagFilters([]) }} />
+          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'favorites'} icon={<Heart />} label={translate(language, 'favorites')} count={activeTemplates.filter((template) => template.favorite).length} onClick={() => { switchTab('templates'); setMainFilter('favorites'); setFolderFilter(null); setTagFilters([]) }} />
+          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'recent'} icon={<ClipboardList />} label={ui(language, 'Недавние', 'Recent')} count={recentInsertions.length} onClick={() => { switchTab('templates'); setMainFilter('recent'); setFolderFilter(null); setTagFilters([]) }} />
           {settings.showVariablesTab && (
             <SidebarButton active={visibleTab === 'variables'} icon={<Braces />} label={ui(language, 'Переменные', 'Variables')} count={variables.length} onClick={() => switchTab('variables')} />
           )}
@@ -351,14 +361,26 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                   <button
                     key={tag}
                     type="button"
-                    className={cn('rounded-full border px-2.5 py-1 text-xs font-medium transition hover:-translate-y-0.5', tagFilter === tag && 'ring-2 ring-primary')}
-                    style={tagColorStyle(tagColorByTag[tag])}
-                    onClick={() => { switchTab('templates'); setMainFilter('all'); setTagFilter(tag) }}
+                    className={cn(
+                      'm-0.5 rounded-full border px-2.5 py-1 text-xs font-medium shadow-sm transition-colors hover:border-primary/60',
+                      tagFilters.includes(tag) && 'border-primary bg-primary/10 text-primary shadow-primary/15'
+                    )}
+                    style={tagFilters.includes(tag) ? undefined : tagColorStyle(tagColorByTag[tag])}
+                    onClick={() => toggleTagFilter(tag)}
                   >
                     {tag}
                   </button>
                 ))}
               </div>
+              {tagFilters.length > 0 && (
+                <button
+                  type="button"
+                  className="mt-2 w-full rounded-lg border bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition hover:border-primary/50 hover:text-primary dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
+                  onClick={() => setTagFilters([])}
+                >
+                  {translate(language, 'clearAllTags')}
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -372,7 +394,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                 <BrandBlock compact />
               </div>
               <div className="min-w-0">
-                <h1 className="truncate text-2xl font-bold">{currentBaseTitle(language, visibleTab, mainFilter, folderFilter, tagFilter)}</h1>
+                <h1 className="truncate text-2xl font-bold">{currentBaseTitle(language, visibleTab, mainFilter, folderFilter, tagFilters)}</h1>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   {visibleTab === 'variables'
                     ? ui(language, '{{count}} переменных', '{{count}} variables').replace('{{count}}', String(variables.length))
@@ -409,9 +431,15 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
           {visibleTab === 'templates' && (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2">
-              <FilterButton active={mainFilter === 'all' && !folderFilter && !tagFilter} onClick={() => { setMainFilter('all'); setFolderFilter(null); setTagFilter(null) }}>{ui(language, 'Все', 'All')}</FilterButton>
-              <FilterButton active={mainFilter === 'favorites'} onClick={() => { setMainFilter('favorites'); setFolderFilter(null); setTagFilter(null) }}>{translate(language, 'favorites')}</FilterButton>
-              <FilterButton active={Boolean(tagFilter)} onClick={() => setTagFilter(null)}>{tagFilter || ui(language, 'С тегами', 'With tags')}</FilterButton>
+              <FilterButton active={mainFilter === 'all' && !folderFilter && tagFilters.length === 0} onClick={() => { setMainFilter('all'); setFolderFilter(null); setTagFilters([]) }}>{ui(language, 'Все', 'All')}</FilterButton>
+              <FilterButton active={mainFilter === 'favorites'} onClick={() => { setMainFilter('favorites'); setFolderFilter(null); setTagFilters([]) }}>{translate(language, 'favorites')}</FilterButton>
+              <FilterButton active={tagFilters.length > 0} onClick={() => setTagFilters([])}>{tagFilterLabel}</FilterButton>
+              {tagFilters.length > 0 && (
+                <Button variant="outline" className="h-10 rounded-xl" onClick={() => setTagFilters([])}>
+                  <X className="mr-2 h-4 w-4" />
+                  {translate(language, 'clearAllTags')}
+                </Button>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -746,7 +774,7 @@ function SettingsDrawer({
         </div>
 
         <TooltipProvider delayDuration={250}>
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="grid items-start gap-3 xl:grid-cols-2">
           <SettingsBlock title={ui(language, 'Основное', 'Basics')}>
             <ToggleLine label={translate(language, 'darkTheme')} checked={settings.theme === 'dark'} onCheckedChange={(checked) => onSettingsChange({ theme: checked ? 'dark' : 'light', ...cardPresetFor(checked ? 'dark' : 'light', settings.cardPreset) })} />
             <SelectLine label={translate(language, 'language')} value={settings.uiLanguage} onChange={(value) => onSettingsChange({ uiLanguage: value as AppSettings['uiLanguage'] })} options={[{ value: 'ru', label: 'RU' }, { value: 'en', label: 'EN' }]} />
@@ -757,7 +785,7 @@ function SettingsDrawer({
               <SelectLine label={ui(language, 'Колонки', 'Columns')} value={String(settings.gridCols)} onChange={(value) => onSettingsChange({ gridCols: Math.max(1, Number(value) || 3) })} options={[1, 2, 3, 4].map((value) => ({ value: String(value), label: ui(language, `${value} колонки`, `${value} columns`) }))} />
             <SelectLine label={ui(language, 'Высота карточки', 'Card height')} value={settings.gridHeight} onChange={(value) => onSettingsChange({ gridHeight: value })} options={['180px', '220px', '240px', '260px', '320px', 'masonry'].map((value) => ({ value, label: value === 'masonry' ? ui(language, 'Авто', 'Auto') : value }))} />
             <SelectLine label={translate(language, 'noteTextSize')} value={settings.noteFontSize} onChange={(value) => onSettingsChange({ noteFontSize: value as AppSettings['noteFontSize'] })} options={['12', '13', '14', '15', '16', '18'].map((value) => ({ value, label: `${value}px` }))} />
-            <SelectLine label={translate(language, 'noteFontFamily')} value={settings.noteFontFamily} onChange={(value) => onSettingsChange({ noteFontFamily: value as AppSettings['noteFontFamily'] })} options={[
+            <SelectLine label={translate(language, 'noteFont')} value={settings.noteFontFamily} onChange={(value) => onSettingsChange({ noteFontFamily: value as AppSettings['noteFontFamily'] })} options={[
               { value: 'system', label: ui(language, 'Системный', 'System') },
               { value: 'arial', label: 'Arial' },
               { value: 'georgia', label: 'Georgia' },
@@ -797,7 +825,7 @@ function SettingsDrawer({
               { value: 'top-right', label: ui(language, 'Сверху справа', 'Top right') },
               { value: 'bottom-right', label: ui(language, 'Снизу справа', 'Bottom right') },
             ]} />
-            <ToggleLine label={translate(language, 'clipboardPanelToggle')} checked={settings.clipboardPanelEnabled} onCheckedChange={(checked) => onSettingsChange({ clipboardPanelEnabled: checked })} hint={translate(language, 'clipboardPanelHint')} />
+            <ToggleLine label={translate(language, 'clipboardInPanel')} checked={settings.clipboardPanelEnabled} onCheckedChange={(checked) => onSettingsChange({ clipboardPanelEnabled: checked })} hint={translate(language, 'clipboardHint')} />
             <ToggleLine label={ui(language, 'Показывать основные настройки в заголовке панели', 'Show main settings in panel header')} checked={settings.showHeaderControls} onCheckedChange={(checked) => onSettingsChange({ showHeaderControls: checked })} />
           </SettingsBlock>
 
@@ -868,7 +896,7 @@ function SettingsDrawer({
           <SettingsBlock title={translate(language, 'featureGuide')}>
             <GuideLine icon={<PanelTopOpen />} title={translate(language, 'floatingPanel')} text={translate(language, 'floatingPanelGuide')} />
             <GuideLine icon={<Search />} title={translate(language, 'triggerMenuTitle', { trigger: settings.searchTrigger })} text={translate(language, 'searchGuide')} />
-            <GuideLine icon={<Folder />} title={ui(language, 'Папки и теги', 'Folders and tags')} text={ui(language, 'Папка отвечает за структуру, тег помогает быстро выделять смысл. Карточку можно перетащить на папку слева.', 'Folders create structure, tags highlight meaning. Drag a card onto a folder in the sidebar to move it.')} />
+            <GuideLine icon={<Palette />} title={translate(language, 'tags')} text={ui(language, 'Выберите один или несколько тегов слева, чтобы быстро сузить список заметок. Цвет тега помогает визуально цепляться за нужный сценарий.', 'Select one or more tags on the left to narrow the template list. Tag colors make scenarios easier to scan.')} />
             <GuideLine icon={<CheckSquare />} title={ui(language, 'Массовые действия', 'Bulk actions')} text={ui(language, 'Нажмите «Массовые действия», выберите карточки и быстро удалите, продублируйте или добавьте их в избранное.', 'Turn on bulk actions, select cards, then delete, duplicate, or favorite them quickly.')} />
           </SettingsBlock>
         </div>
@@ -898,9 +926,9 @@ function FilterButton({ active, children, onClick }: { active: boolean; children
 
 function SettingsBlock({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/70">
-      <h2 className="mb-3 font-semibold">{title}</h2>
-      <div className="space-y-3">{children}</div>
+    <section className="rounded-xl border bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/70">
+      <h2 className="mb-2 font-semibold">{title}</h2>
+      <div className="space-y-2.5">{children}</div>
     </section>
   )
 }
@@ -988,16 +1016,21 @@ function getVisibleBaseTab(tab: ActiveTab, settings: AppSettings): ActiveTab {
   return tab
 }
 
-function currentBaseTitle(language: AppSettings['uiLanguage'], tab: ActiveTab, mainFilter: MainFilter, folderFilter: string | null, tagFilter: string | null) {
+function currentBaseTitle(language: AppSettings['uiLanguage'], tab: ActiveTab, mainFilter: MainFilter, folderFilter: string | null, tagFilters: string[]) {
   if (tab === 'variables') return ui(language, 'Переменные', 'Variables')
   if (tab === 'todo') return ui(language, 'Задачи', 'Tasks')
-  return currentTitle(language, mainFilter, folderFilter, tagFilter)
+  return currentTitle(language, mainFilter, folderFilter, tagFilters)
 }
 
-function currentTitle(language: AppSettings['uiLanguage'], mainFilter: MainFilter, folderFilter: string | null, tagFilter: string | null) {
-  if (folderFilter && tagFilter) return `${folderFilter} · #${tagFilter}`
+function currentTitle(language: AppSettings['uiLanguage'], mainFilter: MainFilter, folderFilter: string | null, tagFilters: string[]) {
+  const tagTitle = tagFilters.length === 0
+    ? ''
+    : tagFilters.length === 1
+      ? `#${tagFilters[0]}`
+      : ui(language, '{{count}} тега', '{{count}} tags').replace('{{count}}', String(tagFilters.length))
+  if (folderFilter && tagTitle) return `${folderFilter} · ${tagTitle}`
   if (folderFilter) return folderFilter
-  if (tagFilter) return `#${tagFilter}`
+  if (tagTitle) return tagTitle
   if (mainFilter === 'favorites') return translate(language, 'favorites')
   if (mainFilter === 'recent') return ui(language, 'Недавние', 'Recent')
   return ui(language, 'Все шаблоны', 'All templates')

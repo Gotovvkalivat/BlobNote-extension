@@ -94,8 +94,8 @@ export function PopupV2() {
   }
 
   return (
-    <div className="h-[560px] w-[420px] overflow-hidden bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
-      <header className="border-b bg-white px-3 py-3 dark:border-slate-800 dark:bg-slate-950">
+    <div className="h-[520px] w-[390px] overflow-hidden bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
+      <header className="border-b bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-slate-950">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={assetUrl('icon-48.png')} alt="" className="h-8 w-8" />
@@ -120,7 +120,7 @@ export function PopupV2() {
       </header>
 
       {tab === 'base' ? (
-        <main className="flex h-[calc(560px-103px)] flex-col overflow-hidden p-3">
+        <main className="flex h-[calc(520px-96px)] flex-col overflow-hidden p-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
@@ -165,15 +165,15 @@ export function PopupV2() {
             </div>
           </div>
 
-          <p className="mt-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+          <div className="mt-2 rounded-lg border bg-white px-3 py-2 text-[11px] leading-relaxed text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
             {ui(language, 'Быстрая вставка: ', 'Quick insert: ')}
             <Kbd>{settings.searchTrigger}</Kbd>
             {ui(language, ' в поле сообщения или ', ' in a message field or ')}
             <Kbd>Ctrl</Kbd> + <Kbd>Space</Kbd>.
-          </p>
+          </div>
         </main>
       ) : (
-        <main className="h-[calc(560px-103px)] overflow-y-auto p-3">
+        <main className="h-[calc(520px-96px)] overflow-y-auto p-3">
           <div className={`mb-3 rounded-xl border p-3 ${currentSiteActive ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950/30' : 'border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/30'}`}>
             <div className="text-sm font-semibold">{currentSiteActive ? ui(language, 'BlobNote работает на этой странице', 'BlobNote is active on this page') : ui(language, 'BlobNote выключен на этой странице', 'BlobNote is off on this page')}</div>
             <div className="mt-1 truncate text-xs text-slate-600 dark:text-slate-300">{currentHost || ui(language, 'Текущая вкладка', 'Current tab')}</div>
@@ -229,9 +229,9 @@ function TemplateRow({ template, language, onInsert, onSend }: { template: Templ
         <div className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{template.text}</div>
         {template.tag && <div className="mt-1.5 inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500 dark:bg-slate-800 dark:text-slate-300">{template.tag}</div>}
       </div>
-      <div className="flex flex-col gap-1">
-        <Button size="sm" className="h-7 px-2 text-xs" onClick={onInsert}>{translate(language, 'insert')}</Button>
-        <Button size="icon" variant="outline" className="h-7 w-7" title={translate(language, 'insertAndSend')} onClick={onSend}>
+      <div className="flex items-start gap-1">
+        <Button size="sm" className="h-7 px-2 text-xs text-white shadow-sm" onClick={onInsert}>{translate(language, 'insert')}</Button>
+        <Button size="icon" variant="outline" className="h-7 w-7 shrink-0" title={translate(language, 'insertAndSend')} onClick={onSend}>
           <Send className="h-3.5 w-3.5" />
         </Button>
       </div>
