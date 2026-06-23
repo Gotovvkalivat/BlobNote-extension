@@ -30,6 +30,7 @@ import {
   Grid2X2,
   Heart,
   Info,
+  Keyboard,
   LayoutList,
   ListTodo,
   Palette,
@@ -865,6 +866,15 @@ function SettingsDrawer({
           </SettingsBlock>
 
           <SettingsBlock title={translate(language, 'featureGuide')}>
+            <GuideLine
+              icon={<Keyboard />}
+              title={ui(language, 'Горячие клавиши', 'Hotkeys')}
+              text={ui(
+                language,
+                'Ctrl+Space - открыть быстрый поиск. Ctrl+Shift+Space - открыть базу поверх сайта. / или @ в поле - поиск заметки прямо в поле ввода. Стрелки вверх/вниз - навигация по результатам. Enter - вставить. Ctrl+Enter - вставить и отправить. Esc - закрыть поиск или модалку.',
+                'Ctrl+Space opens quick search. Ctrl+Shift+Space opens the base over the site. / or @ in a field searches notes inline. Up/Down arrows navigate results. Enter inserts. Ctrl+Enter inserts and sends. Esc closes search or a modal.'
+              )}
+            />
             <GuideLine icon={<PanelTopOpen />} title={translate(language, 'floatingPanel')} text={translate(language, 'floatingPanelGuide')} />
             <GuideLine icon={<Search />} title={translate(language, 'triggerMenuTitle', { trigger: settings.searchTrigger })} text={translate(language, 'searchGuide')} />
             <GuideLine icon={<Palette />} title={translate(language, 'tags')} text={ui(language, 'Выберите один или несколько тегов слева, чтобы быстро сузить список заметок. Цвет тега помогает визуально цепляться за нужный сценарий.', 'Select one or more tags on the left to narrow the template list. Tag colors make scenarios easier to scan.')} />
