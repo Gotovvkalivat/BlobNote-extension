@@ -5,18 +5,26 @@ const root = process.cwd()
 const dist = join(root, 'dist')
 const chromeStore = join(root, 'dist-chrome')
 const firefoxStore = join(root, 'dist-firefox')
+const firefoxLocalStore = join(root, 'dist-firefox-local')
 const firefoxAmoStore = join(root, 'dist-firefox-amo')
 
 if (!existsSync(dist)) {
   throw new Error('Run npm run build before preparing store builds.')
 }
 
-for (const target of [chromeStore, firefoxStore, firefoxAmoStore]) {
+for (const target of [chromeStore, firefoxStore, firefoxLocalStore, firefoxAmoStore]) {
   if (existsSync(target)) rmSync(target, { recursive: true, force: true })
   cpSync(dist, target, { recursive: true })
 }
 
-function writeFirefoxManifest(targetDir, { amo = false } = {}) {
+function noDataCollection() {
+  return {
+    required: ['none'],
+    optional: [],
+  }
+}
+
+function writeFirefoxManifest(targetDir, { store = false } = {}) {
   const manifestPath = join(targetDir, 'manifest.json')
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
   manifest.background = {
@@ -29,15 +37,16 @@ function writeFirefoxManifest(targetDir, { amo = false } = {}) {
     },
   }
   delete manifest.data_collection_permissions
-  if (amo) {
-    manifest.data_collection_permissions = {
-      required: ['none'],
-    }
+  if (store) {
+    const permissions = noDataCollection()
+    manifest.data_collection_permissions = permissions
+    manifest.browser_specific_settings.gecko.data_collection_permissions = permissions
   }
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8')
 }
 
-writeFirefoxManifest(firefoxStore)
-writeFirefoxManifest(firefoxAmoStore, { amo: true })
+writeFirefoxManifest(firefoxStore, { store: true })
+writeFirefoxManifest(firefoxLocalStore)
+writeFirefoxManifest(firefoxAmoStore, { store: true })
 
 mkdirSync(join(root, 'release'), { recursive: true })

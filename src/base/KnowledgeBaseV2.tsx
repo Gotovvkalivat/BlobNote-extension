@@ -22,6 +22,8 @@ import type { AppSettings, Template } from '@/types'
 import {
   Archive,
   Braces,
+  ChevronLeft,
+  ChevronRight,
   CheckSquare,
   ClipboardList,
   Copy,
@@ -57,6 +59,7 @@ type ActiveTab = 'templates' | 'variables' | 'todo'
 
 const VIEW_STORAGE_KEY = 'blobnote-v2-view-mode'
 const MASS_STORAGE_KEY = 'blobnote-v2-mass-mode'
+const PAGE_SIZE_OPTIONS: AppSettings['templatesPageSize'][] = ['10', '20', '50', '100', '500', 'all']
 
 const PRESET_LABELS: Record<AppSettings['cardPreset'], { ru: string; en: string }> = {
   lagoon: { ru: 'Лагуна', en: 'Lagoon' },
@@ -99,6 +102,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
   const [isCreating, setIsCreating] = React.useState(false)
   const [previewTemplate, setPreviewTemplate] = React.useState<Template | null>(null)
   const [settingsOpen, setSettingsOpen] = React.useState(false)
+  const [currentPage, setCurrentPage] = React.useState(1)
   const [scenarioPresetId, setScenarioPresetId] = React.useState<ScenarioPresetId>('support')
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const language = settings.uiLanguage
@@ -166,6 +170,22 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
   React.useEffect(() => {
     setSelectedIds((current) => current.filter((id) => filteredTemplates.some((template) => template.id === id)))
   }, [filteredTemplates])
+
+  const pageSize = settings.templatesPageSize === 'all' ? filteredTemplates.length || 1 : Number(settings.templatesPageSize)
+  const totalPages = settings.templatesPageSize === 'all' ? 1 : Math.max(1, Math.ceil(filteredTemplates.length / pageSize))
+  const pagedTemplates = React.useMemo(() => {
+    if (settings.templatesPageSize === 'all') return filteredTemplates
+    const start = (currentPage - 1) * pageSize
+    return filteredTemplates.slice(start, start + pageSize)
+  }, [currentPage, filteredTemplates, pageSize, settings.templatesPageSize])
+
+  React.useEffect(() => {
+    setCurrentPage(1)
+  }, [mainFilter, searchQuery, settings.templatesPageSize, sortMode, tagFilters])
+
+  React.useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages))
+  }, [totalPages])
 
   const selectedTemplates = React.useMemo(() => {
     const selected = new Set(selectedIds)
@@ -415,15 +435,29 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
           )}
         </header>
 
-        {selectedIds.length > 0 && (
+        {(selectedIds.length > 0 || (visibleTab === 'templates' && viewMode === 'cards' && massMode)) && (
           <div className="shrink-0 border-b bg-indigo-50 px-5 py-3 dark:border-indigo-900/60 dark:bg-indigo-950/40">
             <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span className="mr-2 font-semibold">{ui(language, 'Выбрано: {{count}}', 'Selected: {{count}}').replace('{{count}}', String(selectedIds.length))}</span>
-              <Button size="sm" variant="outline" onClick={() => bulkFavorite(true)}><Heart className="mr-1 h-3.5 w-3.5" />{ui(language, 'В избранное', 'Favorite')}</Button>
-              <Button size="sm" variant="outline" onClick={() => bulkFavorite(false)}>{ui(language, 'Убрать избранное', 'Unfavorite')}</Button>
-              <Button size="sm" variant="outline" onClick={bulkDuplicate}><Copy className="mr-1 h-3.5 w-3.5" />{ui(language, 'Дублировать', 'Duplicate')}</Button>
-              <Button size="sm" variant="destructive" onClick={bulkDelete}><Trash2 className="mr-1 h-3.5 w-3.5" />{ui(language, 'Удалить', 'Delete')}</Button>
-              <Button size="sm" variant="ghost" onClick={() => setSelectedIds([])}>{translate(language, 'cancel')}</Button>
+              <span className="mr-2 font-semibold">
+                {selectedIds.length > 0
+                  ? ui(language, 'Выбрано: {{count}}', 'Selected: {{count}}').replace('{{count}}', String(selectedIds.length))
+                  : ui(language, 'Массовые действия', 'Bulk actions')}
+              </span>
+              {viewMode === 'cards' && massMode && (
+                <Button size="sm" variant="outline" onClick={() => setSelectedIds(allSelected ? [] : filteredTemplates.map((template) => template.id))}>
+                  <CheckSquare className="mr-1 h-3.5 w-3.5" />
+                  {allSelected ? ui(language, 'Снять выбор', 'Clear selection') : ui(language, 'Выбрать все', 'Select all')}
+                </Button>
+              )}
+              {selectedIds.length > 0 && (
+                <>
+                  <Button size="sm" variant="outline" onClick={() => bulkFavorite(true)}><Heart className="mr-1 h-3.5 w-3.5" />{ui(language, 'В избранное', 'Favorite')}</Button>
+                  <Button size="sm" variant="outline" onClick={() => bulkFavorite(false)}>{ui(language, 'Убрать избранное', 'Unfavorite')}</Button>
+                  <Button size="sm" variant="outline" onClick={bulkDuplicate}><Copy className="mr-1 h-3.5 w-3.5" />{ui(language, 'Дублировать', 'Duplicate')}</Button>
+                  <Button size="sm" variant="destructive" onClick={bulkDelete}><Trash2 className="mr-1 h-3.5 w-3.5" />{ui(language, 'Удалить', 'Delete')}</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setSelectedIds([])}>{translate(language, 'cancel')}</Button>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -441,55 +475,67 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                 <Button className="mt-4 text-white" onClick={addScenarioPreset}>{translate(language, 'addStarterNotes')}</Button>
               )}
             </div>
-          ) : viewMode === 'cards' ? (
-            <div
-              className={settings.gridHeight === 'masonry' ? 'gap-4 [column-fill:_balance]' : 'grid gap-4'}
-              style={settings.gridHeight === 'masonry'
-                ? { columnCount: Math.max(1, settings.gridCols || 3), columnGap: '1rem' }
-                : { gridTemplateColumns: `repeat(${Math.max(1, settings.gridCols || 3)}, minmax(0, 1fr))` }}
-            >
-              {filteredTemplates.map((template) => (
-                <div key={template.id} className={settings.gridHeight === 'masonry' ? 'mb-4 break-inside-avoid' : ''}>
-                  <TemplateShell
-                    massMode={massMode}
-                    checked={selectedIds.includes(template.id)}
-                    onCheckedChange={(checked) => toggleSelected(template.id, checked, setSelectedIds)}
-                  >
-                    <TemplateCard
-                      template={template}
-                      color={template.favorite ? settings.favoriteCardColor : settings.defaultCardColor}
-                      textColor={settings.cardTextColor}
-                      fontFamily={settings.cardFontFamily}
-                      noteFontSize={settings.noteFontSize}
-                      noteFontFamily={settings.noteFontFamily}
-                      showFullText={settings.gridHeight === 'masonry'}
-                      cardStyle={{ minHeight: settings.gridHeight === 'masonry' ? 180 : undefined, height: settings.gridHeight === 'masonry' ? 'auto' : settings.gridHeight }}
-                      onOpen={() => setPreviewTemplate(template)}
-                      onEdit={() => { setEditingTemplate(template); setIsCreating(false) }}
-                      onDelete={() => { if (confirm(translate(language, 'deleteNoteQuestion', { title: template.title }))) deleteTemplate(template.id) }}
-                      onToggleFavorite={() => toggleFavorite(template.id)}
-                      onCopy={() => { navigator.clipboard.writeText(template.text); showToastEvent(translate(language, 'textCopied'), 'success') }}
-                      usageLabel={template.usageCount > 0 ? translate(language, 'usageCount', { count: template.usageCount }) : undefined}
-                    />
-                  </TemplateShell>
-                </div>
-              ))}
-            </div>
           ) : (
-            <TemplateTable
-              templates={filteredTemplates}
-              selectedIds={selectedIds}
-              allSelected={allSelected}
-              tagColorByTag={tagColorByTag}
-              language={language}
-              onSelectAll={(checked) => setSelectedIds(checked ? filteredTemplates.map((template) => template.id) : [])}
-              onSelect={(id, checked) => toggleSelected(id, checked, setSelectedIds)}
-              onPreview={setPreviewTemplate}
-              onEdit={(template) => { setEditingTemplate(template); setIsCreating(false) }}
-              onDuplicate={duplicateTemplate}
-              onDelete={(template) => { if (confirm(translate(language, 'deleteNoteQuestion', { title: template.title }))) deleteTemplate(template.id) }}
-              onToggleFavorite={toggleFavorite}
-            />
+            <>
+              {viewMode === 'cards' ? (
+                <div
+                  className={settings.gridHeight === 'masonry' ? 'gap-4 [column-fill:_balance]' : 'grid gap-4'}
+                  style={settings.gridHeight === 'masonry'
+                    ? { columnCount: Math.max(1, settings.gridCols || 3), columnGap: '1rem' }
+                    : { gridTemplateColumns: `repeat(${Math.max(1, settings.gridCols || 3)}, minmax(0, 1fr))` }}
+                >
+                  {pagedTemplates.map((template) => (
+                    <div key={template.id} className={settings.gridHeight === 'masonry' ? 'mb-4 break-inside-avoid' : ''}>
+                      <TemplateShell
+                        massMode={massMode}
+                        checked={selectedIds.includes(template.id)}
+                        onCheckedChange={(checked) => toggleSelected(template.id, checked, setSelectedIds)}
+                      >
+                        <TemplateCard
+                          template={template}
+                          color={template.favorite ? settings.favoriteCardColor : settings.defaultCardColor}
+                          textColor={settings.cardTextColor}
+                          fontFamily={settings.cardFontFamily}
+                          noteFontSize={settings.noteFontSize}
+                          noteFontFamily={settings.noteFontFamily}
+                          showFullText={settings.gridHeight === 'masonry'}
+                          cardStyle={{ minHeight: settings.gridHeight === 'masonry' ? 180 : undefined, height: settings.gridHeight === 'masonry' ? 'auto' : settings.gridHeight }}
+                          onOpen={() => setPreviewTemplate(template)}
+                          onEdit={() => { setEditingTemplate(template); setIsCreating(false) }}
+                          onDelete={() => { if (confirm(translate(language, 'deleteNoteQuestion', { title: template.title }))) deleteTemplate(template.id) }}
+                          onToggleFavorite={() => toggleFavorite(template.id)}
+                          onCopy={() => { navigator.clipboard.writeText(template.text); showToastEvent(translate(language, 'textCopied'), 'success') }}
+                          usageLabel={template.usageCount > 0 ? translate(language, 'usageCount', { count: template.usageCount }) : undefined}
+                        />
+                      </TemplateShell>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <TemplateTable
+                  templates={pagedTemplates}
+                  selectedIds={selectedIds}
+                  allSelected={allSelected}
+                  tagColorByTag={tagColorByTag}
+                  language={language}
+                  onSelectAll={(checked) => setSelectedIds(checked ? filteredTemplates.map((template) => template.id) : [])}
+                  onSelect={(id, checked) => toggleSelected(id, checked, setSelectedIds)}
+                  onPreview={setPreviewTemplate}
+                  onEdit={(template) => { setEditingTemplate(template); setIsCreating(false) }}
+                  onDuplicate={duplicateTemplate}
+                  onDelete={(template) => { if (confirm(translate(language, 'deleteNoteQuestion', { title: template.title }))) deleteTemplate(template.id) }}
+                  onToggleFavorite={toggleFavorite}
+                />
+              )}
+              <PaginationBar
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredTemplates.length}
+                pageSize={settings.templatesPageSize}
+                language={language}
+                onPageChange={setCurrentPage}
+              />
+            </>
           )}
         </section>
       </main>
@@ -664,6 +710,54 @@ function TemplateTable({
   )
 }
 
+function PaginationBar({
+  currentPage,
+  totalPages,
+  totalItems,
+  pageSize,
+  language,
+  onPageChange,
+}: {
+  currentPage: number
+  totalPages: number
+  totalItems: number
+  pageSize: AppSettings['templatesPageSize']
+  language: AppSettings['uiLanguage']
+  onPageChange: (page: number) => void
+}) {
+  if (pageSize === 'all' || totalPages <= 1) return null
+
+  const numericPageSize = Number(pageSize)
+  const firstItem = (currentPage - 1) * numericPageSize + 1
+  const lastItem = Math.min(totalItems, currentPage * numericPageSize)
+
+  return (
+    <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white px-4 py-3 text-sm shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className="text-slate-500 dark:text-slate-400">
+        {ui(language, '{{from}}-{{to}} из {{total}}', '{{from}}-{{to}} of {{total}}')
+          .replace('{{from}}', String(firstItem))
+          .replace('{{to}}', String(lastItem))
+          .replace('{{total}}', String(totalItems))}
+      </div>
+      <div className="flex items-center gap-2">
+        <Button size="sm" variant="outline" disabled={currentPage <= 1} onClick={() => onPageChange(Math.max(1, currentPage - 1))}>
+          <ChevronLeft className="mr-1 h-4 w-4" />
+          {ui(language, 'Назад', 'Back')}
+        </Button>
+        <span className="min-w-20 text-center font-medium">
+          {ui(language, '{{page}} / {{total}}', '{{page}} / {{total}}')
+            .replace('{{page}}', String(currentPage))
+            .replace('{{total}}', String(totalPages))}
+        </span>
+        <Button size="sm" variant="outline" disabled={currentPage >= totalPages} onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}>
+          {ui(language, 'Вперёд', 'Next')}
+          <ChevronRight className="ml-1 h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 function SettingsDrawer({
   language,
   settings,
@@ -717,6 +811,7 @@ function SettingsDrawer({
             <ToggleLine label={translate(language, 'darkTheme')} checked={settings.theme === 'dark'} onCheckedChange={(checked) => onSettingsChange({ theme: checked ? 'dark' : 'light', ...cardPresetFor(checked ? 'dark' : 'light', settings.cardPreset) })} />
             <SelectLine label={translate(language, 'language')} value={settings.uiLanguage} onChange={(value) => onSettingsChange({ uiLanguage: value as AppSettings['uiLanguage'] })} options={[{ value: 'ru', label: 'RU' }, { value: 'en', label: 'EN' }]} />
             <SelectLine label={translate(language, 'interfaceScale')} value={settings.uiScale} onChange={(value) => onSettingsChange({ uiScale: value as AppSettings['uiScale'] })} options={scaleOptions()} />
+            <SelectLine label={ui(language, 'Шаблонов на странице', 'Templates per page')} value={settings.templatesPageSize} onChange={(value) => onSettingsChange({ templatesPageSize: value as AppSettings['templatesPageSize'] })} options={pageSizeOptions(language)} />
           </SettingsBlock>
 
           <SettingsBlock title={ui(language, 'Раскладка и карточки', 'Layout and cards')}>
@@ -954,6 +1049,13 @@ function sortTemplates(sortMode: SortMode) {
 
 function scaleOptions() {
   return ['70', '80', '90', '100', '110', '120', '130'].map((value) => ({ value, label: `${value}%` }))
+}
+
+function pageSizeOptions(language: AppSettings['uiLanguage']) {
+  return PAGE_SIZE_OPTIONS.map((value) => ({
+    value,
+    label: value === 'all' ? ui(language, 'Все сразу', 'All at once') : value,
+  }))
 }
 
 function getVisibleBaseTab(tab: ActiveTab, settings: AppSettings): ActiveTab {

@@ -6,6 +6,7 @@ const releaseDir = join(root, 'release')
 const targets = [
   { source: join(root, 'dist-chrome'), output: join(releaseDir, 'blobnote-chrome-v2.0.zip') },
   { source: join(root, 'dist-firefox'), output: join(releaseDir, 'blobnote-firefox-v2.0.zip') },
+  { source: join(root, 'dist-firefox-local'), output: join(releaseDir, 'blobnote-firefox-local-v2.0.zip') },
   { source: join(root, 'dist-firefox-amo'), output: join(releaseDir, 'blobnote-firefox-amo-v2.0.zip') },
 ]
 

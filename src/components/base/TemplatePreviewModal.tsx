@@ -51,7 +51,7 @@ export function TemplatePreviewModal({ template, variables, language, allowInser
     <div className="fixed inset-0 z-[2147483630] flex animate-in fade-in items-center justify-center bg-slate-950/40 p-4 text-foreground backdrop-blur-sm duration-150">
       <div className={`flex animate-in zoom-in-95 flex-col overflow-hidden rounded-lg border bg-background shadow-2xl duration-150 ${
         fullSize
-          ? 'h-[calc(100vh-24px)] w-[calc(100vw-24px)]'
+          ? 'h-[80vh] max-h-[calc(100vh-48px)] w-[80vw] max-w-[calc(100vw-48px)]'
           : 'max-h-[calc(100vh-48px)] w-[min(760px,calc(100vw-32px))]'
       }`}>
         <div className="flex items-center gap-3 border-b px-4 py-3">
@@ -73,11 +73,11 @@ export function TemplatePreviewModal({ template, variables, language, allowInser
           </Button>
         </div>
 
-        <div className="p-4 flex-1 overflow-hidden">
+        <div className="min-h-0 flex-1 overflow-hidden p-4">
           <Textarea
             value={text}
             onChange={(event) => setText(event.target.value)}
-            className={`resize-y text-base leading-relaxed ${fullSize ? 'h-full min-h-[calc(100vh-180px)]' : 'min-h-[320px] max-h-[60vh]'}`}
+            className={`text-base leading-relaxed ${fullSize ? 'h-full min-h-0 resize-none' : 'min-h-[320px] max-h-[60vh] resize-y'}`}
           />
         </div>
 

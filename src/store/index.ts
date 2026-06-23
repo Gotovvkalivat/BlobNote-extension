@@ -91,6 +91,7 @@ type SyncSnapshot = {
   lastBaseTab: AppSettings['lastBaseTab']
   gridCols: number
   gridHeight: string
+  templatesPageSize: AppSettings['templatesPageSize']
   onboardingCompleted: boolean
   siteSettings: Record<string, SiteSettings>
 }
@@ -122,6 +123,7 @@ const defaultSettings: AppSettings = {
   lastBaseTab: 'templates',
   gridCols: 3,
   gridHeight: '240px',
+  templatesPageSize: '50',
   onboardingCompleted: false,
   siteSettings: {},
 }
@@ -273,6 +275,12 @@ function normalizeNoteFontFamily(value: unknown): AppSettings['noteFontFamily'] 
     : defaultSettings.noteFontFamily
 }
 
+function normalizeTemplatesPageSize(value: unknown): AppSettings['templatesPageSize'] {
+  return value === '10' || value === '20' || value === '50' || value === '100' || value === '500' || value === 'all'
+    ? value
+    : defaultSettings.templatesPageSize
+}
+
 function normalizeSiteSettings(value: unknown): Record<string, SiteSettings> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
 
@@ -350,6 +358,7 @@ function snapshotToState(snapshot: SyncSnapshot) {
       lastBaseTab: snapshot.lastBaseTab || defaultSettings.lastBaseTab,
       gridCols: snapshot.gridCols || defaultSettings.gridCols,
       gridHeight: snapshot.gridHeight || defaultSettings.gridHeight,
+      templatesPageSize: normalizeTemplatesPageSize(snapshot.templatesPageSize),
       onboardingCompleted: snapshot.onboardingCompleted ?? defaultSettings.onboardingCompleted,
       siteSettings: normalizeSiteSettings(snapshot.siteSettings),
     },
@@ -526,6 +535,11 @@ function attachStorageListener() {
 
     if (changes.gridHeight) {
       nextSettings.gridHeight = changes.gridHeight.newValue || defaultSettings.gridHeight
+      settingsChanged = true
+    }
+
+    if (changes.templatesPageSize) {
+      nextSettings.templatesPageSize = normalizeTemplatesPageSize(changes.templatesPageSize.newValue)
       settingsChanged = true
     }
 
@@ -749,6 +763,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       searchTrigger: settings.searchTrigger === '@' ? '@' : settings.searchTrigger === '/' ? '/' : state.settings.searchTrigger,
       noteFontSize: normalizeNoteFontSize(settings.noteFontSize ?? state.settings.noteFontSize),
       noteFontFamily: normalizeNoteFontFamily(settings.noteFontFamily ?? state.settings.noteFontFamily),
+      templatesPageSize: normalizeTemplatesPageSize(settings.templatesPageSize ?? state.settings.templatesPageSize),
       showHeaderControls: settings.showHeaderControls ?? state.settings.showHeaderControls,
       ...cardPresetFor(theme, cardPreset),
     }
@@ -784,6 +799,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       lastBaseTab: nextSettings.lastBaseTab,
       gridCols: nextSettings.gridCols,
       gridHeight: nextSettings.gridHeight,
+      templatesPageSize: nextSettings.templatesPageSize,
       onboardingCompleted: nextSettings.onboardingCompleted,
       siteSettings: nextSettings.siteSettings,
     })

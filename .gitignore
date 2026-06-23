@@ -5,6 +5,7 @@ dist/
 dist-no-drive/
 dist-chrome/
 dist-firefox/
+dist-firefox-local/
 dist-firefox-amo/
 release/
 *.docx

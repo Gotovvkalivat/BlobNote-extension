@@ -25,6 +25,7 @@ export interface CRMBinding {
 export type SendMethod = 'auto' | 'button' | 'enter' | 'ctrl-enter' | 'shift-enter' | 'alt-enter'
 export type NoteFontSize = '12' | '13' | '14' | '15' | '16' | '18'
 export type NoteFontFamily = 'system' | 'arial' | 'georgia' | 'mono'
+export type TemplatePageSize = '10' | '20' | '50' | '100' | '500' | 'all'
 
 export interface AppSettings {
   theme: 'light' | 'dark'
@@ -57,6 +58,7 @@ export interface AppSettings {
   lastBaseTab: 'templates' | 'variables' | 'todo' | 'settings'
   gridCols: number
   gridHeight: string
+  templatesPageSize: TemplatePageSize
   onboardingCompleted: boolean
   siteSettings: Record<string, SiteSettings>
 }
