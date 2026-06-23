@@ -201,11 +201,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
 
   const editorOpen = isCreating || Boolean(editingTemplate)
   const allSelected = filteredTemplates.length > 0 && filteredTemplates.every((template) => selectedIds.includes(template.id))
-  const tagFilterLabel = tagFilters.length === 0
-    ? ui(language, 'С тегами', 'With tags')
-    : tagFilters.length === 1
-      ? `#${tagFilters[0]}`
-      : ui(language, '{{count}} тегов', '{{count}} tags').replace('{{count}}', String(tagFilters.length))
 
   const toggleTagFilter = (tag: string) => {
     switchTab('templates')
@@ -392,11 +387,11 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                     {translate(language, 'createNote')}
                   </Button>
                   <div className="relative w-full max-w-md">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <Input className="h-11 rounded-xl bg-white pl-10 dark:bg-slate-900" placeholder={ui(language, 'Поиск шаблонов...', 'Search templates...')} value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
                   </div>
-                  <Button variant="outline" size="icon" onClick={() => setViewMode(viewMode === 'cards' ? 'table' : 'cards')} title={viewMode === 'cards' ? ui(language, 'Таблица', 'Table') : ui(language, 'Карточки', 'Cards')}>
-                    {viewMode === 'cards' ? <LayoutList className="h-4 w-4" /> : <Grid2X2 className="h-4 w-4" />}
+                  <Button variant="outline" className="h-11 w-14 rounded-xl px-0" onClick={() => setViewMode(viewMode === 'cards' ? 'table' : 'cards')} title={viewMode === 'cards' ? ui(language, 'Таблица', 'Table') : ui(language, 'Карточки', 'Cards')}>
+                    {viewMode === 'cards' ? <LayoutList className="h-5 w-5" /> : <Grid2X2 className="h-5 w-5" />}
                   </Button>
                 </>
               )}
@@ -412,7 +407,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
             <div className="flex flex-wrap gap-2">
               <FilterButton active={mainFilter === 'all' && !folderFilter && tagFilters.length === 0} onClick={() => { setMainFilter('all'); setFolderFilter(null); setTagFilters([]) }}>{ui(language, 'Все', 'All')}</FilterButton>
               <FilterButton active={mainFilter === 'favorites'} onClick={() => { setMainFilter('favorites'); setFolderFilter(null); setTagFilters([]) }}>{translate(language, 'favorites')}</FilterButton>
-              <FilterButton active={tagFilters.length > 0} onClick={() => setTagFilters([])}>{tagFilterLabel}</FilterButton>
               {tagFilters.length > 0 && (
                 <Button variant="outline" className="h-10 rounded-xl" onClick={() => setTagFilters([])}>
                   <X className="mr-2 h-4 w-4" />
@@ -751,7 +745,7 @@ function SettingsDrawer({
         </div>
 
         <TooltipProvider delayDuration={250}>
-        <div className="columns-1 gap-3 xl:columns-2">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
           <SettingsBlock title={ui(language, 'Основное', 'Basics')}>
             <ToggleLine label={translate(language, 'darkTheme')} checked={settings.theme === 'dark'} onCheckedChange={(checked) => onSettingsChange({ theme: checked ? 'dark' : 'light', ...cardPresetFor(checked ? 'dark' : 'light', settings.cardPreset) })} />
             <SelectLine label={translate(language, 'language')} value={settings.uiLanguage} onChange={(value) => onSettingsChange({ uiLanguage: value as AppSettings['uiLanguage'] })} options={[{ value: 'ru', label: 'RU' }, { value: 'en', label: 'EN' }]} />
@@ -795,6 +789,13 @@ function SettingsDrawer({
           <SettingsBlock title={ui(language, 'Плавающая панель', 'Floating panel')}>
             <ToggleLine label={translate(language, 'floatingPanelNearField')} checked={settings.floatingPanelEnabled} onCheckedChange={(checked) => onSettingsChange({ floatingPanelEnabled: checked })} hint={translate(language, 'floatingPanelHint')} />
             <SelectLine label={ui(language, 'Масштаб панели', 'Panel scale')} value={settings.panelScale} onChange={(value) => onSettingsChange({ panelScale: value as AppSettings['panelScale'] })} options={scaleOptions()} />
+            <SelectLine
+              label={ui(language, 'Поднять панель над полем', 'Raise panel above field')}
+              value={String(settings.panelOffsetY)}
+              onChange={(value) => onSettingsChange({ panelOffsetY: Number(value) || 0 })}
+              options={[0, 10, 20, 30, 40, 60, 80].map((value) => ({ value: String(value), label: `${value}px` }))}
+              hint={ui(language, 'Полезно для чатов, где панель перекрывает подсказки или кнопки рядом с полем ввода.', 'Useful when the panel covers suggestions or controls near the message field.')}
+            />
             <SelectLine label={ui(language, 'Положение панели', 'Panel position')} value={settings.panelPlacement} onChange={(value) => onSettingsChange({ panelPlacement: value as AppSettings['panelPlacement'] })} options={[
               { value: 'auto', label: ui(language, 'Авто', 'Auto') },
               { value: 'above', label: ui(language, 'Над полем', 'Above field') },
@@ -896,8 +897,11 @@ function FilterButton({ active, children, onClick }: { active: boolean; children
 
 function SettingsBlock({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mb-3 break-inside-avoid rounded-xl border bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/70">
-      <h2 className="mb-2 font-semibold">{title}</h2>
+    <section className="rounded-2xl border bg-slate-50/90 p-3.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+      <h2 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300">
+        <span className="h-2 w-2 rounded-full bg-primary" />
+        {title}
+      </h2>
       <div className="space-y-2.5">{children}</div>
     </section>
   )

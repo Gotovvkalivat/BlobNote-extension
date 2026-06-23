@@ -42,6 +42,8 @@ function PanelDot({ className = 'h-4 w-4' }: { className?: string }) {
 }
 
 const PANEL_SCALE_VALUES: AppSettings['panelScale'][] = ['70', '80', '90', '100', '110', '120', '130']
+const PANEL_OFFSET_STEP = 10
+const PANEL_OFFSET_MAX = 80
 
 function stepPanelScale(value: AppSettings['panelScale'], direction: -1 | 1): AppSettings['panelScale'] {
   const index = Math.max(0, PANEL_SCALE_VALUES.indexOf(value))
@@ -51,6 +53,10 @@ function stepPanelScale(value: AppSettings['panelScale'], direction: -1 | 1): Ap
 function stepDelay(value: number, direction: -1 | 1) {
   if (direction > 0) return value <= 0 ? 3 : Math.min(15, value + 1)
   return value <= 3 ? 0 : Math.max(0, value - 1)
+}
+
+function stepPanelOffset(value: number, direction: -1 | 1) {
+  return clamp(value + direction * PANEL_OFFSET_STEP, 0, PANEL_OFFSET_MAX)
 }
 
 export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
@@ -67,6 +73,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
   const [settingsOpen, setSettingsOpen] = React.useState(false)
   const [panelScale, setPanelScale] = React.useState<AppSettings['panelScale']>(uiScale)
   const [placement, setPlacement] = React.useState<AppSettings['panelPlacement']>('auto')
+  const [panelOffsetY, setPanelOffsetY] = React.useState(0)
   const [showRecentInsertions, setShowRecentInsertions] = React.useState(false)
   const [pinnedInputSelector, setPinnedInputSelector] = React.useState('')
   const [safeSendDelay, setSafeSendDelay] = React.useState(0)
@@ -95,6 +102,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
       setLanguage(snapshot.uiLanguage)
       setPanelScale(snapshot.panelScale)
       setPlacement(snapshot.panelPlacement)
+      setPanelOffsetY(snapshot.panelOffsetY)
       setShowRecentInsertions(snapshot.panelCompactMode)
       setSafeSendDelay(snapshot.safeSendDelay)
       setSendMethod(snapshot.sendMethod)
@@ -115,6 +123,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           changes.uiLanguage ||
           changes.panelScale ||
           changes.panelPlacement ||
+          changes.panelOffsetY ||
           changes.panelCompactMode ||
           changes.safeSendDelay ||
           changes.sendMethod ||
@@ -143,13 +152,11 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
       const target = getActiveEditableElement()
       if (!target || !document.contains(target)) {
         setVisible(false)
-        setCollapsed(false)
         return
       }
 
       if (targetRef.current !== target) {
         targetRef.current = target
-        setCollapsed(false)
       }
 
       if (pinnedInputSelector && !matchesPinnedInput(target, pinnedInputSelector)) {
@@ -173,7 +180,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
         if (collapsed) {
           const visualSize = 32 * scale
           setPosition({
-            top: clamp(rect.bottom - visualSize - 4, 8, window.innerHeight - visualSize - 8),
+            top: clamp(rect.bottom - visualSize - 4 - panelOffsetY, 8, window.innerHeight - visualSize - 8),
             left: clamp(rect.right - visualSize - 4, 8, window.innerWidth - visualSize - 8),
             width: 32,
           })
@@ -200,7 +207,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
           : clamp(rect.left, 8, window.innerWidth - visualWidth - 8)
 
         setPosition({
-          top: clamp(top, 8, window.innerHeight - visualHeight - 8),
+          top: clamp(top - (placement === 'top-right' || placement === 'bottom-right' ? 0 : panelOffsetY), 8, window.innerHeight - visualHeight - 8),
           left,
           width: layoutWidth,
         })
@@ -231,7 +238,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
       document.removeEventListener('input', checkFocus, true)
       window.clearInterval(interval)
     }
-  }, [clipboardItems.length, collapsed, enabled, favorites.length, pinnedInputSelector, placement, scale, settingsOpen])
+  }, [clipboardItems.length, collapsed, enabled, favorites.length, panelOffsetY, pinnedInputSelector, placement, scale, settingsOpen])
 
   React.useEffect(() => {
     if (!enabled || !clipboardEnabled) {
@@ -273,6 +280,7 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
     const globalPatch: Partial<AppSettings> = {}
     if (patch.panelScale) globalPatch.panelScale = patch.panelScale
     if (patch.panelPlacement) globalPatch.panelPlacement = patch.panelPlacement
+    if ('panelOffsetY' in patch) globalPatch.panelOffsetY = patch.panelOffsetY ?? 0
     if (typeof patch.panelCompactMode === 'boolean') globalPatch.panelCompactMode = patch.panelCompactMode
     if (patch.sendMethod) globalPatch.sendMethod = patch.sendMethod
     if ('sendButtonSelector' in patch) globalPatch.sendButtonSelector = patch.sendButtonSelector ?? null
@@ -460,6 +468,24 @@ export function FloatingPanel({ uiScale, onOpenBase }: FloatingPanelProps) {
                   }}
                 />
               </label>
+              <label className="grid gap-1">
+                <span className="text-muted-foreground">{text('Выше поля', 'Raise panel')}</span>
+                <PanelStepper
+                  value={`${panelOffsetY}px`}
+                  onDecrease={() => {
+                    const value = stepPanelOffset(panelOffsetY, -1)
+                    setPanelOffsetY(value)
+                    updateSiteSettings({ panelOffsetY: value })
+                  }}
+                  onIncrease={() => {
+                    const value = stepPanelOffset(panelOffsetY, 1)
+                    setPanelOffsetY(value)
+                    updateSiteSettings({ panelOffsetY: value })
+                  }}
+                />
+              </label>
+            </div>
+            <div className="grid gap-1">
               <label className="grid gap-1">
                 <span className="text-muted-foreground">{t('panelPosition')}</span>
                 <PanelChoiceGrid

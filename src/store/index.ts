@@ -66,6 +66,7 @@ type SyncSnapshot = {
   uiScale: AppSettings['uiScale']
   panelScale: AppSettings['panelScale']
   panelPlacement: AppSettings['panelPlacement']
+  panelOffsetY: number
   panelCompactMode: boolean
   safeSendEnabled: boolean
   safeSendDelay: number
@@ -100,6 +101,7 @@ const defaultSettings: AppSettings = {
   uiScale: '100',
   panelScale: '100',
   panelPlacement: 'auto',
+  panelOffsetY: 0,
   panelCompactMode: false,
   safeSendEnabled: false,
   safeSendDelay: 0,
@@ -235,6 +237,12 @@ function normalizePanelPlacement(value: unknown): AppSettings['panelPlacement'] 
   return value === 'above' || value === 'below' || value === 'top-right' || value === 'bottom-right' ? value : 'auto'
 }
 
+function normalizePanelOffsetY(value: unknown) {
+  const numeric = typeof value === 'number' ? value : parseInt(String(value || ''), 10)
+  if (Number.isNaN(numeric)) return defaultSettings.panelOffsetY
+  return Math.min(80, Math.max(0, numeric))
+}
+
 function normalizeSafeSendDelay(value: unknown) {
   const numeric = typeof value === 'number' ? value : parseInt(String(value || ''), 10)
   if (Number.isNaN(numeric)) return defaultSettings.safeSendDelay
@@ -274,6 +282,7 @@ function normalizeSiteSettings(value: unknown): Record<string, SiteSettings> {
     if (settings.uiScale) next.uiScale = normalizeUiScale(settings.uiScale)
     if (settings.panelScale) next.panelScale = normalizeUiScale(settings.panelScale)
     if (settings.panelPlacement) next.panelPlacement = normalizePanelPlacement(settings.panelPlacement)
+    if ('panelOffsetY' in settings) next.panelOffsetY = normalizePanelOffsetY(settings.panelOffsetY)
     if (typeof settings.panelCompactMode === 'boolean') next.panelCompactMode = settings.panelCompactMode
     if (settings.sendMethod) next.sendMethod = normalizeSendMethod(settings.sendMethod)
     if ('sendButtonSelector' in settings) next.sendButtonSelector = normalizeSendButtonSelector(settings.sendButtonSelector)
@@ -320,6 +329,7 @@ function snapshotToState(snapshot: SyncSnapshot) {
       uiScale: normalizeUiScale(snapshot.uiScale),
       panelScale: normalizeUiScale(snapshot.panelScale),
       panelPlacement: normalizePanelPlacement(snapshot.panelPlacement),
+      panelOffsetY: normalizePanelOffsetY(snapshot.panelOffsetY),
       panelCompactMode: snapshot.panelCompactMode ?? defaultSettings.panelCompactMode,
       safeSendEnabled: snapshot.safeSendEnabled ?? defaultSettings.safeSendEnabled,
       safeSendDelay: snapshot.safeSendEnabled ? normalizeSafeSendDelay(snapshot.safeSendDelay) : 0,
@@ -390,6 +400,11 @@ function attachStorageListener() {
 
     if (changes.panelPlacement) {
       nextSettings.panelPlacement = normalizePanelPlacement(changes.panelPlacement.newValue)
+      settingsChanged = true
+    }
+
+    if (changes.panelOffsetY) {
+      nextSettings.panelOffsetY = normalizePanelOffsetY(changes.panelOffsetY.newValue)
       settingsChanged = true
     }
 
@@ -724,6 +739,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       uiScale: normalizeUiScale(settings.uiScale ?? state.settings.uiScale),
       panelScale: normalizeUiScale(settings.panelScale ?? state.settings.panelScale),
       panelPlacement: normalizePanelPlacement(settings.panelPlacement ?? state.settings.panelPlacement),
+      panelOffsetY: normalizePanelOffsetY(settings.panelOffsetY ?? state.settings.panelOffsetY),
       panelCompactMode: settings.panelCompactMode ?? state.settings.panelCompactMode,
       safeSendEnabled: settings.safeSendEnabled ?? state.settings.safeSendEnabled,
       safeSendDelay: normalizeSafeSendDelay(settings.safeSendDelay ?? state.settings.safeSendDelay),
@@ -743,6 +759,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       uiScale: nextSettings.uiScale,
       panelScale: nextSettings.panelScale,
       panelPlacement: nextSettings.panelPlacement,
+      panelOffsetY: nextSettings.panelOffsetY,
       panelCompactMode: nextSettings.panelCompactMode,
       safeSendEnabled: nextSettings.safeSendEnabled,
       safeSendDelay: nextSettings.safeSendDelay,

@@ -36,6 +36,7 @@ export type RuntimeSnapshot = {
   uiScale: AppSettings['uiScale']
   panelScale: AppSettings['panelScale']
   panelPlacement: AppSettings['panelPlacement']
+  panelOffsetY: number
   panelCompactMode: boolean
   safeSendEnabled: boolean
   safeSendDelay: number
@@ -74,6 +75,7 @@ type RawSyncData = {
   uiScale: AppSettings['uiScale']
   panelScale: AppSettings['panelScale']
   panelPlacement: AppSettings['panelPlacement']
+  panelOffsetY: number
   panelCompactMode: boolean
   safeSendEnabled: boolean
   safeSendDelay: number
@@ -100,6 +102,7 @@ const defaults: RawSyncData = {
   uiScale: '100',
   panelScale: '100',
   panelPlacement: 'auto',
+  panelOffsetY: 0,
   panelCompactMode: false,
   safeSendEnabled: false,
   safeSendDelay: 0,
@@ -134,6 +137,7 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
       uiScale: '100',
       panelScale: '100',
       panelPlacement: 'auto',
+      panelOffsetY: 0,
       panelCompactMode: false,
       safeSendEnabled: false,
       safeSendDelay: 0,
@@ -171,6 +175,7 @@ export function readRuntimeSnapshot(): Promise<RuntimeSnapshot> {
         uiScale: currentSiteSettings.uiScale || normalizeUiScale(data.uiScale),
         panelScale: currentSiteSettings.panelScale || normalizeUiScale(data.panelScale),
         panelPlacement: currentSiteSettings.panelPlacement || normalizePanelPlacement(data.panelPlacement),
+        panelOffsetY: currentSiteSettings.panelOffsetY ?? normalizePanelOffsetY(data.panelOffsetY),
         panelCompactMode: currentSiteSettings.panelCompactMode ?? data.panelCompactMode ?? false,
         safeSendEnabled: data.safeSendEnabled ?? false,
         safeSendDelay,
@@ -256,6 +261,12 @@ function normalizePanelPlacement(value: unknown): AppSettings['panelPlacement'] 
   return value === 'above' || value === 'below' || value === 'top-right' || value === 'bottom-right' ? value : 'auto'
 }
 
+function normalizePanelOffsetY(value: unknown) {
+  const numeric = typeof value === 'number' ? value : parseInt(String(value || ''), 10)
+  if (Number.isNaN(numeric)) return 0
+  return Math.min(80, Math.max(0, numeric))
+}
+
 function normalizeSafeSendDelay(value: unknown) {
   const numeric = typeof value === 'number' ? value : parseInt(String(value || ''), 10)
   if (Number.isNaN(numeric) || numeric <= 0) return 0
@@ -282,11 +293,12 @@ function normalizeSiteSettings(value: unknown): Record<string, SiteSettings> {
     if (settings.uiScale) next.uiScale = normalizeUiScale(settings.uiScale)
     if (settings.panelScale) next.panelScale = normalizeUiScale(settings.panelScale)
     if (settings.panelPlacement) next.panelPlacement = normalizePanelPlacement(settings.panelPlacement)
-  if (typeof settings.panelCompactMode === 'boolean') next.panelCompactMode = settings.panelCompactMode
-  if (settings.sendMethod) next.sendMethod = normalizeSendMethod(settings.sendMethod)
-  if ('sendButtonSelector' in settings) next.sendButtonSelector = normalizeSendButtonSelector(settings.sendButtonSelector)
-  if ('pinnedInputSelector' in settings) next.pinnedInputSelector = normalizeSendButtonSelector(settings.pinnedInputSelector)
-  if (Object.keys(next).length > 0) acc[host] = next
+    if ('panelOffsetY' in settings) next.panelOffsetY = normalizePanelOffsetY(settings.panelOffsetY)
+    if (typeof settings.panelCompactMode === 'boolean') next.panelCompactMode = settings.panelCompactMode
+    if (settings.sendMethod) next.sendMethod = normalizeSendMethod(settings.sendMethod)
+    if ('sendButtonSelector' in settings) next.sendButtonSelector = normalizeSendButtonSelector(settings.sendButtonSelector)
+    if ('pinnedInputSelector' in settings) next.pinnedInputSelector = normalizeSendButtonSelector(settings.pinnedInputSelector)
+    if (Object.keys(next).length > 0) acc[host] = next
     return acc
   }, {})
 }

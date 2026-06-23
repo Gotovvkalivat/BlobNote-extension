@@ -94,7 +94,7 @@ export function PopupV2() {
   }
 
   return (
-    <div className="h-[550px] w-[380px] overflow-hidden bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
+    <div className="h-[600px] w-[380px] overflow-hidden bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
       <header className="border-b bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-950">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -120,9 +120,9 @@ export function PopupV2() {
       </header>
 
       {tab === 'base' ? (
-        <main className="flex h-[calc(550px-90px)] flex-col overflow-hidden p-2.5">
+        <main className="flex h-[calc(600px-90px)] flex-col overflow-hidden p-2.5">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               autoFocus
               className="h-8 rounded-lg bg-white pl-10 text-sm dark:border-slate-800 dark:bg-slate-900"
@@ -173,7 +173,7 @@ export function PopupV2() {
           </div>
         </main>
       ) : (
-        <main className="h-[calc(550px-90px)] overflow-y-auto p-2.5">
+        <main className="h-[calc(600px-90px)] overflow-y-auto p-2.5">
           <div className="mb-2 rounded-xl border bg-white p-2.5 dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between gap-3">
               <div>

@@ -32,6 +32,7 @@ export interface AppSettings {
   uiScale: '70' | '80' | '90' | '100' | '110' | '120' | '130'
   panelScale: '70' | '80' | '90' | '100' | '110' | '120' | '130'
   panelPlacement: 'auto' | 'above' | 'below' | 'top-right' | 'bottom-right'
+  panelOffsetY: number
   panelCompactMode: boolean
   safeSendEnabled: boolean
   safeSendDelay: number
@@ -64,6 +65,7 @@ export interface SiteSettings {
   uiScale?: AppSettings['uiScale']
   panelScale?: AppSettings['panelScale']
   panelPlacement?: AppSettings['panelPlacement']
+  panelOffsetY?: number
   panelCompactMode?: boolean
   sendMethod?: SendMethod
   sendButtonSelector?: string | null
