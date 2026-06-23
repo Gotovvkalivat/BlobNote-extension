@@ -54,12 +54,9 @@ type ViewMode = 'cards' | 'table'
 type MainFilter = 'all' | 'favorites' | 'recent'
 type SortMode = 'updated' | 'usage' | 'title'
 type ActiveTab = 'templates' | 'variables' | 'todo'
-type TemplateWithFolder = Template & { folder?: string | null; deletedAt?: string | null }
 
 const VIEW_STORAGE_KEY = 'blobnote-v2-view-mode'
 const MASS_STORAGE_KEY = 'blobnote-v2-mass-mode'
-const DEFAULT_FOLDER_RU = 'Без папки'
-const DEFAULT_FOLDER_EN = 'No folder'
 
 const PRESET_LABELS: Record<AppSettings['cardPreset'], { ru: string; en: string }> = {
   lagoon: { ru: 'Лагуна', en: 'Lagoon' },
@@ -89,7 +86,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
 
   const [searchQuery, setSearchQuery] = React.useState('')
   const [mainFilter, setMainFilter] = React.useState<MainFilter>('all')
-  const [folderFilter, setFolderFilter] = React.useState<string | null>(null)
   const [tagFilters, setTagFilters] = React.useState<string[]>([])
   const [sortMode, setSortMode] = React.useState<SortMode>('updated')
   const [activeTab, setActiveTab] = React.useState<ActiveTab>(() => {
@@ -106,7 +102,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
   const [scenarioPresetId, setScenarioPresetId] = React.useState<ScenarioPresetId>('support')
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const language = settings.uiLanguage
-  const defaultFolder = ui(language, DEFAULT_FOLDER_RU, DEFAULT_FOLDER_EN)
 
   React.useEffect(() => {
     if (embedded) return
@@ -130,7 +125,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
   }
 
   const activeTemplates = React.useMemo(() => {
-    return (templates as TemplateWithFolder[])
+    return templates
       .filter((template) => !template.deletedAt)
       .slice()
       .sort(sortTemplates(sortMode))
@@ -150,46 +145,23 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
   }, [activeTemplates])
 
   const sidebarTags = React.useMemo(() => {
-    const source = folderFilter
-      ? activeTemplates.filter((template) => getTemplateFolder(template, defaultFolder) === folderFilter)
-      : activeTemplates
-    return [...new Set(source.map((template) => template.tag).filter(Boolean))] as string[]
-  }, [activeTemplates, defaultFolder, folderFilter])
-
-  const folders = React.useMemo(() => {
-    const counts = new Map<string, number>()
-    activeTemplates.forEach((template) => {
-      const folder = getTemplateFolder(template, defaultFolder)
-      counts.set(folder, (counts.get(folder) || 0) + 1)
-    })
-    return Array.from(counts.entries())
-      .map(([name, count]) => ({
-        name,
-        count,
-        templates: activeTemplates.filter((template) => getTemplateFolder(template, defaultFolder) === name),
-      }))
-      .sort((a, b) => (a.name === defaultFolder ? 1 : b.name === defaultFolder ? -1 : a.name.localeCompare(b.name)))
-  }, [activeTemplates, defaultFolder])
-
-  const folderNames = React.useMemo(() => folders.map((folder) => folder.name).filter((folder) => folder !== defaultFolder), [defaultFolder, folders])
+    return [...new Set(activeTemplates.map((template) => template.tag).filter(Boolean))] as string[]
+  }, [activeTemplates])
 
   const filteredTemplates = React.useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
     return activeTemplates.filter((template) => {
       if (mainFilter === 'favorites' && !template.favorite) return false
       if (mainFilter === 'recent' && !recentIds.has(template.id)) return false
-      if (folderFilter && getTemplateFolder(template, defaultFolder) !== folderFilter) return false
       if (tagFilters.length > 0 && (!template.tag || !tagFilters.includes(template.tag))) return false
       if (!query) return true
-      const folder = getTemplateFolder(template, defaultFolder)
       return (
         template.title.toLowerCase().includes(query) ||
         template.text.toLowerCase().includes(query) ||
-        Boolean(template.tag?.toLowerCase().includes(query)) ||
-        folder.toLowerCase().includes(query)
+        Boolean(template.tag?.toLowerCase().includes(query))
       )
     })
-  }, [activeTemplates, defaultFolder, folderFilter, mainFilter, recentIds, searchQuery, tagFilters])
+  }, [activeTemplates, mainFilter, recentIds, searchQuery, tagFilters])
 
   React.useEffect(() => {
     setSelectedIds((current) => current.filter((id) => filteredTemplates.some((template) => template.id === id)))
@@ -230,7 +202,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
     setEditingTemplate(null)
   }
 
-  const duplicateTemplate = (template: TemplateWithFolder) => {
+  const duplicateTemplate = (template: Template) => {
     addTemplate({
       title: `${template.title} ${ui(language, 'копия', 'copy')}`,
       text: template.text,
@@ -317,9 +289,9 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
         </Button>
 
         <nav className="space-y-1">
-          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'all' && !folderFilter && tagFilters.length === 0} icon={<Archive />} label={ui(language, 'Все шаблоны', 'All templates')} count={activeTemplates.length} onClick={() => { switchTab('templates'); setMainFilter('all'); setFolderFilter(null); setTagFilters([]) }} />
-          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'favorites'} icon={<Heart />} label={translate(language, 'favorites')} count={activeTemplates.filter((template) => template.favorite).length} onClick={() => { switchTab('templates'); setMainFilter('favorites'); setFolderFilter(null); setTagFilters([]) }} />
-          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'recent'} icon={<ClipboardList />} label={ui(language, 'Недавние', 'Recent')} count={recentInsertions.length} onClick={() => { switchTab('templates'); setMainFilter('recent'); setFolderFilter(null); setTagFilters([]) }} />
+          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'all' && tagFilters.length === 0} icon={<Archive />} label={ui(language, 'Все шаблоны', 'All templates')} count={activeTemplates.length} onClick={() => { switchTab('templates'); setMainFilter('all'); setTagFilters([]) }} />
+          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'favorites'} icon={<Heart />} label={translate(language, 'favorites')} count={activeTemplates.filter((template) => template.favorite).length} onClick={() => { switchTab('templates'); setMainFilter('favorites'); setTagFilters([]) }} />
+          <SidebarButton active={visibleTab === 'templates' && mainFilter === 'recent'} icon={<ClipboardList />} label={ui(language, 'Недавние', 'Recent')} count={recentInsertions.length} onClick={() => { switchTab('templates'); setMainFilter('recent'); setTagFilters([]) }} />
           {settings.showVariablesTab && (
             <SidebarButton active={visibleTab === 'variables'} icon={<Braces />} label={ui(language, 'Переменные', 'Variables')} count={variables.length} onClick={() => switchTab('variables')} />
           )}
@@ -370,7 +342,7 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
                 <BrandBlock compact />
               </div>
               <div className="min-w-0">
-                <h1 className="truncate text-2xl font-bold">{currentBaseTitle(language, visibleTab, mainFilter, folderFilter, tagFilters)}</h1>
+                <h1 className="truncate text-2xl font-bold">{currentBaseTitle(language, visibleTab, mainFilter, tagFilters)}</h1>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   {visibleTab === 'variables'
                     ? ui(language, '{{count}} переменных', '{{count}} variables').replace('{{count}}', String(variables.length))
@@ -406,8 +378,8 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
           {visibleTab === 'templates' && (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2">
-              <FilterButton active={mainFilter === 'all' && !folderFilter && tagFilters.length === 0} onClick={() => { setMainFilter('all'); setFolderFilter(null); setTagFilters([]) }}>{ui(language, 'Все', 'All')}</FilterButton>
-              <FilterButton active={mainFilter === 'favorites'} onClick={() => { setMainFilter('favorites'); setFolderFilter(null); setTagFilters([]) }}>{translate(language, 'favorites')}</FilterButton>
+              <FilterButton active={mainFilter === 'all' && tagFilters.length === 0} onClick={() => { setMainFilter('all'); setTagFilters([]) }}>{ui(language, 'Все', 'All')}</FilterButton>
+              <FilterButton active={mainFilter === 'favorites'} onClick={() => { setMainFilter('favorites'); setTagFilters([]) }}>{translate(language, 'favorites')}</FilterButton>
               {tagFilters.length > 0 && (
                 <Button variant="outline" className="h-10 rounded-xl" onClick={() => setTagFilters([])}>
                   <X className="mr-2 h-4 w-4" />
@@ -509,7 +481,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
               selectedIds={selectedIds}
               allSelected={allSelected}
               tagColorByTag={tagColorByTag}
-              defaultFolder={defaultFolder}
               language={language}
               onSelectAll={(checked) => setSelectedIds(checked ? filteredTemplates.map((template) => template.id) : [])}
               onSelect={(id, checked) => toggleSelected(id, checked, setSelectedIds)}
@@ -556,7 +527,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
               onSave={handleSaveTemplate}
               onCancel={closeEditor}
               allTags={allTags}
-              allFolders={folderNames}
               tagColorByTag={tagColorByTag}
               variables={settings.showVariablesTab ? variables : []}
               language={language}
@@ -628,7 +598,6 @@ function TemplateTable({
   selectedIds,
   allSelected,
   tagColorByTag,
-  defaultFolder,
   language,
   onSelectAll,
   onSelect,
@@ -638,17 +607,16 @@ function TemplateTable({
   onDelete,
   onToggleFavorite,
 }: {
-  templates: TemplateWithFolder[]
+  templates: Template[]
   selectedIds: string[]
   allSelected: boolean
   tagColorByTag: Record<string, string>
-  defaultFolder: string
   language: AppSettings['uiLanguage']
   onSelectAll: (checked: boolean) => void
   onSelect: (id: string, checked: boolean) => void
   onPreview: (template: Template) => void
   onEdit: (template: Template) => void
-  onDuplicate: (template: TemplateWithFolder) => void
+  onDuplicate: (template: Template) => void
   onDelete: (template: Template) => void
   onToggleFavorite: (id: string) => void
 }) {
@@ -660,7 +628,6 @@ function TemplateTable({
             <th className="w-12 px-4 py-3"><input type="checkbox" className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" checked={allSelected} onChange={(event) => onSelectAll(event.target.checked)} /></th>
             <th className="w-[22%] px-4 py-3">{ui(language, 'Название', 'Title')}</th>
             <th className="px-4 py-3">{ui(language, 'Текст', 'Text')}</th>
-            <th className="w-36 px-4 py-3">{ui(language, 'Папка', 'Folder')}</th>
             <th className="w-40 px-4 py-3">{translate(language, 'tags')}</th>
             <th className="w-28 px-4 py-3">{ui(language, 'Использован', 'Used')}</th>
             <th className="w-44 px-4 py-3 text-right">{ui(language, 'Действия', 'Actions')}</th>
@@ -676,7 +643,6 @@ function TemplateTable({
               <td className="px-4 py-3">
                 <button className="line-clamp-2 text-left text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white" onClick={() => onPreview(template)}>{template.text}</button>
               </td>
-              <td className="px-4 py-3 text-slate-500">{getTemplateFolder(template, defaultFolder)}</td>
               <td className="px-4 py-3">
                 {template.tag ? <Badge className="border" style={tagColorStyle(tagColorByTag[template.tag])}>{template.tag}</Badge> : <span className="text-slate-400">-</span>}
               </td>
@@ -990,30 +956,24 @@ function scaleOptions() {
   return ['70', '80', '90', '100', '110', '120', '130'].map((value) => ({ value, label: `${value}%` }))
 }
 
-function getTemplateFolder(template: TemplateWithFolder, fallback: string) {
-  return typeof template.folder === 'string' && template.folder.trim() ? template.folder.trim() : fallback
-}
-
 function getVisibleBaseTab(tab: ActiveTab, settings: AppSettings): ActiveTab {
   if (tab === 'variables' && !settings.showVariablesTab) return 'templates'
   if (tab === 'todo' && !settings.showTodoTab) return 'templates'
   return tab
 }
 
-function currentBaseTitle(language: AppSettings['uiLanguage'], tab: ActiveTab, mainFilter: MainFilter, folderFilter: string | null, tagFilters: string[]) {
+function currentBaseTitle(language: AppSettings['uiLanguage'], tab: ActiveTab, mainFilter: MainFilter, tagFilters: string[]) {
   if (tab === 'variables') return ui(language, 'Переменные', 'Variables')
   if (tab === 'todo') return ui(language, 'Задачи', 'Tasks')
-  return currentTitle(language, mainFilter, folderFilter, tagFilters)
+  return currentTitle(language, mainFilter, tagFilters)
 }
 
-function currentTitle(language: AppSettings['uiLanguage'], mainFilter: MainFilter, folderFilter: string | null, tagFilters: string[]) {
+function currentTitle(language: AppSettings['uiLanguage'], mainFilter: MainFilter, tagFilters: string[]) {
   const tagTitle = tagFilters.length === 0
     ? ''
     : tagFilters.length === 1
       ? `#${tagFilters[0]}`
       : ui(language, '{{count}} тега', '{{count}} tags').replace('{{count}}', String(tagFilters.length))
-  if (folderFilter && tagTitle) return `${folderFilter} · ${tagTitle}`
-  if (folderFilter) return folderFilter
   if (tagTitle) return tagTitle
   if (mainFilter === 'favorites') return translate(language, 'favorites')
   if (mainFilter === 'recent') return ui(language, 'Недавние', 'Recent')

@@ -13,7 +13,6 @@ interface TemplateEditorProps {
   onSave: (data: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'order' | 'usageCount'>) => void
   onCancel: () => void
   allTags: string[]
-  allFolders?: string[]
   tagColorByTag?: Record<string, string>
   variables: TemplateVariable[]
   language: AppSettings['uiLanguage']
@@ -25,17 +24,14 @@ export function TemplateEditor({
   onSave,
   onCancel,
   allTags,
-  allFolders = [],
   tagColorByTag = {},
   variables,
   language,
 }: TemplateEditorProps) {
   const [title, setTitle] = React.useState(template?.title || '')
   const [text, setText] = React.useState(template?.text || '')
-  const [folder, setFolder] = React.useState((template as Template & { folder?: string | null })?.folder || '')
   const [tag, setTag] = React.useState(template?.tag || '')
   const [tagColor, setTagColor] = React.useState(template?.tagColor || TAG_COLORS[0].value)
-  const [showFolderDropdown, setShowFolderDropdown] = React.useState(false)
   const [showTagDropdown, setShowTagDropdown] = React.useState(false)
   const [errors, setErrors] = React.useState<{ title?: string; text?: string }>({})
   const titleRef = React.useRef<HTMLInputElement>(null)
@@ -46,7 +42,6 @@ export function TemplateEditor({
     if (isNew || template) {
       setTitle(template?.title || '')
       setText(template?.text || '')
-      setFolder((template as Template & { folder?: string | null })?.folder || '')
       setTag(template?.tag || '')
       setTagColor(template?.tagColor || (template?.tag && tagColorByTag[template.tag]) || TAG_COLORS[0].value)
       setErrors({})
@@ -76,7 +71,7 @@ export function TemplateEditor({
     onSave({
       title: title.trim(),
       text: text.trim(),
-      folder: folder.trim() || null,
+      folder: template?.folder || null,
       tag: tag.trim() || null,
       tagColor: tag.trim() ? tagColor : null,
       color: null,
@@ -84,7 +79,6 @@ export function TemplateEditor({
     })
   }
 
-  const filteredFolders = allFolders.filter((item) => item.toLowerCase().includes(folder.toLowerCase()))
   const filteredTags = allTags.filter((item) => item.toLowerCase().includes(tag.toLowerCase()))
 
   const updateTag = (value: string) => {
@@ -147,36 +141,6 @@ export function TemplateEditor({
         </div>
 
         <div className="space-y-2">
-          <div className="relative">
-            <Input
-              placeholder={language === 'en' ? 'Folder...' : 'Папка...'}
-              value={folder}
-              onChange={(event) => {
-                setFolder(event.target.value)
-                setShowFolderDropdown(true)
-              }}
-              onFocus={() => setShowFolderDropdown(true)}
-              onBlur={() => window.setTimeout(() => setShowFolderDropdown(false), 200)}
-              className="h-10 text-base"
-            />
-            {showFolderDropdown && filteredFolders.length > 0 && (
-              <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-[132px] overflow-y-auto rounded-md border bg-background shadow-lg">
-                {filteredFolders.map((item) => (
-                  <button
-                    key={item}
-                    className="w-full px-2 py-1.5 text-left text-xs hover:bg-muted"
-                    onMouseDown={() => {
-                      setFolder(item)
-                      setShowFolderDropdown(false)
-                    }}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
           <div className="relative">
           <Input
             placeholder={t('tagPlaceholder')}
