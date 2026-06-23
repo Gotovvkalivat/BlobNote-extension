@@ -94,8 +94,8 @@ export function PopupV2() {
   }
 
   return (
-    <div className="h-[600px] w-[380px] overflow-hidden bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
-      <header className="border-b bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-950">
+    <div className="flex h-[min(600px,100vh)] w-[380px] flex-col overflow-hidden bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
+      <header className="shrink-0 border-b bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-950">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={assetUrl('icon-48.png')} alt="" className="h-7 w-7" />
@@ -120,7 +120,7 @@ export function PopupV2() {
       </header>
 
       {tab === 'base' ? (
-        <main className="flex h-[calc(600px-90px)] flex-col overflow-hidden p-2.5">
+        <main className="flex min-h-0 flex-1 flex-col overflow-hidden p-2.5">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
@@ -148,7 +148,7 @@ export function PopupV2() {
             )}
           </div>
 
-          <div className="mt-2 grid gap-1.5">
+          <div className="mt-2 grid shrink-0 gap-1.5">
             <Button className="h-8 w-full text-sm" onClick={openBaseOnCurrentPage}>
               <PanelTopOpen className="mr-2 h-4 w-4" />
               {translate(language, 'openBaseCurrent')}
@@ -165,7 +165,7 @@ export function PopupV2() {
             </div>
           </div>
 
-          <div className="mt-1.5 rounded-lg border bg-white px-2.5 py-1.5 text-[11px] leading-relaxed text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+          <div className="mt-1.5 shrink-0 rounded-lg border bg-white px-2.5 py-1.5 text-[11px] leading-relaxed text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
             {ui(language, 'Быстрая вставка: ', 'Quick insert: ')}
             <Kbd>{settings.searchTrigger}</Kbd>
             {ui(language, ' в поле сообщения или ', ' in a message field or ')}
@@ -173,7 +173,7 @@ export function PopupV2() {
           </div>
         </main>
       ) : (
-        <main className="h-[calc(600px-90px)] overflow-y-auto p-2.5">
+        <main className="min-h-0 flex-1 overflow-y-auto p-2.5">
           <div className="mb-2 rounded-xl border bg-white p-2.5 dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between gap-3">
               <div>
