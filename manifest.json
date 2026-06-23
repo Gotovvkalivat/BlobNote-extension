@@ -10,18 +10,11 @@
     "contextMenus",
     "alarms",
     "notifications",
-    "identity",
     "clipboardRead"
   ],
   "background": {
     "service_worker": "src/background/index.js",
     "type": "module"
-  },
-  "oauth2": {
-    "client_id": "949261069316-826p2dteil4hascvlgmic08ke88p9pgb.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/drive.file"
-    ]
   },
   "content_scripts": [
     {

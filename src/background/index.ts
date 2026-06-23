@@ -121,11 +121,6 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     return true
   }
 
-  if (request.type === 'GOOGLE_SIGN_IN') {
-    signInWithGoogle(sendResponse)
-    return true
-  }
-
   return false
 })
 
@@ -165,45 +160,6 @@ function updateContextMenu() {
       })
     })
   })
-}
-
-function signInWithGoogle(sendResponse: (response?: { success: boolean; error?: string }) => void) {
-  const identity = chrome.identity
-  if (!identity?.getAuthToken) {
-    sendResponse({ success: false, error: 'Google-вход недоступен в этой сборке расширения' })
-    return
-  }
-
-  const finish = (token: string) => {
-    chrome.storage.local.set({ googleDriveAccessToken: token }, () => {
-      chrome.storage.sync.set(
-        {
-          googleDriveConnected: true,
-          googleDriveConnectedAt: new Date().toISOString(),
-        },
-        () => sendResponse({ success: true })
-      )
-    })
-  }
-
-  identity.getAuthToken({ interactive: true }, (token) => {
-    if (token && !chrome.runtime.lastError) {
-      finish(token)
-      return
-    }
-
-    sendResponse({
-      success: false,
-      error: googleAuthSetupMessage(chrome.runtime.lastError?.message),
-    })
-  })
-}
-
-function googleAuthSetupMessage(previousError?: string) {
-  const extensionId = chrome.runtime.id
-  const base = `Google-вход не завершён. Проверьте, что OAuth Client ID создан именно как Chrome Extension и его Item ID совпадает с ID расширения: ${extensionId}.`
-  const localHint = ' Для распакованной локальной сборки ID может отличаться от магазина; тогда нужен manifest key для стабильного ID или отдельный OAuth-клиент под локальный ID.'
-  return previousError ? `${previousError}. ${base}${localHint}` : `${base}${localHint}`
 }
 
 function openBasePage() {

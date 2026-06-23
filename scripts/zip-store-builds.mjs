@@ -4,8 +4,8 @@ import { basename, join, relative } from 'node:path'
 const root = process.cwd()
 const releaseDir = join(root, 'release')
 const targets = [
-  { source: join(root, 'dist-no-drive'), output: join(releaseDir, 'blobnote-chrome-no-drive-v2.0.zip') },
-  { source: join(root, 'dist-firefox'), output: join(releaseDir, 'blobnote-firefox-no-drive-v2.0.zip') },
+  { source: join(root, 'dist-chrome'), output: join(releaseDir, 'blobnote-chrome-v2.0.zip') },
+  { source: join(root, 'dist-firefox'), output: join(releaseDir, 'blobnote-firefox-v2.0.zip') },
 ]
 
 const crcTable = new Uint32Array(256)

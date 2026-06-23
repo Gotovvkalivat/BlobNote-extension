@@ -32,7 +32,6 @@ import {
   Info,
   LayoutList,
   ListTodo,
-  LogIn,
   Palette,
   PanelTopOpen,
   Pencil,
@@ -300,25 +299,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
     showToastEvent(translate(language, 'noteDeleted'), 'success')
   }
 
-  const handleGoogleSignIn = () => {
-    if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage) {
-      showToastEvent(ui(language, 'Google-вход доступен только в установленном расширении', 'Google sign-in is available only inside the installed extension'), 'info')
-      return
-    }
-
-    chrome.runtime.sendMessage({ type: 'GOOGLE_SIGN_IN' }, (response) => {
-      if (chrome.runtime.lastError) {
-        showToastEvent(chrome.runtime.lastError.message || 'Google sign-in failed', 'error')
-        return
-      }
-      if (response?.success) {
-        showToastEvent(ui(language, 'Google-аккаунт подключен', 'Google account connected'), 'success')
-      } else {
-        showToastEvent(response?.error || ui(language, 'Google-вход пока не настроен', 'Google sign-in is not configured yet'), 'info')
-      }
-    })
-  }
-
   const applyCardPreset = (preset: AppSettings['cardPreset']) => {
     updateSettings(cardPresetFor(settings.theme, preset))
   }
@@ -558,7 +538,6 @@ export function KnowledgeBaseV2({ embedded = false, onAfterInsert }: KnowledgeBa
           onClose={() => setSettingsOpen(false)}
           onExport={exportTemplates}
           onImportClick={() => fileInputRef.current?.click()}
-          onGoogleSignIn={handleGoogleSignIn}
           onSettingsChange={updateSettings}
           onApplyCardPreset={applyCardPreset}
         />
@@ -733,7 +712,6 @@ function SettingsDrawer({
   onClose,
   onExport,
   onImportClick,
-  onGoogleSignIn,
   onSettingsChange,
   onApplyCardPreset,
 }: {
@@ -745,7 +723,6 @@ function SettingsDrawer({
   onClose: () => void
   onExport: () => void
   onImportClick: () => void
-  onGoogleSignIn: () => void
   onSettingsChange: (settings: Partial<AppSettings>) => void
   onApplyCardPreset: (preset: AppSettings['cardPreset']) => void
 }) {
@@ -884,10 +861,6 @@ function SettingsDrawer({
               <Button variant="outline" onClick={onExport}><Download className="mr-2 h-4 w-4" />{translate(language, 'export')}</Button>
               <Button variant="outline" onClick={onImportClick}><Upload className="mr-2 h-4 w-4" />{translate(language, 'import')}</Button>
             </div>
-            <Button variant="outline" className="w-full justify-center" onClick={onGoogleSignIn}>
-              <LogIn className="mr-2 h-4 w-4" />
-              {ui(language, 'Подключить Google Диск', 'Connect Google Drive')}
-            </Button>
           </SettingsBlock>
 
           <SettingsBlock title={translate(language, 'featureGuide')}>

@@ -3,6 +3,7 @@ node_modules/
 .env
 dist/
 dist-no-drive/
+dist-chrome/
 dist-firefox/
 release/
 *.docx
